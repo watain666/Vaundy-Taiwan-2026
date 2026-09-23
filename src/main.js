@@ -4661,50 +4661,7 @@ window.addEventListener("appinstalled", dismissInstallHint);
 
 setTimeout(()=>{ updateOnlineState(); maybeShowInstallHint(); }, 1500);
 
-let routeRequest = 0;
-let fullStylesReady;
-const deferredStylesheet = document.querySelector('link[rel="stylesheet"][media="print"]');
-
-function activateFullStyles(){
-  if (!deferredStylesheet) return;
-  deferredStylesheet.media = "all";
-  for (const event of ["pointerdown", "keydown", "click"]){
-    document.removeEventListener(event, activateFullStyles, true);
-  }
-}
-
-if (deferredStylesheet){
-  for (const event of ["pointerdown", "keydown", "click"]){
-    document.addEventListener(event, activateFullStyles, true);
-  }
-}
-
-function routeWhenStyled(options){
-  const request = ++routeRequest;
-  const needsFullStyles = location.hash && location.hash !== "#" && location.hash !== "#/";
-
-  if (needsFullStyles && deferredStylesheet){
-    if (!deferredStylesheet.sheet){
-      fullStylesReady ??= new Promise(resolve => {
-        deferredStylesheet.addEventListener("load", resolve, { once: true });
-        deferredStylesheet.addEventListener("error", resolve, { once: true });
-        activateFullStyles();
-      });
-      fullStylesReady.then(() => {
-        if (request !== routeRequest) return;
-        router(options);
-        document.documentElement.removeAttribute("data-initial-route");
-      });
-      return;
-    }
-    activateFullStyles();
-  }
-
-  router(options);
-  document.documentElement.removeAttribute("data-initial-route");
-}
-
-window.addEventListener("hashchange", routeWhenStyled);
+window.addEventListener("hashchange", router);
 
 // YouTube API는 실제로歌曲頁需要播放器時才載入，避免 Guide 首屏引入第三方工作。
 function loadYouTubeApi(){
@@ -4725,4 +4682,5 @@ function loadYouTubeApi(){
 setupDebugBadge();
 setupChangelogModal();
 
-routeWhenStyled({ resetScroll: false });
+router({ resetScroll: false });
+document.documentElement.removeAttribute("data-initial-route");

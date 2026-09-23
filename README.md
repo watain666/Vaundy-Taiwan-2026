@@ -43,6 +43,8 @@ npm run preview
 
 正式建置會直接輸出首頁 HTML，並讓獨立的完整 CSS 與 HTML 平行載入；互動程式正常啟動，不需要等第一次點擊或捲動才載入。直接開啟 `#/guide`、`#/setlist` 或歌曲連結時，會先隱藏首頁，再顯示指定頁面，避免閃爍與版面跳動。首頁與頁面切換共用 `src/ui/home.js`，請不要另外手寫一份首頁快照。
 
+`public/assets/` 暫存近期首頁 HTML 引用的舊雜湊 JavaScript；GitHub Pages 與 CDN 更新 HTML 的時間可能不同，發佈新版時不能立刻移除這些舊檔，否則仍在快取中的首頁會載入失敗。
+
 首頁背景使用同尺寸的 `images/poster.webp`；座位配置預覽只在展開卡片後下載。Service Worker 會在頁面載入後準備離線所需的程式、歌詞與讀音分檔，因此只開過首頁也能在快取完成後離線進入歌曲。
 
 介面文字使用台灣常見的裝置內建字體（PingFang TC、Microsoft JhengHei、Noto Sans CJK TC）；日文歌詞另外使用 Noto Sans JP，以避免裝置內建字體缺少日文漢字。

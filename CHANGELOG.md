@@ -2,6 +2,12 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.10.2**
+
+- [PR #5](https://github.com/watain666/Vaundy-Taiwan-2026/pull/5)：建置時僅內嵌首頁首次繪製所需的樣式，讓完整樣式表在背景下載，並於首次操作時套用，改善手機版首次載入效能。
+- [PR #5](https://github.com/watain666/Vaundy-Taiwan-2026/pull/5)：直接開啟指南、劇透歌單或歌曲時，待完整樣式就緒後再顯示；將首頁海報納入 Service Worker 離線預快取。
+- 感謝 [@watain666](https://github.com/watain666) 提供 [PR #5](https://github.com/watain666/Vaundy-Taiwan-2026/pull/5)，改善首頁載入體驗。
+
 ## [**v1.10.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/fdbc0eca3e2442c39c6450e36048c803f3241dac)
 
 - [commit bff0cd7](https://github.com/watain666/Vaundy-Taiwan-2026/commit/bff0cd744d5f2f1af4cf36b64fef026c623e5295)：將首頁 CSS 從 HTML 內嵌樣式改為獨立雜湊資產，縮小首頁文件並讓樣式與 HTML 平行載入；Service Worker 也納入該資產的離線預快取。

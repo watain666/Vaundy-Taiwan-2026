@@ -2,6 +2,12 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.10.3**
+
+- [PR #6](https://github.com/watain666/Vaundy-Taiwan-2026/pull/6)：恢復首頁完整樣式表與 HTML 平行載入，撤回前版延後套用樣式的處理，回應正式站首次載入效能分數下降。
+- [PR #6](https://github.com/watain666/Vaundy-Taiwan-2026/pull/6)：保留首頁海報的 Service Worker 離線預快取，讓恢復獨立樣式表後仍可離線顯示背景。
+- 感謝 [@watain666](https://github.com/watain666) 提供 [PR #6](https://github.com/watain666/Vaundy-Taiwan-2026/pull/6)，協助修正正式站的樣式載入方式。
+
 ## [**v1.10.2**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/d2370e09f2bd699d83322b62f2f85df41f070f8a)
 
 - [PR #5](https://github.com/watain666/Vaundy-Taiwan-2026/pull/5)：建置時僅內嵌首頁首次繪製所需的樣式，讓完整樣式表在背景下載，並於首次操作時套用，改善手機版首次載入效能。

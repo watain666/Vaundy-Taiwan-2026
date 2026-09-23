@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "beasties": "^0.5.4",
     "vite": "^7.1.7"
   }
 }

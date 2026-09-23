@@ -4,7 +4,7 @@
    ★ 가사나 화면을 고쳐서 다시 올릴 때는 아래 CACHE_VERSION 숫자를 꼭 올려 주세요.
      그래야 사람들 폰에 새 내용이 내려갑니다. (v1 → v2 → v3 …)
    ───────────────────────────────────────────────────────────── */
-const CACHE_VERSION = "v1.10.3";
+const CACHE_VERSION = "v1.10.4";
 const CACHE_NAME    = `horo-guide-${CACHE_VERSION}`;
 
 /* Vite production builds include the entry, split lyrics/readings, and CSS

@@ -1,4 +1,4 @@
-# CHANGELOG
+const a=`# CHANGELOG
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
@@ -32,7 +32,7 @@
 
 - 延後指南首屏的完整 CSS、日文字型、歌詞與 YouTube 等非必要資源，保留首次互動後的搜尋、歌曲頁與同步功能。
 - 修正首屏圖示 sprite、圖例換行與圖片尺寸造成的版面位移，並改善頁尾對比度、觸控尺寸與空通知按鈕的無障礙狀態。
-- 補上 production 的 canonical、`robots.txt` 與 `sitemap.xml`，同步整理 Vite 靜態資產與 Service Worker 快取版本。
+- 補上 production 的 canonical、\`robots.txt\` 與 \`sitemap.xml\`，同步整理 Vite 靜態資產與 Service Worker 快取版本。
 
 ## [**v1.9.3**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/6609b00c88403fb27d6746ed5d15144ff7967468)
 
@@ -42,8 +42,8 @@
 ## [**v1.9.2**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/cb06ce871a16557f3cc10ed4b70eb2c4ad98fc4d)
 
 - 修正全 36 首歌曲、1419 行歌詞的卡拉 OK 同步，統一以日文逐字時間作為假名與羅馬字的共同基準。
-- 修正 `satotte` 等促音、長音、拗音、macron 與英文／數字混排的羅馬字映射，保留自然羅馬字單字顯示，非標點單位皆有有效時間。
-- 新增全曲逐行對齊檢查，並保留〈再会〉的 `夏＝ここ／koko` 讀音。
+- 修正 \`satotte\` 等促音、長音、拗音、macron 與英文／數字混排的羅馬字映射，保留自然羅馬字單字顯示，非標點單位皆有有效時間。
+- 新增全曲逐行對齊檢查，並保留〈再会〉的 \`夏＝ここ／koko\` 讀音。
 
 ## [**v1.9.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/d6fe90143815f4534fbfa24e8832aee4a1741196)
 
@@ -64,8 +64,8 @@
 ## [**v1.8.29**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/3dd6f153ab539484e0f2e9fc95483ed196b2ba3e)
 
 - [PR #2](https://github.com/watain666/Vaundy-Taiwan-2026/pull/2)：修正〈不可幸力〉、〈恋風邪にのせて〉等歌曲的過長歌詞分段，補齊對應的假名、羅馬字與應援區段。
-- [PR #2](https://github.com/watain666/Vaundy-Taiwan-2026/pull/2)：移除舊韓文歌詞提示，將合唱與拍手等應援 `tag` 統一交由日文歌詞分段承載，並補齊原本缺少 `jp` 的提示行。
-- [PR #2](https://github.com/watain666/Vaundy-Taiwan-2026/pull/2)：更新應援判斷、歌曲標記與歌詞讀音邏輯，避免再依賴已移除的 `ko` 歌詞資料。
+- [PR #2](https://github.com/watain666/Vaundy-Taiwan-2026/pull/2)：移除舊韓文歌詞提示，將合唱與拍手等應援 \`tag\` 統一交由日文歌詞分段承載，並補齊原本缺少 \`jp\` 的提示行。
+- [PR #2](https://github.com/watain666/Vaundy-Taiwan-2026/pull/2)：更新應援判斷、歌曲標記與歌詞讀音邏輯，避免再依賴已移除的 \`ko\` 歌詞資料。
 - 感謝 [@wunyee](https://github.com/wunyee) 提供 [PR #2](https://github.com/watain666/Vaundy-Taiwan-2026/pull/2)，協助將應援歌詞分段與標色修正為只標示實際應援文字。
 
 ## [**v1.8.25**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/84025c84a1c31f6eff44c3151f41772ef37f2c6f) - [**v1.8.28**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/dcba472ce471bbe82d64c0b5077f6cb5917ff057)
@@ -74,12 +74,12 @@
 - 在頁尾加入「更新日誌」，以彈出視窗顯示本檔案內容；支援關閉按鈕、背景點擊、Esc 鍵與鍵盤焦點返回。
 - 讓更新日誌視窗跟隨網站的深色／淺色主題，並縮小視窗尺寸、改善手機版的閱讀高度與間距。
 - 調整手機版頁尾的專案連結排列，保留 GitHub 專案與原始 Seoul 指南的來源資訊。
-- 新增較慢的歌曲播放倍速 `x0.25`、`x0.5`、`x0.75`；設定會保存，並依目前 YouTube 影片實際支援的倍速停用不適用選項。
+- 新增較慢的歌曲播放倍速 \`x0.25\`、\`x0.5\`、\`x0.75\`；設定會保存，並依目前 YouTube 影片實際支援的倍速停用不適用選項。
 
 ## [**v1.8.20**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/84e01a8351d0e44600b182dbf127516c0af83a9c) - [**v1.8.24**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/b5df23c1f2766c8cb07af375e089d89a4a11f531)
 
-- 新增歌曲播放倍速控制，支援 `x1`、`x1.25`、`x1.5`、`x2`，並保存使用者選擇；切換歌曲時會依 YouTube 實際支援的倍速恢復設定，同步調整 BPM 應援動畫。
-- 移除不穩定的 `x1.1` 選項，停用目前影片不支援的倍速，並修正倍速控制的狀態與無障礙標籤。
+- 新增歌曲播放倍速控制，支援 \`x1\`、\`x1.25\`、\`x1.5\`、\`x2\`，並保存使用者選擇；切換歌曲時會依 YouTube 實際支援的倍速恢復設定，同步調整 BPM 應援動畫。
+- 移除不穩定的 \`x1.1\` 選項，停用目前影片不支援的倍速，並修正倍速控制的狀態與無障礙標籤。
 - 為手機版歌曲工具列提供更短的「應援」、「日／中」、「卡拉」與「同步」標籤，以及「假／羅／假+羅」讀音縮寫，避免控制項擁擠。
 - 調整手機版讀音控制的寬度、間距與倍速選單字體，讓小螢幕上的歌曲控制更容易辨識與操作。
 
@@ -87,7 +87,7 @@
 
 - 支援手機橫向分割畫面，並讓歌曲頁的「簡潔模式」（隱藏影片畫面、保留聲音與歌詞）在橫向版面使用完整寬度。
 - 修正同步歌詞提示文字的對齊，完成羅馬字對照與歌詞映射稽核。
-- 新增 LRCLIB `lyricsfile`／同步 LRC 的逐行時間來源；卡拉 OK 會在既有逐字來源與 AMLL TTML DB 無結果時繼續 fallback。
+- 新增 LRCLIB \`lyricsfile\`／同步 LRC 的逐行時間來源；卡拉 OK 會在既有逐字來源與 AMLL TTML DB 無結果時繼續 fallback。
 - 依來源實際提供逐字或逐行時間顯示狀態，並改善來源名稱、對齊行數、影片偏移與本機快取的提示。
 
 ## [**v1.7.5**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/115ecd78b3330a3f1331a0caf120b1e905f7cc66) - [**v1.8.14**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/ffd4e397bbfa4a2d9849ee3a2d211d1913011871)
@@ -127,3 +127,4 @@
 - 加入日文歌詞的假名 ruby、假名／羅馬字切換，以及日文與繁中歌詞的顯示切換。
 - 加入卡拉 OK 逐字進度、可關閉逐字高亮的開關、開源計時歌詞來源與羅馬字模式同步修正。
 - 將專案改為 Vite 靜態 PWA，拆分資料、樣式、圖示、儲存與延後載入模組，並建立 GitHub Pages 部署流程。
+`;export{a as default};

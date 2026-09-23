@@ -32,6 +32,10 @@ function copyRootStaticAssets(){
       const assetUrls = [...new Set([
         ...[...indexHtml.matchAll(/(?:src|href)="(\.\/assets\/[^\"]+)"/g)].map(([, url]) => url),
         ...[...indexHtml.matchAll(/url\((\.\/assets\/[^)]+)\)/g)].map(([, url]) => url),
+        // The homepage poster lives in the external CSS, not the HTML.
+        ...readdirSync(resolve(outputDir, "assets"))
+          .filter(file => /^poster-.*\.webp$/.test(file))
+          .map(file => `./assets/${file}`),
         // Split lyrics and readings must also work on a first offline visit.
         ...readdirSync(resolve(outputDir, "assets")).filter(file => file.endsWith(".js"))
           .map(file => `./assets/${file}`)

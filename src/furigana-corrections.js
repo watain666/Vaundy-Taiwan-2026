@@ -82,7 +82,7 @@ export const FURIGANA_CORRECTIONS = Object.freeze({
   // CHAINSAW BLOOD — https://utaten.com/lyric/hw22092012/
   "[clap]弾む鼓動は刻むclap無しで": "[clap]<ruby>弾<rt>はず</rt></ruby>む<ruby>鼓動<rt>ビート</rt></ruby>は<ruby>刻<rt>きざ</rt></ruby>むclap<ruby>無<rt>な</rt></ruby>しで",
   "[clap]忘れたいほど怒るchain回して": "[clap]<ruby>忘<rt>わす</rt></ruby>れたいほど<ruby>怒<rt>いか</rt></ruby>るchain<ruby>回<rt>まわ</rt></ruby>して",
-  "[wave]全てをかき消してengine音": "[wave]<ruby>全<rt>すべ</rt></ruby>てをかき<ruby>消<rt>け</rt></ruby>してengine<ruby>音<rt>おん</rt></ruby>",
+  "全てをかき消してengine音": "<ruby>全<rt>すべ</rt></ruby>てをかき<ruby>消<rt>け</rt></ruby>してengine<ruby>音<rt>おん</rt></ruby>",
   "[wave]舌鳴らし今 錆び付け黒く": "[wave]<ruby>舌<rt>した</rt></ruby><ruby>鳴<rt>な</rt></ruby>らし<ruby>今<rt>いま</rt></ruby> <ruby>錆<rt>さ</rt></ruby>び<ruby>付<rt>つ</rt></ruby>け<ruby>黒<rt>くろ</rt></ruby>く",
   "[clap]使った愛の手！": "[clap]<ruby>使<rt>つか</rt></ruby>った<ruby>愛<rt>あい</rt></ruby>の<ruby>手<rt>て</rt></ruby>！",
   "[clap]笑かしたbadなschemeを食ってしまう紳士": "[clap]<ruby>笑<rt>わら</rt></ruby>かしたbadなschemeを<ruby>食<rt>く</rt></ruby>ってしまう<ruby>紳士<rt>しんし</rt></ruby>",
@@ -324,7 +324,7 @@ export const ROMAJI_CORRECTIONS = Object.freeze({
   "そんな日々でいたいのにな 懲りずに": "sonna hibi de i tai noni na kori zu ni",
   "そんな夜に歌う 怪獣の歌": "sonna yoru ni utau kaijū no uta",
 
-  "[wave]全てをかき消してengine音": "[wave]subete o kakikeshi te engine on",
+  "全てをかき消してengine音": "subete o kakikeshi te engine on",
   "[wave]舌鳴らし今 錆び付け黒く": "[wave]shita narashi ima sabitsuke kuroku",
   "[clap]使った愛の手！": "[clap]tsukatta ai no te!",
   "(ハイッ ハイッ)": "(hai hai)",
@@ -617,5 +617,25 @@ export const ROMAJI_CORRECTIONS = Object.freeze({
   "密度高め万年を照らす光の矢を放つ、穿つ": "mitsudo takame man nen o terasu hōpu o hanatsu, ugatsu",
   "見えず匂わぬ、違えぬ未来が": "mie zu niowa nu, tagae nu mirai ga",
   "それは散らばるミクロ砂金": "sore wa chirabaru mikuro sakin",
-  "[wave]明日の夜も守れますように": "[wave]asu no yoru mo mamore masu yō ni"
+  "[wave]明日の夜も守れますように": "[wave]asu no yoru mo mamore masu yō ni",
+
+  /* Partial chant labels also need exact romaji keys so the chant color can
+     follow Japanese segments inside a longer lyric line. */
+  "ないぜ": "nai ze",
+  "しまうの": "shimau no",
+  "愛で": "ai de",
+  "日々が": "hibi ga",
+  "愛して": "aishi te",
+  "あれ、なに": "are, nani",
+  "それ、なに": "sore, nani",
+  "何年経っても妄想が": "nan nen tatte mo mōsō ga",
+  "もうこんなに": "mō konnani",
+  "花が散るほど": "hana ga chiru hodo",
+  "輝いて": "kagayai te",
+  "今チェンジ": "ima chenji",
+  "ないやないやないや": "nai ya na iya na iya",
+  "ないさないさ": "nai sa nai sa",
+  "ないな ないなないな": "nai na nai na nai na",
+  "先生": "sensei",
+  "全然": "zenzen"
 });

@@ -3151,16 +3151,20 @@ function segmentChantMask(segments){
   return mask;
 }
 
-/* 羅馬拼音沒有分段，只能在整行拼音裡找原文相同的英文合唱段。
-   假名合唱段的拼音對應之後再處理，找不到時就不標色。 */
+/* 羅馬拼音沒有沿用日文分段，先用原文查既有羅馬字，再比對顯示文字。
+   英文段落沒有讀音查表時，直接使用原文。 */
 function romajiChantMask(compactText, segments){
   const mask = Array.from(compactText).map(() => false);
   let cursor = 0;
   segments.forEach(seg => {
     if (!seg || seg.tag !== "chant") return;
-    const needle = Array.from(String(seg.text || "").replace(ICON_TOKEN_RE, ""))
+    const source = String(seg.text || "");
+    const mapped = window.JP_ROMAJI && window.JP_ROMAJI[source];
+    const romaji = typeof mapped === "string" ? mapped : source;
+    if (typeof mapped !== "string" && /[ぁ-ゖ゠-ヿ一-鿿]/u.test(source.replace(ICON_TOKEN_RE, ""))) return;
+    const needle = Array.from(romaji.replace(ICON_TOKEN_RE, ""))
       .filter(ch => !isLyricSpace(ch)).join("");
-    if (!needle || !/^[\x21-\x7e]+$/.test(needle)) return;
+    if (!needle || /[ぁ-ゖ゠-ヿ一-鿿]/u.test(needle)) return;
     const at = compactText.indexOf(needle, cursor);
     if (at < 0) return;
     const start = Array.from(compactText.slice(0, at)).length;

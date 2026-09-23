@@ -19,6 +19,7 @@ const textOf = value => Array.isArray(value)
   : String(value ?? "");
 
 const missing = [];
+const missingChantSegments = [];
 const leaking = [];
 const seenMissing = new Set();
 
@@ -38,6 +39,24 @@ for (const song of SONGS) {
 
     if (japaneseCharacters.test(romaji)) {
       leaking.push({ song: song.id, index, time: line.time, source, romaji });
+    }
+
+    for (const segment of line.jpSegments || []) {
+      if (!segment || segment.tag !== "chant"
+        || !japaneseCharacters.test(String(segment.text || ""))) continue;
+      const segmentRomaji = romajiByLine[segment.text];
+      if (typeof segmentRomaji !== "string") {
+        missingChantSegments.push({ song: song.id, index, time: line.time, source: segment.text });
+      } else if (japaneseCharacters.test(segmentRomaji)) {
+        leaking.push({
+          song: song.id,
+          index,
+          time: line.time,
+          source: segment.text,
+          romaji: segmentRomaji,
+          kind: "chant segment",
+        });
+      }
     }
   }
 }
@@ -61,10 +80,14 @@ for (const [song, guide] of Object.entries(JP_CHANT_GUIDES || {})) {
 const lyricCount = SONGS.reduce((count, song) => count + (song.lyrics || []).length, 0);
 console.log(`Checked ${SONGS.length} songs / ${lyricCount} lyric lines.`);
 
-if (missing.length || leaking.length) {
+if (missing.length || missingChantSegments.length || leaking.length) {
   if (missing.length) {
     console.error(`Missing romaji mappings (${missing.length} unique lines):`);
     missing.forEach(item => console.error(`- ${item.song}#${item.index} @ ${item.time}: ${item.source}`));
+  }
+  if (missingChantSegments.length) {
+    console.error(`Missing romaji mappings (${missingChantSegments.length}) for Japanese chant segments:`);
+    missingChantSegments.forEach(item => console.error(`- ${item.song}#${item.index} @ ${item.time}: ${item.source}`));
   }
   if (leaking.length) {
     console.error(`Romaji mappings containing Japanese (${leaking.length} lines):`);
@@ -72,5 +95,5 @@ if (missing.length || leaking.length) {
   }
   process.exitCode = 1;
 } else {
-  console.log("All Japanese lyric lines have romaji, and no romaji value contains Japanese characters.");
+  console.log("All Japanese lyric lines and chant segments have romaji, with no Japanese characters in those readings.");
 }

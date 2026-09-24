@@ -182,7 +182,7 @@ for (const song of SONGS) {
 }
 
 console.log(`Checked ${SONGS.length} songs / ${lineCount} lyric lines.`);
-if (lineCount !== 1419) failures.push({ kind: "line-count", lineCount });
+if (lineCount !== 1427) failures.push({ kind: "line-count", lineCount });
 
 if (failures.length) {
   console.error(`Karaoke alignment failures: ${failures.length}`);

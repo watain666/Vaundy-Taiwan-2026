@@ -751,6 +751,38 @@ button{touch-action:manipulation;}
 .song-page .lyrics-note{margin-top:8px;}
 .song-page .lyrics-legend{margin-top:8px;}
 .song-page .lyrics-list{margin-top:4px;}
+.song-page .lyrics-load-error{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:12px;
+  margin:12px 8px;
+  padding:14px;
+  border:1px solid var(--ui-line);
+  border-radius:12px;
+  background:var(--ui-surface);
+  color:var(--ui-text);
+}
+.song-page .lyrics-load-error p{
+  margin:0;
+  color:var(--ui-muted);
+  font-size:14px;
+  line-height:1.5;
+}
+.song-page .lyrics-retry-btn{
+  min-height:44px;
+  padding:8px 14px;
+  border:1px solid var(--ui-line);
+  border-radius:10px;
+  background:var(--ui-raised);
+  color:var(--ui-text);
+  font:inherit;
+  cursor:pointer;
+}
+.song-page .lyrics-retry-btn:focus-visible{
+  outline:2px solid var(--ui-accent);
+  outline-offset:2px;
+}
 
 
 /* ── 곡 선택 바를 상단으로, 토글을 맨 아래로 ─────────────────────

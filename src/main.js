@@ -2463,6 +2463,36 @@ function applySongTempo(song){
   updateDocumentPip();
 }
 
+function showSongLyricsLoadIssue(renderToken, message){
+  if (renderToken !== songRenderToken || !location.hash.startsWith("#/song/")) return;
+
+  const list = document.getElementById("lyrics-list");
+  if (!list) return;
+
+  const item = document.createElement("li");
+  item.className = "lyrics-load-error";
+
+  const copy = document.createElement("p");
+  copy.setAttribute("role", "status");
+  copy.setAttribute("aria-live", "polite");
+  copy.textContent = message;
+
+  const retry = document.createElement("button");
+  retry.type = "button";
+  retry.className = "lyrics-retry-btn";
+  retry.textContent = "重新載入歌詞";
+  retry.addEventListener("click", () => location.reload(), { once:true });
+
+  item.append(copy, retry);
+  list.replaceChildren(item);
+
+  const status = document.getElementById("video-status");
+  if (status){
+    status.hidden = false;
+    status.textContent = message;
+  }
+}
+
 function renderSong(song){
   const renderToken = ++songRenderToken;
   buildSongShell();
@@ -2482,10 +2512,22 @@ function renderSong(song){
     songView.inert = false;
     app.style.display = "none";
 
+    const lyricsLoadTimer = window.setTimeout(() => {
+      showSongLyricsLoadIssue(
+        renderToken,
+        "歌詞載入較久，請稍候；如果畫面沒有更新，請檢查網路後重新載入。"
+      );
+    }, 15000);
+
     loadSongLyrics().then(songMap => {
+      window.clearTimeout(lyricsLoadTimer);
       if (renderToken !== songRenderToken || !location.hash.startsWith("#/song/")) return;
       const fullSong = songMap.get(song.id);
       if (fullSong) renderSong({ ...song, ...fullSong });
+      else showSongLyricsLoadIssue(renderToken, "找不到這首歌的歌詞資料，請重新載入頁面。");
+    }).catch(() => {
+      window.clearTimeout(lyricsLoadTimer);
+      showSongLyricsLoadIssue(renderToken, "歌詞載入失敗，請檢查網路連線後重新載入。");
     });
     return;
   }

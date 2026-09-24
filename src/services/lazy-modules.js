@@ -8,7 +8,10 @@ export function loadSongLyrics(){
   if (!songLyricsPromise){
     songLyricsPromise = import("../song-lyrics.js")
       .then(({ SONG_LYRICS }) => new Map(SONG_LYRICS.map(song => [song.id, song])))
-      .catch(() => new Map());
+      .catch((error) => {
+        songLyricsPromise = null;
+        throw error;
+      });
   }
   return songLyricsPromise;
 }

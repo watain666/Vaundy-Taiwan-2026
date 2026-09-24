@@ -1900,6 +1900,9 @@ function buildSongShell(){
   songView.innerHTML = `
     <div class="song-page" id="song-page">
       <div class="song-topbar">
+        <div class="song-playback-progress" id="song-playback-progress" role="progressbar" aria-label="播放進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="正在載入播放進度">
+          <span class="song-playback-progress-fill" id="song-playback-progress-fill"></span>
+        </div>
         <button class="back-btn" id="song-back-btn" aria-label="返回歌曲清單" title="返回歌曲清單">${BACK_SVG}</button>
         <h1 class="visually-hidden" id="song-page-heading"></h1>
         <nav class="song-dock" aria-label="切換歌曲">
@@ -1907,6 +1910,7 @@ function buildSongShell(){
           <button class="song-nav-btn" id="prev-song" aria-label="上一首">${TRACK_PREV_SVG}</button>
           <div class="song-picker-h">
             <button class="song-picker-btn" id="song-picker-btn" aria-expanded="false" aria-haspopup="dialog" title="開啟歌曲清單">
+              <span class="song-picker-number" id="song-picker-number"></span>
               <span class="song-picker-title" id="song-picker-title"></span>
               <span class="song-picker-caret">${CHEVRON_SVG}</span>
             </button>
@@ -2502,6 +2506,7 @@ function renderSong(song){
     const { prev, next } = songNeighbors(song);
     const page = document.getElementById("song-page");
     document.getElementById("song-page-heading").textContent = song.title;
+    document.getElementById("song-picker-number").textContent = `${pad(songNo(song))}.`;
     document.getElementById("song-picker-title").innerHTML = renderSongTitle(song.title);
     document.getElementById("prev-song").title = `上一首：${prev.title}`;
     document.getElementById("next-song").title = `下一首：${next.title}`;
@@ -2537,6 +2542,7 @@ function renderSong(song){
   });
 
   currentSong = song;
+  resetPlaybackProgress();
   lastActiveIdx = -1;
   karaokeActiveLine = null;
   karaokeTiming = null;
@@ -2552,6 +2558,7 @@ function renderSong(song){
   if (song.cover) page.style.setProperty("--song-cover", `url('${song.cover}')`);
   else            page.style.removeProperty("--song-cover");
 
+  document.getElementById("song-picker-number").textContent = `${pad(songNo(song))}.`;
   document.getElementById("song-picker-title").innerHTML = renderSongTitle(song.title);
   document.getElementById("song-page-heading").textContent = song.title;
   const lyricsCredit = document.getElementById("lyrics-credit");
@@ -3351,6 +3358,42 @@ function getPlayerDuration(){
     }
   } catch(e){}
   return null;
+}
+
+function formatPlaybackTime(seconds){
+  const wholeSeconds = Math.max(0, Math.floor(Number(seconds) || 0));
+  const hours = Math.floor(wholeSeconds / 3600);
+  const minutes = Math.floor((wholeSeconds % 3600) / 60);
+  const remainder = wholeSeconds % 60;
+  return hours > 0
+    ? `${hours}:${String(minutes).padStart(2, "0")}:${String(remainder).padStart(2, "0")}`
+    : `${minutes}:${String(remainder).padStart(2, "0")}`;
+}
+
+function updatePlaybackProgress(){
+  const progress = document.getElementById("song-playback-progress");
+  const fill = document.getElementById("song-playback-progress-fill");
+  if (!progress || !fill) return;
+
+  const duration = getPlayerDuration();
+  const currentTime = getPlayerTime();
+  const fraction = duration && currentTime !== null
+    ? Math.max(0, Math.min(1, currentTime / duration))
+    : 0;
+  progress.setAttribute("aria-valuenow", String(Math.round(fraction * 100)));
+  progress.setAttribute("aria-valuetext", duration && currentTime !== null
+    ? `${formatPlaybackTime(currentTime)} / ${formatPlaybackTime(duration)}`
+    : "正在載入播放進度");
+  fill.style.transform = `scaleX(${fraction})`;
+}
+
+function resetPlaybackProgress(){
+  const progress = document.getElementById("song-playback-progress");
+  const fill = document.getElementById("song-playback-progress-fill");
+  if (!progress || !fill) return;
+  progress.setAttribute("aria-valuenow", "0");
+  progress.setAttribute("aria-valuetext", "正在載入播放進度");
+  fill.style.transform = "scaleX(0)";
 }
 
 function playerIsPlaying(){
@@ -4275,6 +4318,7 @@ function onPlayerReady(){
   try { player.unMute(); player.setVolume(userVolume); } catch(e){}
   applyPlaybackRate();
   startVolumeWatch();
+  updatePlaybackProgress();
   if (pendingVideoId && isSongViewActive()) { // 歌曲頁仍在前景才執行排隊播放
     const id = pendingVideoId;
     pendingVideoId = null;
@@ -4447,6 +4491,7 @@ function stopActiveGuard(){
 }
 
 function updateLyricsSync(force) {
+  updatePlaybackProgress();
   const list = document.getElementById("lyrics-list");
   if (!list) return;
   const lines = list.querySelectorAll(".lyric-line");

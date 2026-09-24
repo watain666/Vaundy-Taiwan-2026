@@ -1,8 +1,14 @@
 import pipStyles from "./document-pip.css?inline";
-import { CLOSE_SVG, PAUSE_SVG, PLAY_SVG } from "./ui/icons.js";
+import {
+  BACK_SVG,
+  PAUSE_SVG,
+  PLAY_SVG,
+  TRACK_NEXT_SVG,
+  TRACK_PREV_SVG
+} from "./ui/icons.js";
 
-const PIP_WIDTH = 420;
-const PIP_HEIGHT = 240;
+const PIP_WIDTH = 450;
+const PIP_HEIGHT = 225;
 const KARAOKE_DYNAMIC_CLASSES = new Set(["karaoke-lit", "karaoke-current"]);
 
 function isDocumentPipSupported(){
@@ -74,6 +80,8 @@ function actionButton(documentRef, className, label, icon, handler){
   button.innerHTML = `<span class="pip-action-icon" aria-hidden="true"></span><span class="pip-action-label"></span>`;
   button.querySelector(".pip-action-icon").innerHTML = icon || "";
   button.querySelector(".pip-action-label").textContent = label;
+  button.setAttribute("aria-label", label);
+  button.title = label;
   button.addEventListener("click", event => {
     event.preventDefault();
     try { handler(); } catch(e) { /* keep the PiP window usable if the opener is busy */ }
@@ -84,6 +92,8 @@ function actionButton(documentRef, className, label, icon, handler){
 export function createDocumentPip({
   onPlayPause = ()=>{},
   onFocusOpener = ()=>{},
+  onPreviousSong = ()=>{},
+  onNextSong = ()=>{},
   onClosed = ()=>{}
 } = {}){
   const supported = isDocumentPipSupported();
@@ -156,8 +166,20 @@ export function createDocumentPip({
       root.style.setProperty("--icon-beat-duration", model.iconBeatDuration);
     } else root.style.removeProperty("--icon-beat-duration");
 
+    const songNumber = root.querySelector(".pip-song-number");
+    if (songNumber) songNumber.textContent = model.songNumber || "";
+
     const title = root.querySelector(".pip-title");
     if (title) title.textContent = model.title || "同步字幕";
+
+    const progress = root.querySelector(".pip-progress");
+    const progressFill = root.querySelector(".pip-progress-fill");
+    if (progress && progressFill){
+      const fraction = Math.max(0, Math.min(1, Number(model.progress) || 0));
+      progress.setAttribute("aria-valuenow", String(Math.round(fraction * 100)));
+      progress.setAttribute("aria-valuetext", model.progressText || "正在載入播放進度");
+      progressFill.style.transform = `scaleX(${fraction})`;
+    }
 
     const status = root.querySelector(".pip-status");
     if (status){
@@ -196,9 +218,10 @@ export function createDocumentPip({
 
     const focus = root.querySelector(".pip-return");
     if (focus) focus.setAttribute("aria-label", "返回主頁");
-
-    const close = root.querySelector(".pip-close");
-    if (close) close.setAttribute("aria-label", "關閉同步字幕小窗");
+    const previous = root.querySelector(".pip-prev");
+    const nextControl = root.querySelector(".pip-next");
+    if (previous) previous.disabled = model.canNavigate !== true;
+    if (nextControl) nextControl.disabled = model.canNavigate !== true;
 
     documentRef.documentElement.lang = "zh-Hant-TW";
   }
@@ -215,10 +238,10 @@ export function createDocumentPip({
     const nextRoot = documentRef.createElement("main");
     nextRoot.className = "document-pip song-page";
     nextRoot.innerHTML = `
-      <header class="pip-head">
-        <span class="pip-kicker">同步字幕</span>
-        <span class="pip-title"></span>
-      </header>
+      <div class="pip-progress" role="progressbar" aria-label="播放進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="正在載入播放進度">
+        <span class="pip-progress-fill"></span>
+      </div>
+      <header class="pip-controls" aria-label="字幕窗控制"></header>
       <p class="pip-status" role="status" aria-live="polite" hidden></p>
       <section class="pip-lyrics" aria-label="同步歌詞">
         <div class="pip-line-group pip-current-group">
@@ -230,13 +253,25 @@ export function createDocumentPip({
           <div class="pip-next-line"></div>
         </div>
       </section>
-      <footer class="pip-controls" aria-label="字幕窗控制"></footer>
     `;
 
     const controls = nextRoot.querySelector(".pip-controls");
+    controls.appendChild(actionButton(documentRef, "pip-return", "返回主頁", BACK_SVG, onFocusOpener));
+
+    const trackControls = documentRef.createElement("div");
+    trackControls.className = "pip-track-controls";
+    trackControls.setAttribute("role", "group");
+    trackControls.setAttribute("aria-label", "切換歌曲");
+    trackControls.appendChild(actionButton(documentRef, "pip-prev", "上一首", TRACK_PREV_SVG, onPreviousSong));
+
+    const songLabel = documentRef.createElement("div");
+    songLabel.className = "pip-song-label";
+    songLabel.setAttribute("aria-live", "polite");
+    songLabel.innerHTML = `<span class="pip-song-number"></span><span class="pip-title"></span>`;
+    trackControls.appendChild(songLabel);
+    trackControls.appendChild(actionButton(documentRef, "pip-next", "下一首", TRACK_NEXT_SVG, onNextSong));
+    controls.appendChild(trackControls);
     controls.appendChild(actionButton(documentRef, "pip-play", "播放", PLAY_SVG, onPlayPause));
-    controls.appendChild(actionButton(documentRef, "pip-return", "返回主頁", "", onFocusOpener));
-    controls.appendChild(actionButton(documentRef, "pip-close", "關閉", CLOSE_SVG, close));
 
     documentRef.body.appendChild(nextRoot);
     root = nextRoot;

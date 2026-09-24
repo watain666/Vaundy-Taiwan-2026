@@ -215,6 +215,8 @@ let currentTheme = storedTheme === "dark" ? "dark"
 const documentPip = createDocumentPip({
   onPlayPause: togglePlayback,
   onFocusOpener: ()=>{ try { window.focus(); } catch(e){} },
+  onPreviousSong: ()=>goNeighbor(-1),
+  onNextSong: ()=>goNeighbor(1),
   onClosed: updateDocumentPipButton
 });
 
@@ -1980,6 +1982,7 @@ function buildSongShell(){
           </div>
 
           <div class="lyrics-scroll">
+            <p class="lyrics-hidden-message" role="status" aria-live="polite" hidden>歌詞已隱藏</p>
             <ul class="lyrics-list" id="lyrics-list"></ul>
           </div>
         </div>
@@ -2746,6 +2749,9 @@ function updateLyricDisplayUi(){
   if (!page) return;
   page.classList.toggle("hide-japanese", !showJapanese);
   page.classList.toggle("hide-chinese", !showChinese);
+  page.classList.toggle("lyrics-hidden", !showJapanese && !showChinese);
+  const hiddenMessage = page.querySelector(".lyrics-hidden-message");
+  if (hiddenMessage) hiddenMessage.hidden = showJapanese || showChinese;
 
   const japaneseBtn = document.getElementById("japanese-toggle");
   if (japaneseBtn){
@@ -3459,12 +3465,23 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
   const currentLine = currentIndex >= 0 ? lines[currentIndex] : null;
   const nextIndex = nextDocumentPipLineIndex(currentSong, currentIndex);
   const nextLine = nextIndex >= 0 ? lines[nextIndex] : null;
+  const duration = getPlayerDuration();
+  const currentTime = getPlayerTime();
+  const progress = duration && currentTime !== null
+    ? Math.max(0, Math.min(1, currentTime / duration))
+    : 0;
   const beatDuration = page
     ? getComputedStyle(page).getPropertyValue("--icon-beat-duration").trim()
     : "";
 
   return {
     title: currentSong ? currentSong.title : "同步字幕",
+    songNumber: currentSong ? `${pad(songNo(currentSong))}.` : "",
+    canNavigate: Boolean(currentSong),
+    progress,
+    progressText: duration && currentTime !== null
+      ? `${formatPlaybackTime(currentTime)} / ${formatPlaybackTime(duration)}`
+      : "正在載入播放進度",
     currentMarkup: documentPipLineMarkup(currentLine, true),
     nextMarkup: documentPipLineMarkup(nextLine, false),
     isPlaying: playerIsPlaying(),

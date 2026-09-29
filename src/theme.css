@@ -956,6 +956,34 @@ button{touch-action:manipulation;}
    但橫屏的可用高度很短，影片一旦佔滿上方，歌詞就完全沒有空間。
    這裡用「橫向＋短高度」作為桌面式版型的第二個入口。 */
 @media (orientation: landscape) and (max-height: 600px){
+  .song-page .song-playback-progress{
+    top:calc(var(--safe-top, 0px) + 52px);
+  }
+
+  .song-page .player-controls{
+    left:max(0px, env(safe-area-inset-left, 0px));
+    right:max(0px, env(safe-area-inset-right, 0px));
+    width:auto;
+    box-sizing:border-box;
+    padding-left:8px;
+    padding-right:8px;
+  }
+
+  .song-page .venue-toggle,
+  .song-page .reading-toggle,
+  .song-page .playback-rate-control,
+  .song-page .display-toggle,
+  .song-page .chant-toggle,
+  .song-page .play-toggle,
+  .song-page .mic-toggle{
+    flex:none;
+  }
+
+  .song-page .venue-label,
+  .song-page .reading-value{
+    letter-spacing:0;
+  }
+
   .song-page .song-topbar{
     padding: max(5px, env(safe-area-inset-top, 0px))
              max(8px, env(safe-area-inset-right, 0px))
@@ -1043,8 +1071,8 @@ button{touch-action:manipulation;}
     overflow-x:auto;
     overscroll-behavior-x:contain;
     -webkit-overflow-scrolling:touch;
-    padding-left:max(8px, env(safe-area-inset-left, 0px));
-    padding-right:max(8px, env(safe-area-inset-right, 0px));
+    padding-left:8px;
+    padding-right:8px;
   }
 
   /* 簡潔模式：影片欄不能只「隱藏內容」後繼續佔位，歌詞要真正全寬。 */

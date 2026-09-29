@@ -40,7 +40,7 @@ export const JP_CHANT_GUIDES = {
     chantSegments: [
       { time: 160,   text: "何年経っても妄想が", romaji: "nan nen tatte mo mōsō ga" },
       { time: 163,   text: "もうこんなに",       romaji: "mō konnani" },
-      { time: 166.5, text: "花が散るほど",       romaji: "hana ga chiru hodo" }
+      { time: 168,   text: "花が散るほど",       romaji: "hana ga chiru hodo" }
     ]
   },
   Backlight: {

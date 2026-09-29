@@ -2,6 +2,11 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## [**v1.11.1**]
+
+- [PR #10](https://github.com/watain666/Vaundy-Taiwan-2026/pull/10)：依演唱節奏拆分〈花占い〉歌詞與繁中翻譯，補齊 ruby、羅馬字及應援標記，並校正卡拉 OK 時間。
+- [PR #10](https://github.com/watain666/Vaundy-Taiwan-2026/pull/10)：改善短高度橫向版面中的歌曲播放器控制列寬度、間距與安全區留白。
+
 ## [**v1.11.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/41974594de134229aad1d042029f38f2f07f25ee)
 
 - [PR #9](https://github.com/watain666/Vaundy-Taiwan-2026/pull/9)：在歌曲播放器頂端加入播放進度條，並於選歌清單的歌名之前加上帶句點的編號，保留原歌名文字。

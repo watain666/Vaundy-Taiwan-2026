@@ -1,4 +1,4 @@
-import { INFO_SVG, CHEVRON_SVG, EXT_LINK_SVG, SEAT_SVG, MAP_SVG, MANNER_SVG, GIFT_SVG, WARN_SVG, FLASH_OFF_SVG, SHARE_SVG, MOON_SVG } from "./icons.js";
+import { INFO_SVG, CHEVRON_SVG, EXT_LINK_SVG, SEAT_SVG, MAP_SVG, MANNER_SVG, GIFT_SVG, MUSIC_SVG, WARN_SVG, FLASH_OFF_SVG, SHARE_SVG, MOON_SVG } from "./icons.js";
 import { siteFooterHtml } from "./footer.js";
 
 // Shared by Vite prerendering and client-side navigation.
@@ -486,6 +486,26 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
             </div>
 
             <p class="info-footnote">※ 以上內容以 VAWS MEMBERS 官方公告為準，詳細安排可能依演出當天現場狀況調整。</p>
+          </div>
+          </template>
+        </div>
+      </div>
+
+      <div class="info-card" id="playlist-card">
+        <button class="menu-row info-toggle" aria-expanded="false">
+          <span class="info-toggle-icon">${MUSIC_SVG}</span>
+          <span class="info-toggle-label">Spotify 官方預熱歌單</span>
+          <span class="chip-note">可能含劇透</span>
+          <span class="info-toggle-chevron">${CHEVRON_SVG}</span>
+        </button>
+        <div class="info-panel" inert aria-hidden="true">
+          <template class="info-panel-template">
+          <div class="info-panel-inner">
+            <p class="way-note"><b>曲目可能與實際歌單相近，介意劇透者請勿播放。</b>這是 Spotify 的「On Tour Taiwan: Vaundy」歌單，並非本指南整理的台北場歌單。</p>
+            <iframe class="home-playlist-embed" title="Spotify 歌單：On Tour Taiwan: Vaundy" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXarlFLUSkBwQ?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            <a class="info-book-link" href="https://open.spotify.com/playlist/37i9dQZF1DXarlFLUSkBwQ" target="_blank" rel="noopener">
+              ${EXT_LINK_SVG} 在 Spotify 開啟歌單
+            </a>
           </div>
           </template>
         </div>

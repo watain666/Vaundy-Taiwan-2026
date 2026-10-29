@@ -965,6 +965,7 @@ function setupOneAccordion(card){
       if (card.id === "notice-card") setupNotices();
       if (card.id === "vaws-card") setupVawsPics();
       if (card.id === "way-card") setupAddressCopy();
+      if (card.id === "seat-card") setupSeatMapViewer();
       panel.style.maxHeight = panel.scrollHeight + "px";
       // 이후 내부 콘텐츠 크기 변화(폰트 로딩 등)에도 대응해 살짝 여유를 둠
       // (스크롤은 건드리지 않음 — 화면은 사용자가 직접 내리도록 둠)
@@ -1471,13 +1472,13 @@ function updateTodayCard(now){
   if (!steps){ card.hidden = true; todayBuiltKey = null; return; }
   card.hidden = false;
 
-  const times   = steps.map(v => new Date(`${key}T${v.t}:00+09:00`).getTime());
+  const times   = steps.map(v => new Date(`${key}T${v.t}:00+08:00`).getTime());
   const nextIdx = times.findIndex(t => t > now);
   const curIdx  = nextIdx === -1 ? steps.length - 1 : nextIdx - 1;
 
   if (todayBuiltKey !== key){
     todayBuiltKey = key;
-    const d = new Date(`${key}T12:00:00+09:00`);
+    const d = new Date(`${key}T12:00:00+08:00`);
     const dow = ["日","一","二","三","四","五","六"][d.getDay()];
     document.getElementById("today-title").textContent =
       `今日演出・${Number(key.slice(5,7))}/${Number(key.slice(8,10))}（${dow}）`;
@@ -1518,6 +1519,22 @@ function setupHomeExtras(){
     });
   }
 
+}
+
+function setupSeatMapViewer(){
+  // 座位配置圖內容在第一次展開時才建立；改用公告同款的放大檢視，原圖點擊時才載入。
+  const seatLink = document.querySelector(".seat-map-link");
+  if (!seatLink || seatLink.dataset.wired === "1") return;
+  seatLink.dataset.wired = "1";
+  seatLink.addEventListener("click", (e)=>{
+    e.preventDefault();
+    openViewer([{
+      src: seatLink.getAttribute("href"),
+      title: "台北場舞台與座位配置圖",
+      width: 5543,
+      height: 7361
+    }], 0);
+  });
 }
 
 function setupAddressCopy(){

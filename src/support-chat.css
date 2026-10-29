@@ -1,6 +1,20 @@
 /* 應援小物交流 — 右下角聊天泡泡與 Waline 聊天視窗。
    Waline 的樣式表沒有 layer，這裡也不放 layer，才能覆寫它的版面。 */
 
+/* 跟首頁卡片一樣固定用深紅底配金色，不隨淺色／深色主題切換 */
+.support-chat-launcher,
+.support-chat{
+  --ui-bg:#210c09;
+  --ui-surface:#30130e;
+  --ui-raised:#3d1a13;
+  --ui-text:#f6efd9;
+  --ui-muted:#cdb87c;
+  --ui-line:rgba(233,217,163,.18);
+  --ui-accent:#e9d9a3;
+  --ui-hover:rgba(246,239,217,.07);
+  --support-chat-ink:#170504;
+}
+
 .support-chat-launcher{
   position:fixed;
   right:16px;
@@ -10,7 +24,7 @@
   width:56px;height:56px;
   border:0;border-radius:50%;
   background:var(--ui-accent);
-  color:var(--ui-bg);
+  color:var(--support-chat-ink);
   box-shadow:0 6px 18px rgba(0,0,0,.28);
   cursor:pointer;
   transition:background-color .2s ease;
@@ -116,6 +130,12 @@
   --waline-border-color:var(--ui-line);
   --waline-disable-bg-color:var(--ui-raised);
   --waline-info-color:var(--ui-muted);
+  --waline-info-bg-color:var(--ui-surface);
+  --waline-bq-color:var(--ui-raised);
+  --waline-disable-color:var(--ui-muted);
+  --waline-white:var(--support-chat-ink);
+  --waline-light-grey:var(--ui-muted);
+  --waline-dark-grey:var(--ui-muted);
   --waline-font-size:15px;
 }
 .support-board [data-waline]{
@@ -185,8 +205,40 @@
   border-radius:999px;
   border-color:var(--ui-accent);
   background:var(--ui-accent);
-  color:var(--ui-bg);
+  color:var(--support-chat-ink);
   font-size:14px;font-weight:700;
+}
+/* 觸控裝置點完會停在 :hover，維持金色 */
+.support-board .wl-btn.primary:hover,
+.support-board .wl-btn.primary:active{
+  border-color:var(--ui-accent);
+  background:var(--ui-accent);
+  color:var(--support-chat-ink);
+}
+.support-board .wl-btn.primary:disabled{
+  border-color:var(--ui-line);
+  background:var(--ui-raised);
+  color:var(--ui-muted);
+}
+
+/* 回覆時 Waline 會把輸入框搬進該則留言裡：撐滿寬度、不再固定在底部 */
+.support-board .wl-card .wl-comment{
+  position:relative;
+  z-index:auto;
+  margin-top:8px;
+  padding:0;
+  border-top:0;
+  background:none;
+  text-align:left;
+}
+.support-board .wl-card-item:has(.wl-comment) > .wl-card{
+  flex:1 1 auto;
+  max-width:100%;
+}
+.support-board .wl-card .wl-close{
+  top:6px;right:6px;
+  z-index:1;
+  color:var(--ui-muted);
 }
 
 /* 對話泡泡 */
@@ -236,12 +288,13 @@
 .support-board .wl-cards > .wl-card-item.is-mine > .wl-card > .wl-content{
   border-radius:16px 4px 16px 16px;
   background:var(--ui-accent);
-  color:var(--ui-bg);
+  color:var(--support-chat-ink);
   text-align:left;
 }
 
 /* 回覆串縮排顯示在原訊息下方 */
 .support-board .wl-quote{
+  text-align:left;
   margin-top:8px;
   padding-left:10px;
   border-left:2px solid var(--ui-line);

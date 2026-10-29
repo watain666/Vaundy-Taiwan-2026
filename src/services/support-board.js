@@ -132,7 +132,7 @@ export function mountSupportBoard(host, shouldMount = () => true){
         serverURL: SUPPORT_BOARD_SERVER_URL,
         path: SUPPORT_BOARD_PATH,
         lang: "zh-TW",
-        dark: 'html[data-theme="dark"]',
+        dark: false, // the chat panel always uses the dark red home palette
         login: "disable",
         meta: ["nick"],
         requiredMeta: ["nick"],

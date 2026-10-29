@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.14.1**]
+## [**v1.14.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/2e327a610eaeb88fb7145b7d7d578442057275f3)
 
 - [PR #20](https://github.com/watain666/Vaundy-Taiwan-2026/pull/20)：修正應援小物交流中，含圖片的留言往上捲時會蓋住輸入框；圖片載入後會自動捲到最新留言。
 - [PR #20](https://github.com/watain666/Vaundy-Taiwan-2026/pull/20)：修正手機打開鍵盤時聊天視窗版面錯亂，視窗改為貼齊可見範圍並暫時收起提醒文字；輸入框不再跳出聯絡人自動填入。

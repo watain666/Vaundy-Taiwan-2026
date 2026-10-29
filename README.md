@@ -18,6 +18,7 @@ src/ui/home.js              ← 建置與頁面切換共用的首頁 HTML
 src/ui/footer.js            ← 共用頁尾與版本資訊
 src/services/storage.js     ← localStorage 安全封裝
 src/services/lazy-modules.js ← 注音與卡拉 OK 延後載入
+src/services/support-board.js ← 應援小物交流板（Waline）設定與載入
 package.json                ← Vite 指令與相依套件
 package-lock.json           ← 鎖定建置版本
 vite.config.js              ← 相對路徑、靜態資產與 Service Worker 建置設定
@@ -50,6 +51,8 @@ npm run preview
 介面文字使用台灣常見的裝置內建字體（PingFang TC、Microsoft JhengHei、Noto Sans CJK TC）；日文歌詞另外使用 Noto Sans JP，以避免裝置內建字體缺少日文漢字。
 
 應援動作動畫使用 WebM 優先、動畫 WebP 次之、GIF 最後回退；圖片只會在目前歌詞需要時載入。公告與 VAWS 圖片則在展開對應卡片後才建立，並使用瀏覽器的 lazy loading，避免首頁第一次開啟就下載大型資源。
+
+首頁的「應援小物交流板」使用自架的 Waline 留言服務，只在展開卡片時才載入留言程式。`src/services/support-board.js` 的 `SUPPORT_BOARD_SERVER_URL` 留空時，卡片只顯示「準備中」；後端部署步驟見 [`docs/support-board.md`](docs/support-board.md)。
 
 ## 2. 開啟 GitHub Pages
 

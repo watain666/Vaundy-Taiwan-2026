@@ -2565,6 +2565,26 @@
     background:var(--surface);
   }
 
+  /* 應援小物交流板（Waline）— 對應首頁深色卡片的配色 */
+  .support-board{
+    margin-top:14px;
+    --waline-theme-color:var(--gold);
+    --waline-active-color:var(--cream);
+    --waline-color:var(--cream);
+    --waline-bg-color:var(--surface);
+    --waline-bg-color-light:var(--surface-raised);
+    --waline-bg-color-hover:var(--surface-raised);
+    --waline-border-color:var(--line);
+    --waline-disable-bg-color:var(--surface-raised);
+    --waline-info-color:#b9a98a;
+    --waline-font-size:15px;
+  }
+  .support-board-status{
+    margin:0;
+    font-size:12.5px;line-height:1.6;
+    color:#b9a98a;
+  }
+
   /* ── 홈 맨 아래 — 공유 ─────────────────────────────────────── */
   .home-foot{
     display:flex;align-items:center;justify-content:flex-end;

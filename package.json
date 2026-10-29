@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "vite": "^7.1.7"
+  },
+  "dependencies": {
+    "@waline/client": "^3.16.1"
   }
 }

@@ -511,6 +511,23 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
         </div>
       </div>
 
+      <div class="info-card" id="board-card">
+        <button class="menu-row info-toggle" aria-expanded="false">
+          <span class="info-toggle-icon">${GIFT_SVG}</span>
+          <span class="info-toggle-label">應援小物交流板</span>
+          <span class="chip-note">可能含劇透</span>
+          <span class="info-toggle-chevron">${CHEVRON_SVG}</span>
+        </button>
+        <div class="info-panel" inert aria-hidden="true">
+          <template class="info-panel-template">
+          <div class="info-panel-inner">
+            <p class="way-note"><b>粉絲自發交流，與官方及本指南無關。</b>請勿公開電話、LINE ID 等個人資料，面交時留意假冒發放的詐騙；留言可能提到歌單，介意劇透者請斟酌閱讀。新留言經管理員審核後才會顯示。</p>
+            <div class="support-board" data-support-board></div>
+          </div>
+          </template>
+        </div>
+      </div>
+
       <div class="menu-links">
         <a class="menu-chip" href="https://vaundy.jp/?lang=en" target="_blank" rel="noopener">
           <span class="chip-ico">${EXT_LINK_SVG}</span>

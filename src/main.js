@@ -99,7 +99,7 @@ const SYNC_INTERVAL_MS   = 100;
 /* 지금 폰에 깔려 있는 화면이 몇 번째 판인지 알려 주는 표시.
    새로 올렸는데 화면이 그대로일 때, 옛 판이 남아 있는지 바로 확인할 수 있다.
    sw.js 의 CACHE_VERSION 과 같이 올려 주세요. */
-const BUILD = "v1.11.1";
+const BUILD = "v1.11.2";
 
 const TRANSLATION_CREDIT_URL = "https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319";
 const CC_BY_NC_SA_URL = "https://creativecommons.org/licenses/by-nc-sa/4.0/";
@@ -965,6 +965,7 @@ function setupOneAccordion(card){
       if (card.id === "notice-card") setupNotices();
       if (card.id === "vaws-card") setupVawsPics();
       if (card.id === "way-card") setupAddressCopy();
+      if (card.id === "seat-card") setupSeatMapViewer();
       panel.style.maxHeight = panel.scrollHeight + "px";
       // 이후 내부 콘텐츠 크기 변화(폰트 로딩 등)에도 대응해 살짝 여유를 둠
       // (스크롤은 건드리지 않음 — 화면은 사용자가 직접 내리도록 둠)
@@ -1471,13 +1472,13 @@ function updateTodayCard(now){
   if (!steps){ card.hidden = true; todayBuiltKey = null; return; }
   card.hidden = false;
 
-  const times   = steps.map(v => new Date(`${key}T${v.t}:00+09:00`).getTime());
+  const times   = steps.map(v => new Date(`${key}T${v.t}:00+08:00`).getTime());
   const nextIdx = times.findIndex(t => t > now);
   const curIdx  = nextIdx === -1 ? steps.length - 1 : nextIdx - 1;
 
   if (todayBuiltKey !== key){
     todayBuiltKey = key;
-    const d = new Date(`${key}T12:00:00+09:00`);
+    const d = new Date(`${key}T12:00:00+08:00`);
     const dow = ["日","一","二","三","四","五","六"][d.getDay()];
     document.getElementById("today-title").textContent =
       `今日演出・${Number(key.slice(5,7))}/${Number(key.slice(8,10))}（${dow}）`;
@@ -1518,6 +1519,22 @@ function setupHomeExtras(){
     });
   }
 
+}
+
+function setupSeatMapViewer(){
+  // 座位配置圖內容在第一次展開時才建立；改用公告同款的放大檢視，原圖點擊時才載入。
+  const seatLink = document.querySelector(".seat-map-link");
+  if (!seatLink || seatLink.dataset.wired === "1") return;
+  seatLink.dataset.wired = "1";
+  seatLink.addEventListener("click", (e)=>{
+    e.preventDefault();
+    openViewer([{
+      src: seatLink.getAttribute("href"),
+      title: "台北場舞台與座位配置圖",
+      width: 5543,
+      height: 7361
+    }], 0);
+  });
 }
 
 function setupAddressCopy(){

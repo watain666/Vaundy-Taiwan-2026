@@ -73,8 +73,10 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
 
               <dt>入場規則</dt>
               <dd>
-                全場實名制
-                <span class="sub">入場請攜帶票券及填寫的有效證件正本；外籍觀眾依售票平台規定攜帶護照正本</span>
+                全場實名制・<span class="em">未攜帶證件無法入場</span>
+                <span class="sub">透過遠大售票系統購票者 — 本國籍：身分證／駕照／健保卡正本；外國籍：護照正本（不接受以換發後的新護照核對）。證件需有可辨識本人的照片，姓名與證件號碼需與票券相符；照片與本人落差太大可能無法入場，建議攜帶有近期照片的證件</span>
+                <span class="sub">無法出示有效證件正本或資料不符，視為放棄入場權益，不得要求退款、變更或轉讓</span>
+                <span class="sub">驗證時間 12:00–19:00・北廣場實名驗證區，請提早完成以加速入場</span>
               </dd>
 
               <dt>票價</dt>
@@ -91,8 +93,8 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
 
               <dt>取票方式</dt>
               <dd>
-                依 Ticket Plus 遠大售票平台提供
-                <span class="sub">實名制資料請務必填寫正確，入場規定以售票平台公告為準</span>
+                請提前至全台 7-11 ibon 機台取票
+                <span class="sub"><b>現場無法取票。</b>實名制資料請務必填寫正確，入場規定以售票平台公告為準</span>
               </dd>
 
               <dt>購票</dt>
@@ -127,6 +129,54 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
                 </thead>
                 <tbody>
                   <tr>
+                    <td class="label" data-label="項目">實名驗證</td>
+                    <td data-label="10/31（六）">12:00–19:00</td>
+                    <td data-label="11/1（日）">12:00–19:00</td>
+                    <td class="note" data-label="備註">北廣場實名驗證區</td>
+                  </tr>
+                  <tr>
+                    <td class="label" data-label="項目">服務台・票務櫃台</td>
+                    <td data-label="10/31（六）">12:00–19:30</td>
+                    <td data-label="11/1（日）">12:00–19:30</td>
+                    <td class="note" data-label="備註">由 6 號門出入・不代收給藝人的禮物和卡片</td>
+                  </tr>
+                  <tr>
+                    <td class="label" data-label="項目">現場周邊販售</td>
+                    <td data-label="10/31（六）">12:00–演出後</td>
+                    <td data-label="11/1（日）">12:00–演出後</td>
+                    <td class="note" data-label="備註">周邊整理券 11:30 起</td>
+                  </tr>
+                  <tr>
+                    <td class="label" data-label="項目">紀念拍貼機</td>
+                    <td data-label="10/31（六）">12:00–17:00</td>
+                    <td data-label="11/1（日）">12:00–17:00</td>
+                    <td class="note" data-label="備註">11:00 整隊・11:30 發號碼牌</td>
+                  </tr>
+                  <tr>
+                    <td class="label" data-label="項目">VAUNDY 燈牌</td>
+                    <td data-label="10/31（六）">12:00–21:00</td>
+                    <td data-label="11/1（日）">12:00–21:00</td>
+                    <td class="note" data-label="備註">位置見公告・指南的配置圖</td>
+                  </tr>
+                  <tr>
+                    <td class="label" data-label="項目">卡拉OK MONSTER</td>
+                    <td data-label="10/31（六）">12:00–19:00</td>
+                    <td data-label="11/1（日）">12:00–19:00</td>
+                    <td class="note" data-label="備註">小巨蛋南大門・依工作人員指示排隊・進場期間暫停開放</td>
+                  </tr>
+                  <tr>
+                    <td class="label" data-label="項目">VAWS 攤位</td>
+                    <td data-label="10/31（六）">12:00–21:30</td>
+                    <td data-label="11/1（日）">12:00–19:00</td>
+                    <td class="note" data-label="備註">近小巨蛋 8 號門・詳見本頁「VAWS 會員票卡」</td>
+                  </tr>
+                  <tr>
+                    <td class="label" data-label="項目">搖滾區整隊</td>
+                    <td data-label="10/31（六）">16:30</td>
+                    <td data-label="11/1（日）">16:30</td>
+                    <td class="note" data-label="備註">依票面序號・最後叫號為入場前 15 分鐘</td>
+                  </tr>
+                  <tr>
                     <td class="label" data-label="項目">開場／入場</td>
                     <td data-label="10/31（六）">17:30</td>
                     <td data-label="11/1（日）">17:30</td>
@@ -139,12 +189,6 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
                     <td class="note" data-label="備註">官方已公布</td>
                   </tr>
                   <tr>
-                    <td class="label" data-label="項目">周邊／物品寄放</td>
-                    <td data-label="10/31（六）">待公告</td>
-                    <td data-label="11/1（日）">待公告</td>
-                    <td class="note" data-label="備註">請以主辦與場館公告為準</td>
-                  </tr>
-                  <tr>
                     <td class="label" data-label="項目">演出結束</td>
                     <td data-label="10/31（六）">預計 21:00 左右</td>
                     <td data-label="11/1（日）">預計 21:00 左右</td>
@@ -153,7 +197,7 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
                 </tbody>
               </table>
             </div>
-            <p class="info-footnote">※ 目前官方已確認開場與開演時間；周邊販售、物品寄放與入場動線公布後會再補上。<br>※ 最新資訊請以主辦單位、Ticket Plus 與台北小巨蛋公告為準。</p>
+            <p class="info-footnote">※ 時間依主辦單位（<a href="https://www.instagram.com/p/DfCRPwhk6vZ/" target="_blank" rel="noopener">@funfunenter</a>）公布的現場注意事項整理；物品寄放目前未公布。<br>※ 最新資訊請以主辦單位、Ticket Plus 與台北小巨蛋公告為準。</p>
 
 
 
@@ -171,12 +215,15 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
         <div class="info-panel" inert aria-hidden="true">
           <template class="info-panel-template">
           <div class="info-panel-inner">
-            <p class="way-note">台北場的場館地圖、MD、身分確認等<b>官方公告</b>會在公布後補上。</p>
+            <p class="way-note">主辦單位公布的<b>台北場現場配置圖與時間表</b>：入場門、整隊區、實名驗證區、周邊販售、服務台、VAWS 攤位與拍照點位置。點圖可放大。</p>
             <div class="notice-grid" id="notice-grid"></div>
             <p class="notice-empty" id="notice-empty" hidden>
-              台北場官方公告圖片尚未公布，請先以主辦與場館公告為準。
+              公告圖片載入失敗，請直接查看主辦單位的原始貼文。
             </p>
-            <p class="info-footnote">※ 台北場官方公告圖片公布後再更新。</p>
+            <a class="info-book-link" href="https://www.instagram.com/p/DfCRPwhk6vZ/" target="_blank" rel="noopener">
+              ${EXT_LINK_SVG} 查看主辦單位 IG 現場注意事項
+            </a>
+            <p class="info-footnote">※ 圖片來源：主辦單位 @funfunenter。以上內容實際以現場狀況為主，主辦單位保留變更修改之權利。</p>
           </div>
           </template>
         </div>
@@ -198,9 +245,34 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
               <a class="seat-map-link" href="./images/taipei-stage-map.webp" target="_blank" rel="noopener">
                 <img class="seat-map-image" data-src="./images/taipei-stage-map-preview.webp" width="2772" height="3681" alt="Vaundy ASIA ARENA TOUR 2026「HORO」台北場台北小巨蛋舞台與座位配置圖，含各區票價；點擊查看原尺寸" loading="lazy" decoding="async">
               </a>
-              <p class="seat-map-caption">點擊圖片後才會載入壓縮原圖，可開啟原尺寸查看。</p>
+              <p class="seat-map-caption">點擊圖片可放大查看原尺寸。</p>
             </div>
             <p class="way-note">圖中票價與票區依主辦單位公布的配置圖整理；實際座位、入場動線與現場安排仍以票券及演出當日公告為準。</p>
+
+            <div class="way-sec">
+              <h4>各區入場 <span>17:30 開放入場</span></h4>
+              <div class="way-block">
+                <div class="way-block-t">搖滾站區 → <b>16:30 整隊</b>（依票面序號）</div>
+                <ul class="way-ul">
+                  <li><b>搖滾 A・D 區</b>：北大門 5 號門前廣場整隊，由<b>北大門</b>入場</li>
+                  <li><b>搖滾 B・C 區</b>：捷運 2 號出口前廣場整隊，由<b>北區 2 號門</b>（往 B1 樓梯）入場</li>
+                </ul>
+              </div>
+              <div class="way-block">
+                <div class="way-block-t">2F・3F 座席區 → <b>不需整隊</b></div>
+                <ul class="way-ul">
+                  <li><b>黃 1 區・3F 看台區・包廂區</b>：由<b>北大門</b>入場</li>
+                  <li><b>藍 1 區・2F 看台區</b>：由<b>南大門</b>入場</li>
+                  <li>依現場工作人員引導等候驗票，照票面座位排號入座</li>
+                </ul>
+              </div>
+              <ul class="way-ul warn">
+                <li>開始整隊後請依工作人員指示入列，避免離開隊伍順序</li>
+                <li>叫號已超過您的序號視同放棄進場順序（<b>最後叫號為入場前 15 分鐘</b>）；過號者請洽工作人員，排在該區隊伍最後方入場</li>
+                <li>開放入場後才到且已過號，請依工作人員指示排隊入場</li>
+                <li>和非連號的朋友想一起進場，須一起排在<b>序號較大（較後面）</b>的位置</li>
+              </ul>
+            </div>
             <div class="info-book-links">
               <a class="info-book-link" href="https://ticketplus.com.tw/activity/6c3d8c24e0f00c9c84777615c001bebe" target="_blank" rel="noopener">
                 ${EXT_LINK_SVG} Ticket Plus 售票頁面
@@ -300,6 +372,24 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
             </div>
 
             <div class="way-sec">
+              <h4>台北場官方規定 <span>主辦單位公告</span></h4>
+              <ul class="way-ul warn">
+                <li>用最熱情的<b>尖叫・合唱・揮手・掌聲，代替上下跳動</b></li>
+                <li>為安全考量，請遵守台北小巨蛋規範，<b>2、3 樓觀眾勿站立和跺腳</b></li>
+                <li><b>演出中和演出前，嚴禁使用任何器材拍攝、錄影或錄音</b>（包含手機、相機、攝影機、錄音設備、掌上遊戲機、電子設備等）。違者工作人員有權當下帶離現場並於場外刪除檔案；需再入場時設備及素材將沒收，情節嚴重者強制離場且不得再入場</li>
+                <li>演出中請將手機關機或調為靜音模式</li>
+                <li>場內禁止飲食</li>
+                <li>禁止攜帶金屬、危險物品（刀具、尖銳物品等）、玻璃、寶特瓶容器、雷射筆、LED 燈、煙火</li>
+                <li>禁止攜帶長柄雨傘、<b>大型行李</b>、摺疊椅、板凳、<b>任何可發光之物品</b>，以及可能影響他人觀賞的物品</li>
+                <li>應援物請勿高舉超過個人肩寬與頭頂；勸導後未改善將代為保管至散場，且不負保管及損壞責任</li>
+                <li>請避免使用香水、美髮造型品等香氣濃烈的產品</li>
+                <li>禁止衝撞、人體衝浪、開圈等危險行為；因個人疏忽受傷，主辦、場館、演出者等單位皆不負責任</li>
+                <li>不遵守工作人員指示可能被要求離場；因上述原因遭強制離場或無法入場者，恕不退還票款、手續費、交通費及住宿費</li>
+                <li>現場可能進行照片及影片拍攝，素材可能作為宣傳用途</li>
+              </ul>
+            </div>
+
+            <div class="way-sec">
               <h4>一起遵守 <span>為了大家的觀賞體驗</span></h4>
               <ul class="way-ul warn">
                 <li><b>禁止拍攝・錄音・錄影。</b>若有允許拍攝的段落，現場會另行通知</li>
@@ -318,7 +408,7 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
               <h4>如果是站席</h4>
               <ul class="way-ul">
                 <li><b>不要往前推。</b>後方推擠的力量會直接累積到前排</li>
-                <li>大包包請放進<b>行李寄放處</b>・放在腳邊可能導致跌倒</li>
+                <li>官方禁止攜帶大型行李，請<b>盡量輕裝</b>・包包放在腳邊可能導致跌倒</li>
                 <li>如果周圍有人跌倒，請不要推擠，<b>停下來扶起對方</b></li>
                 <li>入場前先喝水、先上洗手間，因為要站立 2 小時</li>
                 <li>若呼吸急促或頭暈，請不要勉強，告知<b>附近的工作人員</b></li>
@@ -342,37 +432,71 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
           <div class="info-panel-inner">
             <div class="info-panel-title"><span class="bar">|</span> 場館限定特典 <span class="bar">|</span></div>
 
-            <p class="way-note">VAWS MEMBERS 的「公演別原創票卡」為巡演場館限定企劃；台北場攤位位置、開放時間與領取方式目前尚待官方公告。</p>
+            <p class="way-note">VAWS MEMBERS 會員可在攤位領取<b>「各公演原創票卡」</b>，每場演出設計都不一樣。演出當天新入會的人也可以參加。</p>
+            <div class="notice-grid" id="vaws-grid"></div>
 
             <dl class="info-facts">
-              <dt>台北場</dt>
+              <dt>地點</dt>
               <dd>
-                <span class="em">台北小巨蛋 Taipei Arena</span>
-                <span class="sub">2026.10.31（六）・11.01（日）</span>
+                <span class="em">台北小巨蛋 8 號門附近</span>
+                <span class="sub">位置可對照「公告・指南」裡的現場配置圖</span>
+              </dd>
+
+              <dt>時間</dt>
+              <dd>
+                <span class="em">10/31（六）12:00–21:30</span> ／ <span class="em">11/1（日）12:00–19:00</span>
+                <span class="sub">可能依準備及天氣狀況變更</span>
               </dd>
 
               <dt>對象</dt>
               <dd>
                 <span class="em">VAWS MEMBERS 會員</span>
-                <span class="sub">是否可於演出當日新加入、兌換地點與流程，請等待官方公告</span>
+                <span class="sub">沒有當天演出門票也可兌換；演出當天新入會也是對象；僅限公演當天兌換</span>
               </dd>
 
-              <dt>攤位資訊</dt>
+              <dt>兌換方式</dt>
               <dd>
-                <span class="em">待官方公布</span>
-                <span class="sub">其他場次的攤位位置與營運時間不適用於台北場</span>
+                用手機掃描貼在攤位附近的「兌換用 QR 碼」，出示顯示的兌換畫面，前往「VAWS MEMBERS」攤位
+                <span class="sub"><b>截圖畫面無法兌換</b>，請務必用網頁瀏覽器顯示畫面；訊號不穩無法顯示時，攤位會協助處理</span>
               </dd>
             </dl>
 
             <ul class="way-ul warn">
-              <li>官方公布後，請依公告中的 QR 碼與兌換流程辦理。</li>
-              <li>攤位時間與數量可能依準備狀況、天氣及現場人流調整。</li>
-              <li>開場前後預計人潮較多，請預留時間。</li>
+              <li>每人每個公演日最多兌換 <b>1 張</b>（多場到場者每天可兌換 1 張）</li>
+              <li>達到預定發放張數即結束，<b>數量有限，請盡早兌換</b></li>
+              <li>為緩和攤位周圍擁擠，領取後請盡快移動</li>
+              <li>開場與開演前售票處預計非常擁擠，請務必提前到達</li>
+              <li>除不良品外不接受更換；不良品更換僅限公演當天</li>
+              <li>禁止在拍賣網站或二手平台轉賣</li>
             </ul>
 
-            <a class="info-book-link" href="https://member.vaundy.jp/feature/ASIAARENATOUR_2026" target="_blank" rel="noopener">
-              ${EXT_LINK_SVG} 查看 VAWS 官方巡演頁面
-            </a>
+            <div class="way-sec">
+              <h4>AR 相機 <span>不限會員</span></h4>
+              <ul class="way-ul">
+                <li>安裝 <b>Vaundy OFFICIAL APP</b> 即可使用，請先更新到最新版本</li>
+                <li><b>會場限定 AR 相機</b>：到場後開啟 APP 點「AR」→ 左上角相機圖示 → 掃描會場面板上的標記，就能和<b>巡演 Logo</b> 合影。每個公演日會出現不同的限定顏色</li>
+                <li><b>隨處 AR 相機</b>：在左上角選單（三條線）選「無標記」再點「播放」，巡演期間隨時都能拍</li>
+                <li>點畫面左下角的灰色相機圖示可切換前／後鏡頭；多個 AR 圖像重疊時可自行拖曳位置</li>
+                <li>部分裝置可能無法保證正常運作</li>
+              </ul>
+              <div class="info-book-links">
+                <a class="info-book-link" href="https://apps.apple.com/jp/app/vaundy-official-app/id1631933316" target="_blank" rel="noopener">
+                  ${EXT_LINK_SVG} APP（iOS）
+                </a>
+                <a class="info-book-link" href="https://play.google.com/store/apps/details?id=jp.vaundy.app" target="_blank" rel="noopener">
+                  ${EXT_LINK_SVG} APP（Android）
+                </a>
+              </div>
+            </div>
+
+            <div class="info-book-links">
+              <a class="info-book-link" href="https://member.vaundy.jp/news/detail/11319?lang=zh-tw" target="_blank" rel="noopener">
+                ${EXT_LINK_SVG} VAWS 台北場攤位公告
+              </a>
+              <a class="info-book-link" href="https://member.vaundy.jp/feature/ASIAARENATOUR_2026" target="_blank" rel="noopener">
+                ${EXT_LINK_SVG} VAWS 官方巡演頁面
+              </a>
+            </div>
 
             <p class="info-footnote">※ 以上內容以 VAWS MEMBERS 官方公告為準，詳細安排可能依演出當天現場狀況調整。</p>
           </div>

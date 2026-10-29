@@ -2,11 +2,19 @@
    (시각은 예매처 입장 안내 기준. 바꾸려면 이 표만 고치면 됩니다) */
 export const SHOW_TIMELINE = {
   "2026-10-31": [
+    { t:"11:00", label:"紀念拍貼機開始整隊" },
+    { t:"11:30", label:"周邊整理券・拍貼機號碼牌發放" },
+    { t:"12:00", label:"實名驗證・周邊販售・VAWS 攤位開放" },
+    { t:"16:30", label:"搖滾區整隊（依票面序號）" },
     { t:"17:30", label:"開場・開始入場" },
     { t:"19:00", label:"正式演出開始" },
     { t:"21:00", label:"預計演出結束（以現場為準）" }
   ],
   "2026-11-01": [
+    { t:"11:00", label:"紀念拍貼機開始整隊" },
+    { t:"11:30", label:"周邊整理券・拍貼機號碼牌發放" },
+    { t:"12:00", label:"實名驗證・周邊販售・VAWS 攤位開放" },
+    { t:"16:30", label:"搖滾區整隊（依票面序號）" },
     { t:"17:30", label:"開場・開始入場" },
     { t:"19:00", label:"正式演出開始" },
     { t:"21:00", label:"預計演出結束（以現場為準）" }
@@ -28,11 +36,15 @@ export const SHOW_SCHEDULE = [
    · 보여 줄 순서를 바꾸려면 아래 줄 순서를 바꾸면 됩니다.
    · 새 공지가 나오면 한 줄만 더 적으면 됩니다.
    ───────────────────────────────────────────────────────────── */
-// 台北場官方公告圖片公布後，再補進這個清單。
-export const NOTICES = [];
+export const NOTICES = [
+  { src:"./images/notice/taipei-venue-guide.webp", title:"台北場現場配置與時間表", width:1638, height:2048 },
+];
 
 /* VAWS 회원 티켓 카드 카드 안에서 보여 줄 사진 — 같은 images/notice/ 폴더를 씁니다 */
-export const VAWS_PICS = [];
+export const VAWS_PICS = [
+  { src:"./images/notice/vaws-ticket-card-taipei.webp", title:"台北場公演別原創票卡（SAMPLE・左 10/31、右 11/1）", width:2000, height:1170 },
+  { src:"./images/notice/vaws-ar-camera.webp", title:"會場限定 AR 相機說明", width:842, height:1191 },
+];
 
 export const PICS = {
   /*

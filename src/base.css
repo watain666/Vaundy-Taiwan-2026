@@ -2215,7 +2215,7 @@
   .notice-item:hover, .notice-item:focus-visible{ border-color:var(--teal);outline:none; }
   .notice-item:active{ transform:scale(0.985); }
   .notice-item img{
-    display:block;width:100%;
+    display:block;width:100%;height:auto;
     aspect-ratio:4 / 5;
     object-fit:cover;
     object-position:top center;
@@ -2224,6 +2224,12 @@
   /* 가로로 긴 공지(공연장 맵·티켓 카드 등)는 잘라내면 못 알아보므로
      한 줄을 통째로 쓰고 사진 전체를 그대로 보여 준다. */
   .notice-item.wide{ grid-column:1 / -1; }
+  /* 공지가 한 장뿐이면 座位配置圖처럼 전체 폭으로, 자르지 않고 보여 준다 */
+  .notice-item:only-child{ grid-column:1 / -1; }
+  .notice-item:only-child img{ aspect-ratio:auto;object-fit:contain; }
+  /* VAWS 카드 안의 사진(票卡・AR 안내)은 한 줄에 한 장씩, 자르지 않고 */
+  #vaws-grid{ grid-template-columns:1fr; }
+  #vaws-grid .notice-item img{ aspect-ratio:auto;object-fit:contain; }
   .notice-item.wide img{
     aspect-ratio:auto;
     object-fit:contain;
@@ -2281,7 +2287,7 @@
   }
   .nv-scroll img{
     display:block;
-    width:100%;max-width:640px;
+    width:100%;max-width:640px;height:auto;
     margin:0 auto;
     border-radius:8px;
   }

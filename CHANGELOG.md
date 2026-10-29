@@ -2,6 +2,14 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## [**v1.11.2**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/7c26b4080334bde923e1aea1bdc1f6015c92d94b)
+
+- [PR #15](https://github.com/watain666/Vaundy-Taiwan-2026/pull/15)：依主辦單位公告補上台北場現場資訊，包括實名驗證、服務台、周邊販售、拍貼機、卡拉OK MONSTER 與 VAWS 攤位的時間，各區整隊位置與入場門，現場無法取票的提醒；「公告・指南」加入現場配置圖。
+- [PR #15](https://github.com/watain666/Vaundy-Taiwan-2026/pull/15)：應援禮儀加入「台北場官方規定」，包括以尖叫、合唱、揮手、掌聲代替上下跳動，2、3 樓勿站立和跺腳，以及禁止攜帶物品等事項；行李提醒改為官方禁止攜帶大型行李。
+- [PR #15](https://github.com/watain666/Vaundy-Taiwan-2026/pull/15)：VAWS 會員票卡補上 8 號門附近的攤位位置、兩日時間、兌換方式與注意事項，加入原創票卡樣品圖、AR 相機說明圖與 APP 下載連結，並依日文原文修正 AR 相機的說明。
+- [PR #15](https://github.com/watain666/Vaundy-Taiwan-2026/pull/15)：公告圖片改為完整顯示不裁切，座位配置圖改用相同的放大檢視。
+- [PR #15](https://github.com/watain666/Vaundy-Taiwan-2026/pull/15)：修正演出當日時間軸使用日本時區，導致倒數與「進行中」提早 1 小時。
+
 ## [**v1.11.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/f04d7385d83cd35bfa9bab359e19c812963f6215)
 
 - [PR #10](https://github.com/watain666/Vaundy-Taiwan-2026/pull/10)：依演唱節奏拆分〈花占い〉歌詞與繁中翻譯，補齊 ruby、羅馬字及應援標記，並校正卡拉 OK 時間。

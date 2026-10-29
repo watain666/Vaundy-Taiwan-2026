@@ -2,6 +2,12 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## [**v1.11.3**]
+
+- [PR #16](https://github.com/watain666/Vaundy-Taiwan-2026/pull/16)：首頁「公告・指南」併入「演出資訊」，台北場現場配置圖移到卡片最上方，且「演出資訊」改為預設展開，打開網站就能看到。
+- [PR #16](https://github.com/watain666/Vaundy-Taiwan-2026/pull/16)：現場配置圖在卡片中改用壓縮過的縮圖，點開放大檢視時才載入原圖，減少首頁載入流量。
+- [PR #16](https://github.com/watain666/Vaundy-Taiwan-2026/pull/16)：演出進行中時，倒數區的文字由「直播中」改為「演出中」。
+
 ## [**v1.11.2**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/7c26b4080334bde923e1aea1bdc1f6015c92d94b)
 
 - [PR #15](https://github.com/watain666/Vaundy-Taiwan-2026/pull/15)：依主辦單位公告補上台北場現場資訊，包括實名驗證、服務台、周邊販售、拍貼機、卡拉OK MONSTER 與 VAWS 攤位的時間，各區整隊位置與入場門，現場無法取票的提醒；「公告・指南」加入現場配置圖。

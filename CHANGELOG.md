@@ -2,6 +2,12 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## [**v1.14.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/2510301de4b79b2a3eb87ea47d84280c7e70f8c8)
+
+- [PR #19](https://github.com/watain666/Vaundy-Taiwan-2026/pull/19)：「應援小物交流板」從首頁卡片改為首頁與應援指南列表右下角的聊天泡泡，點開後以聊天視窗顯示，最新留言在最底部，自己暱稱的留言靠右；視窗開著時會自動載入新留言，正在輸入時不會打斷。歌曲頁與歌單頁不顯示泡泡。
+- [PR #19](https://github.com/watain666/Vaundy-Taiwan-2026/pull/19)：交流板可以上傳圖片，照片會先自動縮小並移除拍攝地點等資訊；點圖片可在新分頁查看大圖。
+- [PR #19](https://github.com/watain666/Vaundy-Taiwan-2026/pull/19)：留言改為送出後直接公開，不當內容由管理員事後刪除。
+
 ## [**v1.13.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/628fcbc3c9f29c82c28414fcd05cf1d039c77f49)
 
 - [PR #18](https://github.com/watain666/Vaundy-Taiwan-2026/pull/18)：首頁「Spotify 官方預熱歌單」下方新增可收合的「應援小物交流板」，讓粉絲討論應援小物的發放時間、地點與認人方式；只需填暱稱即可留言，新留言經管理員審核後才公開，留言板在展開卡片時才載入。

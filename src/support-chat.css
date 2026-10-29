@@ -1,0 +1,243 @@
+/* 應援小物交流 — 右下角聊天泡泡與 Waline 聊天視窗。
+   Waline 的樣式表沒有 layer，這裡也不放 layer，才能覆寫它的版面。 */
+
+.support-chat-launcher{
+  position:fixed;
+  right:16px;
+  bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index:50;
+  display:grid;place-items:center;
+  width:56px;height:56px;
+  border:0;border-radius:50%;
+  background:var(--ui-accent);
+  color:var(--ui-bg);
+  box-shadow:0 6px 18px rgba(0,0,0,.28);
+  cursor:pointer;
+  transition:background-color .2s ease;
+}
+.support-chat-launcher:hover{ background:var(--ui-text); }
+.support-chat-launcher svg{ width:26px;height:26px; }
+.support-chat-launcher[hidden]{ display:none; }
+/* 新版本／離線提示出現時讓出底部空間 */
+:root:has(.app-banner.show) .support-chat-launcher{
+  bottom:calc(104px + env(safe-area-inset-bottom, 0px));
+}
+
+.support-chat{
+  --support-chat-keyboard:0px;
+  --support-chat-viewport:100dvh;
+  position:fixed;
+  left:8px;right:8px;
+  bottom:calc(8px + max(var(--support-chat-keyboard), env(safe-area-inset-bottom, 0px)));
+  z-index:65; /* 蓋過 .app-banner（60），低於圖片檢視（80） */
+  display:flex;flex-direction:column;
+  height:min(640px, calc(var(--support-chat-viewport) - 72px));
+  border:1px solid var(--ui-line);
+  border-radius:16px;
+  background:var(--ui-bg);
+  color:var(--ui-text);
+  box-shadow:0 12px 40px rgba(0,0,0,.35);
+  overflow:hidden;
+  font-family:var(--font-tw-sans);
+}
+.support-chat[hidden]{ display:none; }
+@media (min-width:600px){
+  .support-chat{
+    left:auto;right:20px;
+    bottom:calc(20px + max(var(--support-chat-keyboard), env(safe-area-inset-bottom, 0px)));
+    width:380px;
+  }
+}
+
+.support-chat-head{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 8px 10px 16px;
+  border-bottom:1px solid var(--ui-line);
+  background:var(--ui-surface);
+}
+.support-chat-heading{ flex:1;min-width:0; }
+.support-chat-heading h2{
+  margin:0;
+  font-size:16px;font-weight:700;line-height:1.3;
+}
+.support-chat-heading p{
+  margin:2px 0 0;
+  font-size:12px;line-height:1.4;
+  color:var(--ui-muted);
+}
+.support-chat-close{
+  display:grid;place-items:center;
+  width:44px;height:44px;
+  border:0;border-radius:50%;
+  background:none;
+  color:var(--ui-text);
+  cursor:pointer;
+}
+.support-chat-close:hover{ background:var(--ui-hover); }
+.support-chat-close svg{ width:20px;height:20px; }
+
+.support-chat-body{
+  flex:1;min-height:0;
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+.support-chat-note{
+  margin:12px 12px 0;
+  padding:8px 12px;
+  border-radius:10px;
+  background:var(--ui-surface);
+  font-size:12px;line-height:1.6;
+  color:var(--ui-muted);
+}
+.support-board-status{
+  margin:16px;
+  font-size:13px;line-height:1.6;
+  color:var(--ui-muted);
+}
+
+/* ── Waline：清單在上、輸入框固定在下，最新訊息在最底部 ─────── */
+.support-board{
+  flex:1 0 auto;
+  display:flex;flex-direction:column;
+  --waline-theme-color:var(--ui-accent);
+  --waline-active-color:var(--ui-text);
+  --waline-color:var(--ui-text);
+  --waline-bg-color:var(--ui-bg);
+  --waline-bg-color-light:var(--ui-surface);
+  --waline-bg-color-hover:var(--ui-hover);
+  --waline-border-color:var(--ui-line);
+  --waline-disable-bg-color:var(--ui-raised);
+  --waline-info-color:var(--ui-muted);
+  --waline-font-size:15px;
+}
+.support-board [data-waline]{
+  flex:1 0 auto;
+  display:flex;flex-direction:column;
+  padding:0;
+  font-size:15px;
+}
+.support-board .wl-meta-head,
+.support-board .wl-power,
+.support-board .wl-meta-foot,
+.support-board .wl-user,
+.support-board .wl-actions > :not(label[for="wl-image-upload"]),
+.support-board .wl-meta,
+.support-board .wl-gif-popup,
+.support-board .wl-emoji-popup{ display:none; }
+
+.support-board .wl-operation{ order:1;margin:12px 0 0;text-align:center; }
+.support-board .wl-cards{
+  order:2;
+  margin-top:auto; /* 訊息少時貼齊輸入框，像聊天室 */
+  display:flex;flex-direction:column-reverse;gap:12px;
+  padding:12px;
+}
+.support-board .wl-loading,
+.support-board .wl-empty{ order:3; }
+.support-board .wl-empty{
+  margin:24px 16px;
+  font-size:13px;
+  color:var(--ui-muted);
+  text-align:center;
+}
+
+/* 輸入區 */
+.support-board .wl-comment{
+  order:4;
+  position:sticky;bottom:0;
+  padding:8px 12px 12px;
+  border-top:1px solid var(--ui-line);
+  background:var(--ui-bg);
+}
+.support-board .wl-panel{
+  margin:0;
+  border:1px solid var(--ui-line);
+  border-radius:12px;
+  background:var(--ui-surface);
+  box-shadow:none;
+}
+.support-board .wl-header{ border-bottom:1px dashed var(--ui-line); }
+.support-board .wl-header label{ padding:8px 4px 8px 12px;font-size:13px;color:var(--ui-muted); }
+.support-board .wl-header input,
+.support-board .wl-editor{ font-size:16px; } /* iOS 輸入時不自動放大 */
+.support-board .wl-editor{
+  min-height:3.2em;
+  max-height:30vh;
+  margin:4px 8px;
+  width:calc(100% - 16px);
+  resize:none;
+}
+.support-board .wl-footer{ margin:0 8px 8px; }
+.support-board .wl-info{ padding:0; }
+.support-board .wl-text-number{ font-size:12px; }
+.support-board .wl-btn.primary{
+  min-height:40px;
+  padding:0 18px;
+  border-radius:999px;
+  border-color:var(--ui-accent);
+  background:var(--ui-accent);
+  color:var(--ui-bg);
+  font-size:14px;font-weight:700;
+}
+
+/* 對話泡泡 */
+.support-board .wl-card-item{
+  display:flex;
+  padding:0;
+}
+.support-board .wl-card{
+  flex:0 1 auto;
+  width:auto;
+  max-width:85%;
+  margin:0;padding:0;
+  border:0;
+}
+.support-board .wl-head{
+  display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;
+  margin-bottom:4px;
+  line-height:1.4;
+}
+.support-board .wl-nick{ font-size:12.5px;font-weight:700;color:var(--ui-text); }
+.support-board .wl-time{ font-size:11.5px;color:var(--ui-muted); }
+.support-board .wl-comment-actions{ margin-left:auto; }
+.support-board .wl-card .wl-content{
+  display:inline-block;
+  margin:0;
+  padding:8px 12px;
+  border-radius:4px 16px 16px 16px;
+  background:var(--ui-surface);
+  font-size:15px;line-height:1.55;
+  overflow-wrap:anywhere;
+}
+.support-board .wl-content p{ margin:0;color:inherit; }
+.support-board .wl-content img{
+  display:block;
+  max-width:100%;max-height:320px;
+  margin:4px 0;
+  border-radius:10px;
+  cursor:zoom-in;
+}
+.support-board .wl-content p + p{ margin-top:.5em; }
+
+/* 自己（同暱稱）的訊息靠右 */
+.support-board .wl-cards > .wl-card-item.is-mine{ justify-content:flex-end; }
+.support-board .wl-cards > .wl-card-item.is-mine > .wl-card > .wl-head{ flex-direction:row-reverse; }
+.support-board .wl-cards > .wl-card-item.is-mine > .wl-card > .wl-head .wl-comment-actions{ margin-left:0;margin-right:auto; }
+.support-board .wl-cards > .wl-card-item.is-mine > .wl-card{ text-align:right; }
+.support-board .wl-cards > .wl-card-item.is-mine > .wl-card > .wl-content{
+  border-radius:16px 4px 16px 16px;
+  background:var(--ui-accent);
+  color:var(--ui-bg);
+  text-align:left;
+}
+
+/* 回覆串縮排顯示在原訊息下方 */
+.support-board .wl-quote{
+  margin-top:8px;
+  padding-left:10px;
+  border-left:2px solid var(--ui-line);
+}
+.support-board .wl-quote .wl-card{ max-width:100%; }
+.support-board .wl-quote .wl-card-item{ margin-top:8px; }
+.support-board .wl-quote:empty{ display:none; }

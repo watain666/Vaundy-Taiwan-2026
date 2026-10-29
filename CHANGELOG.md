@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.12.0**]
+## [**v1.12.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/0040f50095ff45042c0ff79c62f5d9718e3fffbe)
 
 - [PR #17](https://github.com/watain666/Vaundy-Taiwan-2026/pull/17)：首頁「VAWS 會員票卡」下方新增可收合的「Spotify 官方預熱歌單」，內嵌 Spotify「On Tour Taiwan: Vaundy」播放器，展開卡片時才載入；標題與內文提醒曲目可能與實際歌單相近，介意劇透者請勿播放。
 

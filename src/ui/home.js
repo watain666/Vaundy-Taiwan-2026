@@ -1,4 +1,4 @@
-import { INFO_SVG, CHEVRON_SVG, EXT_LINK_SVG, NOTICE_SVG, SEAT_SVG, MAP_SVG, MANNER_SVG, GIFT_SVG, WARN_SVG, FLASH_OFF_SVG, SHARE_SVG, MOON_SVG } from "./icons.js";
+import { INFO_SVG, CHEVRON_SVG, EXT_LINK_SVG, SEAT_SVG, MAP_SVG, MANNER_SVG, GIFT_SVG, WARN_SVG, FLASH_OFF_SVG, SHARE_SVG, MOON_SVG } from "./icons.js";
 import { siteFooterHtml } from "./footer.js";
 
 // Shared by Vite prerendering and client-side navigation.
@@ -45,7 +45,7 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
 
         <section class="info-section">
       <div class="menu-card">
-      <div class="info-card" id="info-card">
+      <div class="info-card" id="info-card" data-default-open="1">
         <button class="menu-row info-toggle" id="info-toggle" aria-expanded="false" aria-controls="info-panel">
           <span class="info-toggle-icon">${INFO_SVG}</span>
           <span class="info-toggle-label">演出資訊</span>
@@ -54,6 +54,16 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
         <div class="info-panel" id="info-panel" inert aria-hidden="true">
           <template class="info-panel-template">
           <div class="info-panel-inner">
+            <div class="info-panel-title"><span class="bar">|</span> 現場配置圖 <span class="bar">|</span></div>
+            <p class="way-note">主辦單位公布的<b>台北場現場配置圖與時間表</b>：入場門、整隊區、實名驗證區、周邊販售、服務台、VAWS 攤位與拍照點位置。點圖可放大。</p>
+            <div class="notice-grid" id="notice-grid"></div>
+            <p class="notice-empty" id="notice-empty" hidden>
+              公告圖片載入失敗，請直接查看主辦單位的原始貼文。
+            </p>
+            <a class="info-book-link" href="https://www.instagram.com/p/DfCRPwhk6vZ/" target="_blank" rel="noopener">
+              ${EXT_LINK_SVG} 查看主辦單位 IG 現場注意事項
+            </a>
+            <p class="info-footnote">※ 圖片來源：主辦單位 @funfunenter。以上內容實際以現場狀況為主，主辦單位保留變更修改之權利。</p>
             <div class="info-panel-title"><span class="bar">|</span> 演出概要 <span class="bar">|</span></div>
             <dl class="info-facts">
               <dt>演出名稱</dt>
@@ -201,29 +211,6 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
 
 
 
-          </div>
-          </template>
-        </div>
-      </div>
-
-      <div class="info-card" id="notice-card">
-        <button class="menu-row info-toggle" aria-expanded="false">
-          <span class="info-toggle-icon">${NOTICE_SVG}</span>
-          <span class="info-toggle-label">公告・指南</span>
-          <span class="info-toggle-chevron">${CHEVRON_SVG}</span>
-        </button>
-        <div class="info-panel" inert aria-hidden="true">
-          <template class="info-panel-template">
-          <div class="info-panel-inner">
-            <p class="way-note">主辦單位公布的<b>台北場現場配置圖與時間表</b>：入場門、整隊區、實名驗證區、周邊販售、服務台、VAWS 攤位與拍照點位置。點圖可放大。</p>
-            <div class="notice-grid" id="notice-grid"></div>
-            <p class="notice-empty" id="notice-empty" hidden>
-              公告圖片載入失敗，請直接查看主辦單位的原始貼文。
-            </p>
-            <a class="info-book-link" href="https://www.instagram.com/p/DfCRPwhk6vZ/" target="_blank" rel="noopener">
-              ${EXT_LINK_SVG} 查看主辦單位 IG 現場注意事項
-            </a>
-            <p class="info-footnote">※ 圖片來源：主辦單位 @funfunenter。以上內容實際以現場狀況為主，主辦單位保留變更修改之權利。</p>
           </div>
           </template>
         </div>

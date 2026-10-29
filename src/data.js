@@ -37,7 +37,7 @@ export const SHOW_SCHEDULE = [
    · 새 공지가 나오면 한 줄만 더 적으면 됩니다.
    ───────────────────────────────────────────────────────────── */
 export const NOTICES = [
-  { src:"./images/notice/taipei-venue-guide.webp", title:"台北場現場配置與時間表", width:1638, height:2048 },
+  { src:"./images/notice/taipei-venue-guide.webp", thumb:"./images/notice/taipei-venue-guide-preview.webp", title:"台北場現場配置與時間表", width:1638, height:2048 },
 ];
 
 /* VAWS 회원 티켓 카드 카드 안에서 보여 줄 사진 — 같은 images/notice/ 폴더를 씁니다 */

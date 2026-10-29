@@ -99,7 +99,7 @@ const SYNC_INTERVAL_MS   = 100;
 /* 지금 폰에 깔려 있는 화면이 몇 번째 판인지 알려 주는 표시.
    새로 올렸는데 화면이 그대로일 때, 옛 판이 남아 있는지 바로 확인할 수 있다.
    sw.js 의 CACHE_VERSION 과 같이 올려 주세요. */
-const BUILD = "v1.11.2";
+const BUILD = "v1.11.3";
 
 const TRANSLATION_CREDIT_URL = "https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319";
 const CC_BY_NC_SA_URL = "https://creativecommons.org/licenses/by-nc-sa/4.0/";
@@ -600,7 +600,8 @@ function buildPicGrid(grid, list, ready, emptyEl){
     }, { once:true });
 
     img.addEventListener("error", ()=>{ btn.remove(); done(); }, { once:true });
-    img.src = n.src;
+    // 有縮圖就先載縮圖，原圖等點開放大檢視時才載入。
+    img.src = n.thumb || n.src;
     grid.appendChild(btn);
   });
 }
@@ -621,7 +622,7 @@ function setupVawsPics(){
 /* 공지 이미지도 오프라인용으로 저장해 둔다 (공연장에서 데이터가 안 터져도 보이도록) */
 function cachePicsForOffline(ready){
   if (!("serviceWorker" in navigator) || !ready.length) return;
-  const urls = ready.map(n => n.src);
+  const urls = ready.map(n => n.thumb || n.src);
   navigator.serviceWorker.ready
     .then(reg => reg.active && reg.active.postMessage({ type:"CACHE_URLS", urls }))
     .catch(()=>{});
@@ -952,29 +953,39 @@ function setupOneAccordion(card){
       });
     } else {
       freezeHeroSpacing(card);
-      const template = panel.querySelector(":scope > .info-panel-template");
-      if (template) panel.replaceChild(template.content.cloneNode(true), template);
-      panel.inert = false;
-      panel.setAttribute("aria-hidden", "false");
-      card.classList.add("open");
-      btn.setAttribute("aria-expanded", "true");
-      panel.querySelectorAll("img[data-src]").forEach(img => {
-        img.src = img.dataset.src;
-        delete img.dataset.src;
-      });
-      if (card.id === "notice-card") setupNotices();
-      if (card.id === "vaws-card") setupVawsPics();
-      if (card.id === "way-card") setupAddressCopy();
-      if (card.id === "seat-card") setupSeatMapViewer();
-      panel.style.maxHeight = panel.scrollHeight + "px";
-      // 이후 내부 콘텐츠 크기 변화(폰트 로딩 등)에도 대응해 살짝 여유를 둠
-      // (스크롤은 건드리지 않음 — 화면은 사용자가 직접 내리도록 둠)
-      setTimeout(()=>{
-        if (!card.classList.contains("open")) return;
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      }, 300);
+      openInfoCard(card, btn, panel);
     }
   });
+
+  // 預設展開的卡片（演出資訊，含現場配置圖）在首頁載入時直接打開，不播展開動畫。
+  if (card.dataset.defaultOpen === "1" && !card.classList.contains("open")){
+    panel.style.transition = "none";
+    openInfoCard(card, btn, panel);
+    requestAnimationFrame(()=>{ panel.style.transition = ""; });
+  }
+}
+function openInfoCard(card, btn, panel){
+  const template = panel.querySelector(":scope > .info-panel-template");
+  if (template) panel.replaceChild(template.content.cloneNode(true), template);
+  panel.inert = false;
+  panel.setAttribute("aria-hidden", "false");
+  card.classList.add("open");
+  btn.setAttribute("aria-expanded", "true");
+  panel.querySelectorAll("img[data-src]").forEach(img => {
+    img.src = img.dataset.src;
+    delete img.dataset.src;
+  });
+  if (card.id === "info-card") setupNotices();
+  if (card.id === "vaws-card") setupVawsPics();
+  if (card.id === "way-card") setupAddressCopy();
+  if (card.id === "seat-card") setupSeatMapViewer();
+  panel.style.maxHeight = panel.scrollHeight + "px";
+  // 이후 내부 콘텐츠 크기 변화(폰트 로딩 등)에도 대응해 살짝 여유를 둠
+  // (스크롤은 건드리지 않음 — 화면은 사용자가 직접 내리도록 둠)
+  setTimeout(()=>{
+    if (!card.classList.contains("open")) return;
+    panel.style.maxHeight = panel.scrollHeight + "px";
+  }, 300);
 }
 
 /* ---------------- CHANT GUIDE (song list) ---------------- */
@@ -1751,7 +1762,7 @@ function startCountdown(){
     markShowRows(liveIdx, nextIdx);
 
     if (liveIdx !== -1){                 // 공연 진행 중 (토·일 모두)
-      setPill("現在", "直播中", "live");
+      setPill("現在", "演出中", "live");
       return;
     }
     if (nextIdx === -1){                 // 남은 공연 없음

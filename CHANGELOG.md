@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.11.3**]
+## [**v1.11.3**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/0c9c72da2ff829a82fcb03d0988e43a04418f91d)
 
 - [PR #16](https://github.com/watain666/Vaundy-Taiwan-2026/pull/16)：首頁「公告・指南」併入「演出資訊」，台北場現場配置圖移到卡片最上方，且「演出資訊」改為預設展開，打開網站就能看到。
 - [PR #16](https://github.com/watain666/Vaundy-Taiwan-2026/pull/16)：現場配置圖在卡片中改用壓縮過的縮圖，點開放大檢視時才載入原圖，減少首頁載入流量。

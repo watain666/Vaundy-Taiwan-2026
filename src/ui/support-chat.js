@@ -5,6 +5,7 @@ import { SUPPORT_BOARD_IMAGE_URL, fetchSupportBoardCount, mountSupportBoard, unm
 // board styled as a chat window. Shown only on the home and guide routes.
 const POLL_MS = 30000;
 const NEAR_BOTTOM_PX = 80;
+const KEYBOARD_MIN_PX = 80;
 
 let launcher = null;
 let panel = null;
@@ -61,6 +62,10 @@ function build(){
     if (!img || img.closest("a") || !SUPPORT_BOARD_IMAGE_URL) return;
     if (img.src.startsWith(`${SUPPORT_BOARD_IMAGE_URL}/`)) window.open(img.src, "_blank", "noopener");
   });
+  // Images grow the list after it rendered; keep the newest message in view.
+  host.addEventListener("load", (e) => {
+    if (e.target.tagName === "IMG" && stickToBottom) scrollToBottom();
+  }, true);
   scroller.addEventListener("scroll", () => {
     stickToBottom = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < NEAR_BOTTOM_PX;
   }, { passive: true });
@@ -86,6 +91,7 @@ function watchContent(){
   observer?.disconnect();
   observer = new MutationObserver(() => {
     markOwnMessages();
+    disableAutofill();
     if (stickToBottom) scrollToBottom();
   });
   observer.observe(host, { childList: true, subtree: true });
@@ -98,6 +104,15 @@ function fitToViewport(){
   const keyboard = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
   panel.style.setProperty("--support-chat-keyboard", `${keyboard}px`);
   panel.style.setProperty("--support-chat-viewport", `${vv.height}px`);
+  panel.style.setProperty("--support-chat-top", `${vv.offsetTop}px`);
+  panel.classList.toggle("is-keyboard", keyboard > KEYBOARD_MIN_PX);
+}
+
+// Keep iOS from offering contact AutoFill (phone numbers) in the chat inputs.
+function disableAutofill(){
+  host.querySelectorAll('.wl-editor, .wl-header input:not([autocomplete="off"])').forEach(el => {
+    el.setAttribute("autocomplete", "off");
+  });
 }
 
 function onKeydown(e){

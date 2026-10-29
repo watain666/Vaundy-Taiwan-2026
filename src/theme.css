@@ -1097,6 +1097,3 @@ button{touch-action:manipulation;}
     border-left:0;
   }
 }
-
-/* Waline's stylesheet is unlayered, so iOS zoom prevention must live here. */
-.support-board :is(.wl-editor,.wl-header input){font-size:16px;}

@@ -48,7 +48,7 @@ import {
 import { SONG_MARKS } from "./song-mark-metadata.js";
 import { loadFurigana, loadKaraokeSources, loadSongLyrics } from "./services/lazy-modules.js";
 import { loadJapaneseFontSubset } from "./services/japanese-font.js";
-import { mountSupportBoard } from "./services/support-board.js";
+import { syncSupportChat } from "./ui/support-chat.js";
 import { store } from "./services/storage.js";
 import { createDocumentPip } from "./document-pip.js";
 
@@ -407,6 +407,7 @@ function router({ resetScroll = true } = {}){
     resetSetlistSpoiler();   // 홈에 나온 순간 셋리스트는 처음 상태로
     renderHome();
   }
+  syncSupportChat(!song && hash !== "setlist");
   if (resetScroll) window.scrollTo(0,0);
   applyTheme(currentTheme);
 }
@@ -980,7 +981,6 @@ function openInfoCard(card, btn, panel){
   if (card.id === "vaws-card") setupVawsPics();
   if (card.id === "way-card") setupAddressCopy();
   if (card.id === "seat-card") setupSeatMapViewer();
-  if (card.id === "board-card") setupSupportBoard(card, panel);
   panel.style.maxHeight = panel.scrollHeight + "px";
   // 이후 내부 콘텐츠 크기 변화(폰트 로딩 등)에도 대응해 살짝 여유를 둠
   // (스크롤은 건드리지 않음 — 화면은 사용자가 직접 내리도록 둠)
@@ -1532,19 +1532,6 @@ function setupHomeExtras(){
     });
   }
 
-}
-
-function setupSupportBoard(card, panel){
-  // 留言板在第一次展開時才載入 Waline；留言非同步載入會改變高度，展開中持續更新面板高度。
-  const host = panel.querySelector("[data-support-board]");
-  if (!host) return;
-  mountSupportBoard(host);
-  if (host.dataset.resizeWired === "1" || typeof ResizeObserver !== "function") return;
-  host.dataset.resizeWired = "1";
-  new ResizeObserver(()=>{
-    if (!card.classList.contains("open")) return;
-    panel.style.maxHeight = panel.scrollHeight + "px";
-  }).observe(host);
 }
 
 function setupSeatMapViewer(){

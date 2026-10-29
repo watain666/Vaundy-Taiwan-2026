@@ -1,7 +1,7 @@
 {
   "name": "vaundy-taipei-2026-guide",
   "private": true,
-  "version": "1.12.0",
+  "version": "1.13.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "vite": "^7.1.7"
+  },
+  "dependencies": {
+    "@waline/client": "^3.16.1"
   }
 }

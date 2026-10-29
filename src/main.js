@@ -48,6 +48,7 @@ import {
 import { SONG_MARKS } from "./song-mark-metadata.js";
 import { loadFurigana, loadKaraokeSources, loadSongLyrics } from "./services/lazy-modules.js";
 import { loadJapaneseFontSubset } from "./services/japanese-font.js";
+import { mountSupportBoard } from "./services/support-board.js";
 import { store } from "./services/storage.js";
 import { createDocumentPip } from "./document-pip.js";
 
@@ -99,7 +100,7 @@ const SYNC_INTERVAL_MS   = 100;
 /* 지금 폰에 깔려 있는 화면이 몇 번째 판인지 알려 주는 표시.
    새로 올렸는데 화면이 그대로일 때, 옛 판이 남아 있는지 바로 확인할 수 있다.
    sw.js 의 CACHE_VERSION 과 같이 올려 주세요. */
-const BUILD = "v1.12.0";
+const BUILD = "v1.13.0";
 
 const TRANSLATION_CREDIT_URL = "https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319";
 const CC_BY_NC_SA_URL = "https://creativecommons.org/licenses/by-nc-sa/4.0/";
@@ -979,6 +980,7 @@ function openInfoCard(card, btn, panel){
   if (card.id === "vaws-card") setupVawsPics();
   if (card.id === "way-card") setupAddressCopy();
   if (card.id === "seat-card") setupSeatMapViewer();
+  if (card.id === "board-card") setupSupportBoard(card, panel);
   panel.style.maxHeight = panel.scrollHeight + "px";
   // 이후 내부 콘텐츠 크기 변화(폰트 로딩 등)에도 대응해 살짝 여유를 둠
   // (스크롤은 건드리지 않음 — 화면은 사용자가 직접 내리도록 둠)
@@ -1530,6 +1532,19 @@ function setupHomeExtras(){
     });
   }
 
+}
+
+function setupSupportBoard(card, panel){
+  // 留言板在第一次展開時才載入 Waline；留言非同步載入會改變高度，展開中持續更新面板高度。
+  const host = panel.querySelector("[data-support-board]");
+  if (!host) return;
+  mountSupportBoard(host);
+  if (host.dataset.resizeWired === "1" || typeof ResizeObserver !== "function") return;
+  host.dataset.resizeWired = "1";
+  new ResizeObserver(()=>{
+    if (!card.classList.contains("open")) return;
+    panel.style.maxHeight = panel.scrollHeight + "px";
+  }).observe(host);
 }
 
 function setupSeatMapViewer(){

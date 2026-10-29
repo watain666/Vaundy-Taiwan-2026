@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.11.2**]
+## [**v1.11.2**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/7c26b4080334bde923e1aea1bdc1f6015c92d94b)
 
 - [PR #15](https://github.com/watain666/Vaundy-Taiwan-2026/pull/15)：依主辦單位公告補上台北場現場資訊，包括實名驗證、服務台、周邊販售、拍貼機、卡拉OK MONSTER 與 VAWS 攤位的時間，各區整隊位置與入場門，現場無法取票的提醒；「公告・指南」加入現場配置圖。
 - [PR #15](https://github.com/watain666/Vaundy-Taiwan-2026/pull/15)：應援禮儀加入「台北場官方規定」，包括以尖叫、合唱、揮手、掌聲代替上下跳動，2、3 樓勿站立和跺腳，以及禁止攜帶物品等事項；行李提醒改為官方禁止攜帶大型行李。

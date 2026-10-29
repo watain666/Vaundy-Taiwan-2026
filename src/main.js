@@ -957,7 +957,7 @@ function setupOneAccordion(card){
     }
   });
 
-  // 預設展開的卡片（公告・指南）在首頁載入時直接打開，不播展開動畫。
+  // 預設展開的卡片（演出資訊，含現場配置圖）在首頁載入時直接打開，不播展開動畫。
   if (card.dataset.defaultOpen === "1" && !card.classList.contains("open")){
     panel.style.transition = "none";
     openInfoCard(card, btn, panel);
@@ -975,7 +975,7 @@ function openInfoCard(card, btn, panel){
     img.src = img.dataset.src;
     delete img.dataset.src;
   });
-  if (card.id === "notice-card") setupNotices();
+  if (card.id === "info-card") setupNotices();
   if (card.id === "vaws-card") setupVawsPics();
   if (card.id === "way-card") setupAddressCopy();
   if (card.id === "seat-card") setupSeatMapViewer();

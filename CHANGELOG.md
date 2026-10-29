@@ -2,6 +2,11 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## [**v1.14.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/2e327a610eaeb88fb7145b7d7d578442057275f3)
+
+- [PR #20](https://github.com/watain666/Vaundy-Taiwan-2026/pull/20)：修正應援小物交流中，含圖片的留言往上捲時會蓋住輸入框；圖片載入後會自動捲到最新留言。
+- [PR #20](https://github.com/watain666/Vaundy-Taiwan-2026/pull/20)：修正手機打開鍵盤時聊天視窗版面錯亂，視窗改為貼齊可見範圍並暫時收起提醒文字；輸入框不再跳出聯絡人自動填入。
+
 ## [**v1.14.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/2510301de4b79b2a3eb87ea47d84280c7e70f8c8)
 
 - [PR #19](https://github.com/watain666/Vaundy-Taiwan-2026/pull/19)：「應援小物交流板」從首頁卡片改為首頁與應援指南列表右下角的聊天泡泡，點開後以聊天視窗顯示，最新留言在最底部，自己暱稱的留言靠右；視窗開著時會自動載入新留言，正在輸入時不會打斷。歌曲頁與歌單頁不顯示泡泡。

@@ -41,6 +41,13 @@
   font-family:var(--font-tw-sans);
 }
 .support-chat[hidden]{ display:none; }
+/* 螢幕鍵盤打開時貼齊可見範圍，提醒文字先收起來讓出空間 */
+.support-chat.is-keyboard{
+  top:calc(var(--support-chat-top, 0px) + max(8px, env(safe-area-inset-top, 0px)));
+  bottom:auto;
+  height:calc(var(--support-chat-viewport) - 16px - env(safe-area-inset-top, 0px));
+}
+.support-chat.is-keyboard .support-chat-note{ display:none; }
 @media (min-width:600px){
   .support-chat{
     left:auto;right:20px;
@@ -146,6 +153,7 @@
 .support-board .wl-comment{
   order:4;
   position:sticky;bottom:0;
+  z-index:2; /* Waline 的留言是 position:relative 且排在後面，會蓋過輸入區 */
   padding:8px 12px 12px;
   border-top:1px solid var(--ui-line);
   background:var(--ui-bg);

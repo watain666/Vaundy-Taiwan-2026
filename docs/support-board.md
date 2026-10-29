@@ -40,7 +40,7 @@
 | `SITE_NAME` | `VAUNDY HORO 台北應援指南` | 通知訊息中顯示的網站名稱 |
 | `SITE_URL` | `https://vaundy.tiaui.co` | 通知訊息中的網站連結 |
 | `SECURE_DOMAINS` | `vaundy.tiaui.co,xxxx.vercel.app` | 只允許這些網域呼叫 API。填主機名稱，以逗號分隔，伺服器自己的網域也要加 |
-| `IPQPS` | `60`（預設） | 同一個 IP 兩則留言之間至少要隔幾秒 |
+| `IPQPS` | `10`（預設 60） | 同一個 IP 兩則留言之間至少要隔幾秒；60 秒對聊天來說太久，連續回覆會出現「Comment too fast!」 |
 | `DISABLE_USERAGENT` | `true` | 不顯示留言者的瀏覽器與作業系統 |
 | `DISABLE_REGION` | `true` | 不顯示留言者的所在地區 |
 

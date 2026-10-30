@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.15.8**]
+## [**v1.15.8**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/667898792f646363a6c21a500ad9966f9343b97e)
 
 - [PR #42](https://github.com/watain666/Vaundy-Taiwan-2026/pull/42)：移除歌曲頁提示列的「在 YouTube 觀看」連結，避免在手機上與「點選歌詞跳至影片位置」的提示文字重疊；影片無法播放或載入延遲時，改在影片框內顯示「在 YouTube 開啟」連結。
 

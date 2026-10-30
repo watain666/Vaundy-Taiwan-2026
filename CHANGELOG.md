@@ -2,6 +2,13 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## [**v1.15.4**]
+
+- [PR #35](https://github.com/watain666/Vaundy-Taiwan-2026/pull/35)：修正〈逆光〉歌詞：「ないな」之後改為「もう寂しくないさ」，「ないや」之後維持「もう悲しくないさ」；最後一段副歌改為「怒りよまた 悪党ぶっ飛ばして」與「怒りよさぁ 悪党ふっ飛ばして」，讀音、羅馬拼音與應援提示同步更新。
+- [PR #35](https://github.com/watain666/Vaundy-Taiwan-2026/pull/35)：〈呼び声〉「輝いて消えないものに手を伸ばして」改為完整一句，不再被拆成多行；調整副歌與「チェンジ」的時間點，並依日本應援教學標示要跟唱的段落，只需喊「チェンジ」的地方只標示「チェンジ」。
+- [PR #37](https://github.com/watain666/Vaundy-Taiwan-2026/pull/37)：〈逆光〉與〈呼び声〉的中文翻譯配合修正後的歌詞更新，並刪除〈呼び声〉翻譯開頭多出的「Change」。
+- 感謝 [@HiFallMaple](https://github.com/HiFallMaple) 提供 [PR #35](https://github.com/watain666/Vaundy-Taiwan-2026/pull/35)，協助校對〈逆光〉歌詞與〈呼び声〉的時間點和應援標示。
+
 ## [**v1.15.3**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/93a3871833bcb4f9f6a22ab0f72c290ed8865008)
 
 - [PR #36](https://github.com/watain666/Vaundy-Taiwan-2026/pull/36)：修正 iPhone 安裝成 PWA 後，歌曲頁頂端的播放進度條落在狀態列下方的模糊區而看起來糊掉；進度條改放在頂列下緣、影片正上方。

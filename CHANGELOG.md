@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.14.4**]
+## [**v1.14.4**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/6f998bedb443e60649c342a948aa6c6290081d5e)
 
 - [PR #23](https://github.com/watain666/Vaundy-Taiwan-2026/pull/23)：聊天視窗統一改名為「VAWS 交流板」，標題、開關按鈕與載入中、載入失敗等提示文字都使用新名稱。
 

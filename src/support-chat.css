@@ -201,6 +201,7 @@
   order:4;
   position:sticky;bottom:0;
   z-index:2; /* Waline 的留言是 position:relative 且排在後面，會蓋過輸入區 */
+  margin:0; /* Waline 的 margin-bottom 會在捲到底時多出一段空白 */
   padding:8px 12px 12px;
   border-top:1px solid var(--ui-line);
   background:var(--ui-bg);

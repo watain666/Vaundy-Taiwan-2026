@@ -1496,8 +1496,10 @@
   .chant-notes-chevron svg{width:13px;height:13px;}
   .chant-notes-toggle.active .chant-notes-chevron{transform:rotate(180deg);}
   .chant-notes-panel{
-    max-width:720px;
-    margin:-2px 16px 12px;
+    /* Match the 720px note/legend row's inner width and center it with them. */
+    width:calc(100% - 32px);
+    max-width:688px;
+    margin:-2px auto 12px;
     padding:10px 16px;
     border:1px solid var(--stage-line);
     border-radius:10px;

@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.15.6**]
+## [**v1.15.6**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/d8e45739d03ac04a03cc5288e81d8d816089c5fb)
 
 - [PR #40](https://github.com/watain666/Vaundy-Taiwan-2026/pull/40)：修正電腦版歌曲頁展開「應援說明」時，說明面板靠在影片欄左邊、沒有和上方的提示與圖例對齊；現在面板置中並與提示同寬，手機版不變。
 

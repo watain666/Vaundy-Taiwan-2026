@@ -1,4 +1,4 @@
-/* VAWS 交流板 — 右下角聊天泡泡與 Waline 聊天視窗。
+/* VAWS 交流區 — 右下角聊天泡泡與 Waline 聊天視窗。
    Waline 的樣式表沒有 layer，這裡也不放 layer，才能覆寫它的版面。 */
 
 /* 跟首頁卡片一樣固定用深紅底配金色，不隨淺色／深色主題切換 */
@@ -13,6 +13,10 @@
   --ui-accent:#e9d9a3;
   --ui-hover:rgba(246,239,217,.07);
   --support-chat-ink:#170504;
+  /* 泡泡：取自 VAUNDY 字樣的金→藍漸層，圖示與標籤用橘色 */
+  --support-chat-gold:#dfba62;
+  --support-chat-blue:#5295b0;
+  --support-chat-orange:#c2410c;
 }
 
 .support-chat-launcher{
@@ -23,14 +27,35 @@
   display:grid;place-items:center;
   width:56px;height:56px;
   border:0;border-radius:50%;
-  background:var(--ui-accent);
-  color:var(--support-chat-ink);
+  background:linear-gradient(180deg, var(--support-chat-gold) 45%, var(--support-chat-blue));
+  color:var(--support-chat-orange);
   box-shadow:0 6px 18px rgba(0,0,0,.28);
   cursor:pointer;
-  transition:background-color .2s ease;
+  font-family:var(--font-tw-sans);
+  transition:filter .2s ease;
 }
-.support-chat-launcher:hover{ background:var(--ui-text); }
-.support-chat-launcher svg{ width:26px;height:26px; }
+.support-chat-launcher:hover{ filter:brightness(1.08); }
+.support-chat-launcher svg{ width:32px;height:32px; }
+/* 泡泡上方的名稱標籤，靠右對齊才不會超出螢幕 */
+.support-chat-launcher-label{
+  position:absolute;
+  right:-2px;bottom:calc(100% + 8px);
+  padding:4px 10px;
+  border-radius:999px;
+  background:var(--support-chat-orange);
+  color:#fff;
+  font-size:12px;font-weight:700;line-height:1.4;
+  white-space:nowrap;
+  box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+.support-chat-launcher-label::after{
+  content:"";
+  position:absolute;
+  right:22px;top:100%;
+  border:6px solid transparent;
+  border-top-color:var(--support-chat-orange);
+  border-bottom:0;
+}
 .support-chat-launcher[hidden]{ display:none; }
 /* 新版本／離線提示出現時讓出底部空間 */
 :root:has(.app-banner.show) .support-chat-launcher{

@@ -550,9 +550,11 @@ button{touch-action:manipulation;}
   padding-bottom:calc(58px + env(safe-area-inset-bottom,0px));
 }
 .song-page .song-topbar{justify-content:space-between;}
+/* 進度條貼在頂列下緣：安裝成 PWA 時，iOS 會在狀態列下方加一段模糊漸層，
+   貼著 --safe-top 的話會被糊掉。 */
 .song-page .song-playback-progress{
   position:absolute;
-  top:var(--safe-top,0px);
+  bottom:0;
   left:0;
   right:0;
   z-index:3;

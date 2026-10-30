@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.15.5**]
+## [**v1.15.5**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/599700babb68baa106502894ea7da51265d9175a)
 
 - [PR #39](https://github.com/watain666/Vaundy-Taiwan-2026/pull/39)：依日本應援教學重新核對日本版應援標示：〈トドメの一撃〉、〈逆光〉、〈ホムンクルス〉的副歌改為只標示要喊的詞（例如「今日の夜は」「怒りよ今 悪党ぶっ飛ばして」），〈逆光〉的「逆光よ」改為要跟唱。
 - [PR #39](https://github.com/watain666/Vaundy-Taiwan-2026/pull/39)：〈Tokimeki〉改為標示括號裡的回聲「（ないぜ）」「（しまうの）」；〈CHAINSAW BLOOD〉、〈偉生人〉、〈花占い〉補上漏標的跟唱段落。

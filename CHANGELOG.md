@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.14.8**]
+## [**v1.14.8**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/8580090db638a5a64c4ae6c1e673379c60889779)
 
 - [PR #27](https://github.com/watain666/Vaundy-Taiwan-2026/pull/27)：修正 VAWS 交流區捲到最底時，輸入框下方會多出一段空白，間距不再隨捲動位置改變。
 

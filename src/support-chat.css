@@ -298,6 +298,8 @@
   overflow-wrap:anywhere;
 }
 .support-board .wl-content p{ margin:0;color:inherit; }
+/* Waline 把連結設成 inline-block，長網址無法斷行，會把整個視窗撐寬 */
+.support-board .wl-content a{ display:inline;overflow-wrap:anywhere; }
 .support-board .wl-content img{
   display:block;
   max-width:100%;max-height:320px;

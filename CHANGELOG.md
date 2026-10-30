@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.14.3**]
+## [**v1.14.3**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/61045e54a240a02512d11ab8d33cb53abdbbc7dd)
 
 - [PR #22](https://github.com/watain666/Vaundy-Taiwan-2026/pull/22)：聊天視窗標題由「應援小物交流」改為「留言板」，下方說明改為「交換應援小物、和 VAWS 交流的地方」。
 - [PR #22](https://github.com/watain666/Vaundy-Taiwan-2026/pull/22)：留言板拿掉留言的愛心按讚功能。

@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.15.9**]
+## [**v1.15.9**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/ec899fe88e802e5b3efeeb68d74a935925165c47)
 
 - [PR #43](https://github.com/watain666/Vaundy-Taiwan-2026/pull/43)：修正手機直屏展開較長的「應援說明」時，說明下半部被下方控制列蓋住、也無法往下捲動；展開時影片與說明區改為停在控制列上方並可捲動，收起後版面不變。
 

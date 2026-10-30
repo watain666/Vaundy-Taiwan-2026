@@ -57,6 +57,14 @@ function build(){
     setTimeout(() => { if (refreshPending && !isComposing()) refresh(); }, 0);
   });
   host.addEventListener("click", (e) => {
+    // A reply's @mention links to "#<comment id>", which the hash router would
+    // treat as an unknown route and swap the page behind the chat for home.
+    const mention = e.target.closest('.wl-content a[href^="#"]');
+    if (mention){
+      e.preventDefault();
+      host.querySelector(`[id="${CSS.escape(mention.hash.slice(1))}"]`)?.scrollIntoView({ block: "start" });
+      return;
+    }
     // Only open images from the upload Worker, and leave linked images to the link.
     const img = e.target.closest(".wl-content img");
     if (!img || img.closest("a") || !SUPPORT_BOARD_IMAGE_URL) return;

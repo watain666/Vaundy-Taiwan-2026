@@ -45,7 +45,7 @@ export const JP_CHANT_GUIDES = {
   },
   Backlight: {
     notes: [
-      "副歌一起大聲唱；最後一段兩次都是「悪党ふっ飛ばして」，請特別注意。"
+      "副歌一起大聲唱；最後一段先唱「悪党ぶっ飛ばして」，再唱「悪党ふっ飛ばして」，請特別注意。"
     ],
     chantTimes: [46.5, 59, 126, 139, 193.5, 207],
     chantSegments: [
@@ -198,14 +198,13 @@ export const JP_CHANT_GUIDES = {
     notes: [
       "依橘色標記跟唱；如果想簡化，只要跟著唱「チェンジ」也可以。"
     ],
-    chantTimes: [32.5, 41, 47, 54.5, 61, 68, 75, 140, 144, 151, 166.5, 175, 181.5, 184, 188, 202.5, 209.5, 215],
+    chantTimes: [32.5, 41, 52.5, 63.5, 67, 78, 142, 153.5, 166.5, 175, 180, 184, 186, 200, 211.5, 218.5],
     chantSegments: [
-      { time: 50.5,  text: "輝いて",         romaji: "kagayai te" },
-      { time: 64.5,  text: "輝いて",         romaji: "kagayai te" },
-      { time: 78.5,  text: "今チェンジ",     romaji: "kon chenji" },
-      { time: 133.5, text: "今チェンジ",     romaji: "kon chenji" },
+      { time: 49, text: "チェンジ", romaji: "chenji" },
+      { time: 139, text: "チェンジ", romaji: "chenji" },
+      { time: 78.5,  text: "チェンジ",       romaji: "chenji" },
+      { time: 133.5, text: "チェンジ",       romaji: "chenji" },
       { time: 197,   text: "チェンジ",       romaji: "chenji" },
-      { time: 197,   text: "輝いて",         romaji: "kagayai te" },
       { time: 212,   text: "どんな夜も Ah~", romaji: "donna yoru mo Ah ~" },
     ]
   },

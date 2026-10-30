@@ -9,7 +9,7 @@ export const SONG_MARKS = {
   Fukakouryoku: { chant: { jp: 17, kr: 21 }, clap: true, wave: true, jump: false, spin: false },
   Reunion: { chant: { jp: 10, kr: 10 }, clap: true, wave: true, jump: false, spin: false },
   hanaurana: { chant: { jp: 7, kr: 11 }, clap: true, wave: true, jump: false, spin: false },
-  Yobigoe: { chant: { jp: 24, kr: 25 }, clap: true, wave: true, jump: false, spin: false },
+  Yobigoe: { chant: { jp: 22, kr: 23 }, clap: true, wave: true, jump: false, spin: false },
   Tomoshibi: { chant: { jp: 2, kr: 7 }, clap: true, wave: true, jump: false, spin: false },
   "HowdoIknow'": { chant: { jp: 8, kr: 8 }, clap: false, wave: true, jump: false, spin: false },
   "Shiwaawase'": { chant: { jp: 11, kr: 11 }, clap: false, wave: false, jump: false, spin: false },

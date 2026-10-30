@@ -22,6 +22,18 @@
  *   and its reading unchanged; resolving it requires a lyric-text correction.
  */
 export const FURIGANA_CORRECTIONS = Object.freeze({
+  "[clap]どんな夜も": "[clap]どんな<ruby>夜<rt>よる</rt></ruby>も",
+  "[clap]輝いて消えないものに手を伸ばして": "[clap]<ruby>輝<rt>かがや</rt></ruby>いて<ruby>消<rt>き</rt></ruby>えないものに<ruby>手<rt>て</rt></ruby>を<ruby>伸<rt>の</rt></ruby>ばして",
+  "[wave]どんな夜も": "[wave]どんな<ruby>夜<rt>よる</rt></ruby>も",
+  "[wave]輝いて消えないものに 手を伸ばして": "[wave]<ruby>輝<rt>かがや</rt></ruby>いて<ruby>消<rt>き</rt></ruby>えないものに <ruby>手<rt>て</rt></ruby>を<ruby>伸<rt>の</rt></ruby>ばして",
+  "[wave]どんな日々も": "[wave]どんな<ruby>日々<rt>ひび</rt></ruby>も",
+  "[wave]輝いて消えてくものさ、手を伸ばして": "[wave]<ruby>輝<rt>かがや</rt></ruby>いて<ruby>消<rt>き</rt></ruby>えてくものさ、<ruby>手<rt>て</rt></ruby>を<ruby>伸<rt>の</rt></ruby>ばして",
+  "[wave]今 チェンジどんな時も": "[wave]<ruby>今<rt>いま</rt></ruby> チェンジどんな<ruby>時<rt>とき</rt></ruby>も",
+  "[wave]輝いて消えないものに手を伸ばして": "[wave]<ruby>輝<rt>かがや</rt></ruby>いて<ruby>消<rt>き</rt></ruby>えないものに<ruby>手<rt>て</rt></ruby>を<ruby>伸<rt>の</rt></ruby>ばして",
+  "[wave]僕ら今確かに 未来歌えるよ": "[wave]<ruby>僕<rt>ぼく</rt></ruby>ら<ruby>今<rt>いま</rt></ruby><ruby>確<rt>たし</rt></ruby>かに <ruby>未来<rt>みらい</rt></ruby><ruby>歌<rt>うた</rt></ruby>えるよ",
+  "[wave]もう寂しくないさないさ 逆光よ": "[wave]もう<ruby>寂<rt>さび</rt></ruby>しくないさないさ <ruby>逆光<rt>ぎゃっこう</rt></ruby>よ",
+  "[wave]もう怒りよまた悪党ぶっ飛ばしてそりゃあ愛ある罰だ": "[wave]もう<ruby>怒<rt>いか</rt></ruby>りよまた<ruby>悪党<rt>あくとう</rt></ruby>ぶっ<ruby>飛<rt>と</rt></ruby>ばしてそりゃあ<ruby>愛<rt>あい</rt></ruby>ある<ruby>罰<rt>ばつ</rt></ruby>だ",
+  "[wave]そう 怒りよさぁ 悪党ふっ飛ばして そりゃあ愛への罰だ": "[wave]そう <ruby>怒<rt>いか</rt></ruby>りよさぁ <ruby>悪党<rt>あくとう</rt></ruby>ふっ<ruby>飛<rt>と</rt></ruby>ばして そりゃあ<ruby>愛<rt>あい</rt></ruby>への<ruby>罰<rt>ばつ</rt></ruby>だ",
   "[wave]愛で": "[wave]<ruby>愛<rt>あい</rt></ruby>で",
   "[wave]揺れる世界の中で僕達は": "[wave]<ruby>揺<rt>ゆ</rt></ruby>れる<ruby>世界<rt>せかい</rt></ruby>の<ruby>中<rt>なか</rt></ruby>で<ruby>僕達<rt>ぼくたち</rt></ruby>は",
   "[wave]揺れる世界の中を僕達は": "[wave]<ruby>揺<rt>ゆ</rt></ruby>れる<ruby>世界<rt>せかい</rt></ruby>の<ruby>中<rt>なか</rt></ruby>を<ruby>僕達<rt>ぼくたち</rt></ruby>は",
@@ -359,6 +371,18 @@ export const FURIGANA_CORRECTIONS = Object.freeze({
 });
 
 export const ROMAJI_CORRECTIONS = Object.freeze({
+  "[clap]どんな夜も": "[clap]donna yoru mo",
+  "[clap]輝いて消えないものに手を伸ばして": "[clap]kagayai te kie nai mono ni te o nobashi te",
+  "[wave]どんな夜も": "[wave]donna yoru mo",
+  "[wave]輝いて消えないものに 手を伸ばして": "[wave]kagayai te kie nai mono ni te o nobashi te",
+  "[wave]どんな日々も": "[wave]donna hibi mo",
+  "[wave]輝いて消えてくものさ、手を伸ばして": "[wave]kagayai te kie te ku mono sa, te o nobashi te",
+  "[wave]今 チェンジどんな時も": "[wave]ima chenji donna toki mo",
+  "[wave]輝いて消えないものに手を伸ばして": "[wave]kagayai te kie nai mono ni te o nobashi te",
+  "[wave]僕ら今確かに 未来歌えるよ": "[wave]bokura ima tashika ni mirai utaeru yo",
+  "[wave]もう寂しくないさないさ 逆光よ": "[wave]mō sabishiku nai sa nai sa gyakkō yo",
+  "[wave]もう怒りよまた悪党ぶっ飛ばしてそりゃあ愛ある罰だ": "[wave]mō ikari yo mata akutō buttobashi te soryā ai aru batsu da",
+  "[wave]そう 怒りよさぁ 悪党ふっ飛ばして そりゃあ愛への罰だ": "[wave]sō ikari yo sā akutō futtobashi te soryā ai e no batsu da",
   "[clap]聞かせてくれよ 聞きたいんだ": "[clap]kika se te kure yo kiki tai n da",
   "[wave]愛で": "[wave]ai de",
   "[wave]揺れる世界の中で僕達は": "[wave]yureru sekai no naka de bokutachi wa",

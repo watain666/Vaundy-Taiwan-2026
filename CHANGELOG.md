@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## [**v1.14.8**]
+
+- [PR #27](https://github.com/watain666/Vaundy-Taiwan-2026/pull/27)：修正 VAWS 交流區捲到最底時，輸入框下方會多出一段空白，間距不再隨捲動位置改變。
+
 ## [**v1.14.7**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/4e45486ea0edeaa6966932b28e3199cf5cbec5d4)
 
 - [PR #26](https://github.com/watain666/Vaundy-Taiwan-2026/pull/26)：修正在 VAWS 交流區點回覆留言開頭的「@暱稱」時，背後的應援指南會被換成首頁並跳回頁首；現在只會在交流區內捲到被回覆的留言，網址與頁面維持不變。

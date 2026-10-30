@@ -117,10 +117,10 @@ export function unmountSupportBoard(){
 export function mountSupportBoard(host, shouldMount = () => true){
   if (!host) return Promise.resolve(false);
   if (!SUPPORT_BOARD_SERVER_URL){
-    setStatus(host, "VAWS 交流板準備中，開放後會在這裡顯示。");
+    setStatus(host, "VAWS 交流區準備中，開放後會在這裡顯示。");
     return Promise.resolve(false);
   }
-  if (!boardInstance) setStatus(host, "VAWS 交流板載入中…");
+  if (!boardInstance) setStatus(host, "VAWS 交流區載入中…");
 
   return loadWaline()
     .then(({ init }) => {
@@ -155,7 +155,7 @@ export function mountSupportBoard(host, shouldMount = () => true){
       return true;
     })
     .catch(() => {
-      setStatus(host, "VAWS 交流板暫時無法載入，請確認網路連線後重新開啟。");
+      setStatus(host, "VAWS 交流區暫時無法載入，請確認網路連線後重新開啟。");
       return false;
     });
 }

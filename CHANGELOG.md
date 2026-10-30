@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.15.3**]
+## [**v1.15.3**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/93a3871833bcb4f9f6a22ab0f72c290ed8865008)
 
 - [PR #36](https://github.com/watain666/Vaundy-Taiwan-2026/pull/36)：修正 iPhone 安裝成 PWA 後，歌曲頁頂端的播放進度條落在狀態列下方的模糊區而看起來糊掉；進度條改放在頂列下緣、影片正上方。
 

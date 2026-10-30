@@ -1986,7 +1986,6 @@ function buildSongShell(){
           <div class="lyrics-note">
             <span class="dot">●</span>
             <span class="lyrics-note-copy">點選歌詞跳至影片位置，歌詞隨影片同步。</span>
-            <a class="watch-on-yt" id="watch-on-yt" href="#" target="_blank" rel="noopener">在 YouTube 觀看 ↗</a>
           </div>
 
           <div class="lyrics-legend">
@@ -2647,8 +2646,6 @@ function renderSong(song){
   }
   document.getElementById("prev-song").title = `上一首：${prev.title}`;
   document.getElementById("next-song").title = `下一首：${next.title}`;
-  document.getElementById("watch-on-yt").href =
-    `https://www.youtube.com/watch?v=${encodeURIComponent(song.youtubeId)}`;
 
   document.getElementById("lyrics-list").innerHTML = song.lyrics.map((l,i)=>`
     <li>
@@ -4387,7 +4384,7 @@ function showVideoStatus(){
   if (playerReady) return;
   status.textContent = "正在載入影片…";
   videoStatusTimer = setTimeout(()=>{
-    if (!playerReady && status.isConnected) status.textContent = "影片連線延遲，請在下方開啟 YouTube。";
+    if (!playerReady && status.isConnected) showVideoFallback(status, "影片連線延遲，");
   }, 8000);
 }
 
@@ -4435,7 +4432,17 @@ function onPlayerError(){
   const status = document.getElementById("video-status");
   if (!status) return;
   status.hidden = false;
-  status.textContent = "無法播放影片，請在下方開啟 YouTube。";
+  showVideoFallback(status, "無法播放影片，");
+}
+
+/* 影片嵌入失敗時，在影片框內提供直接開啟 YouTube 的連結。 */
+function showVideoFallback(status, message){
+  const link = document.createElement("a");
+  link.href = `https://www.youtube.com/watch?v=${encodeURIComponent((currentSong || SONGS[0]).youtubeId)}`;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.textContent = "在 YouTube 開啟 ↗";
+  status.replaceChildren(message, link);
 }
 
 function onPlayerPlaybackRateChange(event){

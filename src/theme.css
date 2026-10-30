@@ -276,6 +276,7 @@ button{touch-action:manipulation;}
   text-align:center;
 }
 .song-page .video-status[hidden]{display:none;}
+.song-page .video-status a{color:var(--ui-accent);}
 .song-page .player-controls{
   position:relative;
   right:auto;
@@ -664,7 +665,6 @@ button{touch-action:manipulation;}
 .song-page .lyric-line.active.has-chant-segment .lyric-romaji .chant-segment .karaoke-unit.karaoke-current{
   text-shadow:0 0 7px rgba(245,148,44,.55);
 }
-.song-page .watch-on-yt,
 .song-page .lyrics-note,
 .song-page .legend-item{color:var(--ui-muted);}
 .song-page .chant-notes-toggle{
@@ -774,7 +774,6 @@ button{touch-action:manipulation;}
   padding-bottom:16px;
 }
 .song-page .video-wrap{margin-top:6px;}
-.song-page .watch-on-yt{margin:0 0 0 auto;}
 .song-page .lyrics-note{margin-top:8px;}
 .song-page .lyrics-legend{margin-top:8px;}
 .song-page .lyrics-list{margin-top:4px;}

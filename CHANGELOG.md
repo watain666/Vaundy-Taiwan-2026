@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## [**v1.14.5**]
+## [**v1.14.5**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/b70cb35c4914c7e9ea09b85b311adeccc1efb0f0)
 
 - [PR #24](https://github.com/watain666/Vaundy-Taiwan-2026/pull/24)：右下角聊天泡泡改用 VAUNDY 字樣的金藍漸層底色與橘色對話框圖示，上方加上「VAWS 交流區」標籤，點標籤也能打開視窗。
 - [PR #24](https://github.com/watain666/Vaundy-Taiwan-2026/pull/24)：「VAWS 交流板」改名為「VAWS 交流區」，視窗標題、按鈕與載入提示文字都使用新名稱。

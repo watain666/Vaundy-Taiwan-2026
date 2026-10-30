@@ -217,7 +217,7 @@ export const JP_CHANT_GUIDES = {
     chantSegments: [
       { time: 49, text: "チェンジ", romaji: "chenji" },
       { time: 139, text: "チェンジ", romaji: "chenji" },
-      { time: 78.5,  text: "チェンジ",       romaji: "chenji" },
+      { time: 85,    text: "チェンジ",       romaji: "chenji" },
       { time: 133.5, text: "チェンジ",       romaji: "chenji" },
       { time: 197,   text: "チェンジ",       romaji: "chenji" },
       { time: 212,   text: "どんな夜も Ah~", romaji: "donna yoru mo Ah ~" },

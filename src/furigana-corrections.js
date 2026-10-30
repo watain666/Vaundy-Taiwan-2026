@@ -132,10 +132,10 @@ export const FURIGANA_CORRECTIONS = Object.freeze({
   "[clap]壊れない愛を歌う 言葉を二人に課して": "[clap]<ruby>壊<rt>わす</rt></ruby>れない<ruby>愛<rt>あい</rt></ruby>を<ruby>歌<rt>うた</rt></ruby>う <ruby>言葉<rt>ことば</rt></ruby>を<ruby>二人<rt>ふたり</rt></ruby>に<ruby>課<rt>か</rt></ruby>して",
 
   // 裸身勇者 (裸の勇者) — https://utaten.com/lyric/ma22011710/
-  "[clap]誰かが今涙を飲み込んでいる": "[clap]<ruby>誰<rt>だれ</rt></ruby>かが<ruby>今<rt>いま</rt></ruby><ruby>涙<rt>なみだ</rt></ruby>を<ruby>飲<rt>の</rt></ruby>み<ruby>込<rt>こ</rt></ruby>んでいる",
+  "[clap]誰かが今涙を飲み込んで 飲み込んでいる": "[clap]<ruby>誰<rt>だれ</rt></ruby>かが<ruby>今<rt>いま</rt></ruby><ruby>涙<rt>なみだ</rt></ruby>を<ruby>飲<rt>の</rt></ruby>み<ruby>込<rt>こ</rt></ruby>んで <ruby>飲<rt>の</rt></ruby>み<ruby>込<rt>こ</rt></ruby>んでいる",
   "力はいらない 身に任せて 小さなこの手は今": "<ruby>力<rt>ちから</rt></ruby>はいらない <ruby>身<rt>み</rt></ruby>に<ruby>任<rt>まか</rt></ruby>せて <ruby>小<rt>ちい</rt></ruby>さなこの<ruby>手<rt>て</rt></ruby>は<ruby>今<rt>いま</rt></ruby>",
   "[wave]もう愛してしまった思いを全部 守れるほどの光を": "[wave]もう<ruby>愛<rt>あい</rt></ruby>してしまった<ruby>思<rt>おも</rt></ruby>いを<ruby>全部<rt>ぜんぶ</rt></ruby> <ruby>守<rt>まも</rt></ruby>れるほどの<ruby>光<rt>ひかり</rt></ruby>を",
-  "[clap]どこからかまた悲しみが 飛び交っている": "[clap]どこからかまた<ruby>悲<rt>かな</rt></ruby>しみが <ruby>飛<rt>と</rt></ruby>び<ruby>交<rt>か</rt></ruby>っている",
+  "[clap]どこからかまた悲しみが 飛び交って 飛び交っている": "[clap]どこからかまた<ruby>悲<rt>かな</rt></ruby>しみが <ruby>飛<rt>と</rt></ruby>び<ruby>交<rt>か</rt></ruby>って <ruby>飛<rt>と</rt></ruby>び<ruby>交<rt>か</rt></ruby>っている",
   "[clap]失って また失って 膝を突き 息をしている": "[clap]<ruby>失<rt>うしな</rt></ruby>って また<ruby>失<rt>うしな</rt></ruby>って <ruby>膝<rt>ひざ</rt></ruby>を<ruby>突<rt>つ</rt></ruby>き <ruby>息<rt>いき</rt></ruby>をしている",
   "この全てを背負った手は": "この<ruby>全<rt>すべ</rt></ruby>てを<ruby>背負<rt>せお</rt></ruby>った<ruby>手<rt>て</rt></ruby>は",
   "力が伴う 悪意振り解いて": "<ruby>力<rt>ちから</rt></ruby>が<ruby>伴<rt>ともな</rt></ruby>う <ruby>悪意振<rt>あくいふ</rt></ruby>り<ruby>解<rt>ほど</rt></ruby>いて",
@@ -174,7 +174,6 @@ export const FURIGANA_CORRECTIONS = Object.freeze({
   "[clap]恋路の果てには何がある": "[clap]<ruby>恋路<rt>こいじ</rt></ruby>の<ruby>果<rt>は</rt></ruby>てには<ruby>何<rt>なに</rt></ruby>がある",
   "くだらない話をニ人で": "くだらない<ruby>話<rt>はなし</rt></ruby>を<ruby>ニ人<rt>ふたり</rt></ruby>で",
   "[wave]僕達の千年の恋は": "[wave]<ruby>僕達<rt>ぼくたち</rt></ruby>の<ruby>千<rt>せん</rt></ruby><ruby>年<rt>ねん</rt></ruby>の<ruby>恋<rt>こい</rt></ruby>は",
-  "深い土で折れる花のようだ": "<ruby>深<rt>ふか</rt></ruby>い<ruby>土<rt>つち</rt></ruby>で<ruby>折<rt>お</rt></ruby>れる<ruby>花<rt>はな</rt></ruby>のようだ",
   "相槌で折れる花のようだ": "<ruby>相槌<rt>あいづち</rt></ruby>で<ruby>折<rt>お</rt></ruby>れる<ruby>花<rt>はな</rt></ruby>のようだ",
   "[wave]僕達は千年後もまだ": "[wave]<ruby>僕達<rt>ぼくたち</rt></ruby>は<ruby>千<rt>せん</rt></ruby><ruby>年<rt>ねん</rt></ruby><ruby>後<rt>ご</rt></ruby>もまだ",
   "同じ様にまってんだ": "<ruby>同<rt>おな</rt></ruby>じ<ruby>様<rt>よう</rt></ruby>にまってんだ",
@@ -214,7 +213,8 @@ export const FURIGANA_CORRECTIONS = Object.freeze({
   "今 チェンジ": "<ruby>今<rt>いま</rt></ruby> チェンジ",
   "[wave]どんな夜も輝いて消": "[wave]どんな<ruby>夜<rt>よる</rt></ruby>も<ruby>輝<rt>かがや</rt></ruby>いて<ruby>消<rt>き</rt></ruby>",
   "[wave]僕らまだ不確かな未来歌えるよ": "[wave]<ruby>僕<rt>ぼく</rt></ruby>らまだ<ruby>不確<rt>ふたし</rt></ruby>かな<ruby>未来<rt>みらい</rt></ruby><ruby>歌<rt>うた</rt></ruby>えるよ",
-  "[wave]ほら待ってるよ 「今チェンジ」": "[wave]ほら<ruby>待<rt>ま</rt></ruby>ってるよ 「<ruby>今<rt>いま</rt></ruby>チェンジ」",
+  "[wave]僕らまた不確かな未来歌えるよ": "[wave]<ruby>僕<rt>ぼく</rt></ruby>らまた<ruby>不確<rt>ふたし</rt></ruby>かな<ruby>未来<rt>みらい</rt></ruby><ruby>歌<rt>うた</rt></ruby>えるよ",
+  "[wave]「今チェンジ」": "[wave]「<ruby>今<rt>いま</rt></ruby>チェンジ」",
   "[clap]差し詰め、希望に似た溢れる何か": "[clap]<ruby>差<rt>さ</rt></ruby>し<ruby>詰<rt>ず</rt></ruby>め、<ruby>希望<rt>きぼう</rt></ruby>に<ruby>似<rt>に</rt></ruby>た<ruby>溢<rt>あふ</rt></ruby>れる<ruby>何<rt>なに</rt></ruby>か",
   "[clap]余さず描いた立ち籠めていた何か": "[clap]<ruby>余<rt>あま</rt></ruby>さず<ruby>描<rt>か</rt></ruby>いた<ruby>立<rt>た</rt></ruby>ち<ruby>籠<rt>こ</rt></ruby>めていた<ruby>何<rt>なに</rt></ruby>か",
   "[clap]まだ紅色幕開け前か": "[clap]まだ<ruby>紅色<rt>べにいろ</rt></ruby><ruby>幕開<rt>まくあ</rt></ruby>け<ruby>前<rt>まえ</rt></ruby>か",
@@ -256,7 +256,8 @@ export const FURIGANA_CORRECTIONS = Object.freeze({
   "愚かに、浸ってしまうほど": "<ruby>愚<rt>おろ</rt></ruby>かに、<ruby>浸<rt>ひた</rt></ruby>ってしまうほど",
   "[wave]時に歩み合うかより": "[wave]<ruby>時<rt>とき</rt></ruby>に<ruby>歩<rt>あゆ</rt></ruby>み<ruby>合<rt>あ</rt></ruby>うかより",
   "[wave]抱きしめ合えるより": "[wave]<ruby>抱<rt>だ</rt></ruby>きしめ<ruby>合<rt>あ</rt></ruby>えるより",
-  "温かく思う未来を見たいんだよ": "<ruby>温<rt>あたた</rt></ruby>かく<ruby>思<rt>おも</rt></ruby>う<ruby>未来<rt>みらい</rt></ruby>を<ruby>見<rt>み</rt></ruby>たいんだよ",
+  "温かく思う未来見たいんだよ": "<ruby>温<rt>あたた</rt></ruby>かく<ruby>思<rt>おも</rt></ruby>う<ruby>未来<rt>みらい</rt></ruby><ruby>見<rt>み</rt></ruby>たいんだよ",
+  "[clap]どうして心満たして振り払おうとしてるんだろう": "[clap]どうして<ruby>心<rt>こころ</rt></ruby><ruby>満<rt>み</rt></ruby>たして<ruby>振<rt>ふ</rt></ruby>り<ruby>払<rt>はら</rt></ruby>おうとしてるんだろう",
 
   // soramimi — https://utaten.com/lyric/nm20052727/
   "[clap]そのエロい体を貸してくれ": "[clap]そのエロい<ruby>体<rt>からだ</rt></ruby>を<ruby>貸<rt>か</rt></ruby>してくれ",
@@ -311,6 +312,7 @@ export const FURIGANA_CORRECTIONS = Object.freeze({
   "[clap]今もそんなに変わってないみたいだ": "[clap]<ruby>今<rt>いま</rt></ruby>もそんなに<ruby>変<rt>か</rt></ruby>わってないみたいだ",
   "[clap]そんな僕らは何千と違う心に穴を開けて生きてた": "[clap]そんな<ruby>僕<rt>ぼく</rt></ruby>らは<ruby>何千<rt>なんぜん</rt></ruby>と<ruby>違<rt>たが</rt></ruby>う<ruby>心<rt>こころ</rt></ruby>に<ruby>穴<rt>あな</rt></ruby>を<ruby>開<rt>あ</rt></ruby>けて<ruby>生<rt>い</rt></ruby>きてた",
   "もう、笑っていこうぜ": "もう、<ruby>笑<rt>わら</rt></ruby>っていこうぜ",
+  "[wave]もう、笑っていようぜ": "[wave]もう、<ruby>笑<rt>わら</rt></ruby>っていようぜ",
 
   // 那樣的 bitter 故事 (そんなbitterな話) — https://utaten.com/lyric/hw23032236/
   "[wave]愛おしいのさ": "[wave]<ruby>愛<rt>いと</rt></ruby>おしいのさ",
@@ -478,7 +480,8 @@ export const ROMAJI_CORRECTIONS = Object.freeze({
   "愚かに、浸ってしまうほど": "oroka ni, hitatte shimau hodo",
   "[wave]時に歩み合うかより": "[wave]tokini ayumi au ka yori",
   "[wave]抱きしめ合えるより": "[wave]dakishime aeru yori",
-  "温かく思う未来を見たいんだよ": "atatakaku omou mirai o mi tai n da yo",
+  "温かく思う未来見たいんだよ": "atatakaku omou mirai mi tai n da yo",
+  "[clap]どうして心満たして振り払おうとしてるんだろう": "[clap]dōshite kokoro mitashi te furiharaō to shi teru n daro u",
 
   "[clap]で、まぁいいかな": "[clap]de, mā ii ka na",
   "[clap]このくらいがちょうどいいかなって": "[clap]kono kurai ga chōdo ii ka natte",
@@ -509,6 +512,7 @@ export const ROMAJI_CORRECTIONS = Object.freeze({
   "ふふふ": "fufufu",
   "ねぇどうだい": "nē dō dai",
   "もう、笑っていこうぜ": "mō, waratte ikō ze",
+  "[wave]もう、笑っていようぜ": "[wave]mō, waratte iyō ze",
   "[wave]ああもうつかれちまったろ": "[wave]ā mō tsukare chimatta ro",
 
   "そんなことじゃあ ラブコメみたいなくだりで": "sonna koto jaa rabukome mitai na kudari de",
@@ -558,10 +562,10 @@ export const ROMAJI_CORRECTIONS = Object.freeze({
   "[clap]壊れない愛を歌う 言葉を二人に課して": "[clap]wasure nai ai o utau kotoba o futari ni kashi te",
 
   // 裸身勇者 (裸の勇者) — https://utaten.com/lyric/ma22011710/
-  "[clap]誰かが今涙を飲み込んでいる": "[clap]dare ka ga ima namida o nomikon de iru",
+  "[clap]誰かが今涙を飲み込んで 飲み込んでいる": "[clap]dare ka ga ima namida o nomikon de nomikon de iru",
   "力はいらない 身に任せて 小さなこの手は今": "chikara wa ira nai mi ni makase te chīsana kono te wa ima",
   "[wave]もう愛してしまった思いを全部 守れるほどの光を": "[wave]mō aishi te shimatta omoi o zembu mamoreru hodo no hikari o",
-  "[clap]どこからかまた悲しみが 飛び交っている": "[clap]doko kara ka mata kanashimi ga tobikatte iru",
+  "[clap]どこからかまた悲しみが 飛び交って 飛び交っている": "[clap]doko kara ka mata kanashimi ga tobikatte tobikatte iru",
   "[clap]失って また失って 膝を突き 息をしている": "[clap]ushinatte mata ushinatte hiza o tsuki iki o shi te iru",
   "この全てを背負った手は": "kono subete o seotta te wa",
   "力が伴う 悪意振り解いて": "chikara ga tomonau akui furihodoite",
@@ -603,7 +607,6 @@ export const ROMAJI_CORRECTIONS = Object.freeze({
   "[clap]恋路の果てには何がある": "[clap]koiji no hate ni wa nani ga aru",
   "くだらない話をニ人で": "kudaranai hanashi o futari de",
   "[wave]僕達の千年の恋は": "[wave]bokutachi no sen nen no koi wa",
-  "深い土で折れる花のようだ": "fukai tsuchi de oreru hana no yō da",
   "相槌で折れる花のようだ": "aizuchi de oreru hana no yō da",
   "[wave]僕達は千年後もまだ": "[wave]bokutachi wa sen nen go mo mada",
   "同じ様にまってんだ": "onaji yō ni matten da",
@@ -647,7 +650,8 @@ export const ROMAJI_CORRECTIONS = Object.freeze({
   "[clap]この部屋を立ち籠めている何か": "[clap]kono heya o tachikomete iru nani ka",
   "[clap]それは紅色の記憶のような": "[clap]sore wa beni iro no kioku no yō na",
   "[wave]どんな夜も輝いて消": "[wave]donna yoru mo kagayai te ki",
-  "[wave]ほら待ってるよ 「今チェンジ」": "[wave]hora matteru yo \" ima chenji \"",
+  "[wave]僕らまた不確かな未来歌えるよ": "[wave]bokura mata futashika na mirai utaeru yo",
+  "[wave]「今チェンジ」": "[wave]\" ima chenji \"",
   "[clap]余さず描いた立ち籠めていた何か": "[clap]amasa zu kaita tachikomete i ta nani ka",
   "[clap]まだ紅色幕開け前か": "[clap]mada beni iro makuake mae ka",
   "[wave]声武者震いは「今チェンジ」": "[wave]koe mushaburui wa \" ima chenji \"",

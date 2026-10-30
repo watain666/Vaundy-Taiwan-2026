@@ -13,6 +13,7 @@
 | Vercel 專案 | `vaundy-waline`（團隊 `tiui-lus-projects`，函式區域 `sin1`） |
 | 資料庫 | Neon `vaundy-waline-db`（`sin1`，Vercel Marketplace 免費方案） |
 | 伺服器版本 | `@waline/vercel` 1.43.4（官方 `example/` 範本） |
+| 資料表結構 | [`docs/waline.pgsql`](waline.pgsql)（官方結構＋取消置頂修正 trigger，見下方「取消置頂後留言卡在最下面」） |
 
 伺服器專案是用 Vercel CLI 直接部署，沒有連 Git。更新伺服器時，在伺服器專案目錄執行 `npx vercel deploy --prod`。
 
@@ -26,7 +27,7 @@
 1. 用 GitHub 帳號登入 [Vercel](https://vercel.com)。
 2. 打開上面的官方 Vercel 部署文件，點 **Deploy** 按鈕，依指示建立新專案。Vercel 會在你的 GitHub 建立一個 Waline 伺服器 repo。
 3. 進入新專案的 **Storage** → **Create Database** → 選 **Neon** → **Accept and Create**。
-4. 建立完成後點 **Open in Neon** → **SQL Editor**，貼上 [`waline.pgsql`](https://github.com/walinejs/waline/blob/main/assets/waline.pgsql) 的全部內容並執行，建立資料表。
+4. 建立完成後點 **Open in Neon** → **SQL Editor**，貼上本 repo 的 [`docs/waline.pgsql`](waline.pgsql) 全部內容並執行，建立資料表。這份是官方 [`waline.pgsql`](https://github.com/walinejs/waline/blob/main/assets/waline.pgsql) 加上檔案最後的取消置頂修正，不要改貼官方原檔。
 5. 回到 Vercel，到 **Settings** → **Environment Variables** 加入下一節的變數。
 6. 到 **Deployments**，對最新一筆部署選 **Redeploy**。之後只要修改環境變數，都要再 Redeploy 一次才會生效。
 7. 點 **Visit** 打開伺服器網址（例如 `https://xxxx.vercel.app`），這就是前端要填的 `serverURL`。
@@ -82,6 +83,30 @@
 - 聊天視窗開著時每 30 秒查詢一次留言數，有增加才重新載入清單。訪客正在輸入或還有未送出的文字時會先延後，等離開輸入框再載入，避免收起鍵盤。
 - 圖片改用自架的 Cloudflare R2 上傳（見下方「圖片上傳」）。關閉 GIF 搜尋、表情包、回應按鈕與 RSS，避免向 unpkg 或 giphy 等第三方發出請求，也減少不當內容。
 - 每頁 20 則，單則留言上限 500 字，介面使用繁體中文（`lang: "zh-TW"`）。
+
+## 取消置頂後留言卡在最下面
+
+Waline 的已知問題：管理員在留言上按「取消置頂」時，前端送出的是 `sticky: 0`，不是清回 `NULL`；伺服器卻用 `sticky DESC NULLS LAST, insertedAt DESC` 排序。結果 `0` 排在所有從沒置頂過（`NULL`）的留言前面，再加上聊天視窗用 `column-reverse` 把第一則顯示在最底部，取消置頂的舊留言就會一直卡在最下面，不會回到原本的時間位置。
+
+修正放在資料庫，不改前端也不用重新部署伺服器：[`docs/waline.pgsql`](waline.pgsql) 最後的 trigger `wl_comment_unsticky_null` 會把寫入的 `sticky = 0` 自動改存成 `NULL`。目前的 Neon 資料庫已在 2026-10-31 套用。
+
+重建資料庫時，貼上整份 `docs/waline.pgsql` 就會一起建立。若是資料庫已經存在、只缺這個修正，在 Neon SQL Editor 執行：
+
+1. 先把已經是 `0` 的留言改回 `NULL`：
+
+   ```sql
+   UPDATE wl_comment SET sticky = NULL WHERE sticky = 0;
+   ```
+
+2. 再執行 `docs/waline.pgsql` 最後的 `CREATE OR REPLACE FUNCTION wl_comment_unsticky_null` 與 `CREATE TRIGGER wl_comment_unsticky_null` 兩段。
+
+確認 trigger 存在：
+
+```sql
+SELECT tgname FROM pg_trigger WHERE tgrelid = 'wl_comment'::regclass AND NOT tgisinternal;
+```
+
+升級 `@waline/vercel` 後，若官方已改成取消置頂時清回 `NULL`，這個 trigger 留著也不影響。
 
 ## 圖片上傳（Cloudflare Worker + R2）
 

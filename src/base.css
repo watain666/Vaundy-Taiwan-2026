@@ -1498,6 +1498,17 @@
     font-size:11.5px;
     line-height:1.6;
   }
+  /* 直屏手機：展開的應援說明可能比剩餘空間長。此時讓影片區塊在控制列上方
+     停住並可捲動，否則說明下半部會被控制列蓋住。只在展開時開啟捲動，
+     平常保留讓提示圖凸出到歌詞區上方的效果；短橫屏版型另有規則，不套用。 */
+  @media (max-width:899px) and (orientation:portrait), (max-width:899px) and (min-height:601px){
+    .song-fixed-top:has(> .chant-notes-panel:not([hidden])){
+      flex:0 1 auto;
+      min-height:0;
+      overflow-y:auto;
+      overscroll-behavior:contain;
+    }
+  }
   .chant-notes-list{margin:0;padding-left:18px;}
   .chant-notes-list li + li{margin-top:3px;}
   .chant-notes-panel a{

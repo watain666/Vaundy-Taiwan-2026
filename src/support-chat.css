@@ -152,6 +152,8 @@
 .support-board .wl-meta,
 .support-board .wl-gif-popup,
 .support-board .wl-emoji-popup{ display:none; }
+/* 不開放按讚；Waline 用 .wl-card .wl-like 設 inline-flex，要多一層才蓋得過 */
+.support-board .wl-card .wl-like{ display:none; }
 
 .support-board .wl-operation{ order:1;margin:12px 0 0;text-align:center; }
 .support-board .wl-cards{

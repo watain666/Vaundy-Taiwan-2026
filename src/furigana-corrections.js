@@ -805,5 +805,18 @@ export const ROMAJI_CORRECTIONS = Object.freeze({
   "ないさないさ": "nai sa nai sa",
   "ないな ないなないな": "nai na nai na nai na",
   "先生": "sensei",
-  "全然": "zenzen"
+  "全然": "zenzen",
+  "(ないぜ)": "(nai ze)",
+  "(しまうの)": "(shimau no)",
+  "逆光よ": "gyakkō yo",
+  "イチ・ニー・サン": "ichi･nī･san",
+  "ヨン で開幕": "yon de kaimaku",
+  "サン・ニー・イチ・ハイ‼": "san･nī･ichi･hai ‼",
+  "歩み合うかより": "ayumi au ka yori",
+  "BGMさ": "BGM sa",
+  "今日の夜は": "kyō no yoru wa",
+  "今夜だけは": "kon'ya dake wa",
+  "トドメ": "todome",
+  "今日の夜が": "kyō no yoru ga",
+  "明日の夜も": "asu no yoru mo"
 });

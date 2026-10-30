@@ -22,7 +22,7 @@ function build(){
   launcher = document.createElement("button");
   launcher.type = "button";
   launcher.className = "support-chat-launcher";
-  launcher.setAttribute("aria-label", "開啟留言板");
+  launcher.setAttribute("aria-label", "開啟 VAWS 交流板");
   launcher.setAttribute("aria-expanded", "false");
   launcher.setAttribute("aria-controls", "support-chat");
   launcher.innerHTML = CHAT_SVG;
@@ -37,10 +37,10 @@ function build(){
   panel.innerHTML = `
     <header class="support-chat-head">
       <div class="support-chat-heading">
-        <h2 id="support-chat-title">留言板</h2>
+        <h2 id="support-chat-title">VAWS 交流板</h2>
         <p>交換應援小物、和 VAWS 交流的地方</p>
       </div>
-      <button class="support-chat-close" type="button" aria-label="關閉留言板">${CLOSE_SVG}</button>
+      <button class="support-chat-close" type="button" aria-label="關閉 VAWS 交流板">${CLOSE_SVG}</button>
     </header>
     <div class="support-chat-body">
       <p class="support-chat-note">請勿公開電話、LINE ID 等個人資料，面交時留意假冒發放的詐騙。照片會自動縮小並移除拍攝地點等資訊。留言可能提到歌單，介意劇透者請斟酌閱讀。不當內容將由管理員刪除。</p>

@@ -1,6 +1,6 @@
-# 留言板（Waline）部署
+# VAWS 交流板（Waline）部署
 
-右下角的「留言板」聊天泡泡已經內建在網站裡，但留言要存在一台 Waline 伺服器上。GitHub Pages 只能放靜態檔案，所以伺服器要另外部署。以下使用 Waline 官方最推薦的 **Vercel + Neon（PostgreSQL）**，兩者都有免費方案。
+右下角的「VAWS 交流板」聊天泡泡已經內建在網站裡，但留言要存在一台 Waline 伺服器上。GitHub Pages 只能放靜態檔案，所以伺服器要另外部署。以下使用 Waline 官方最推薦的 **Vercel + Neon（PostgreSQL）**，兩者都有免費方案。
 
 > LeanCloud 的儲存服務已經下線，舊教學若提到 LeanCloud 請略過。
 

@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## [**v1.15.3**]
+
+- [PR #36](https://github.com/watain666/Vaundy-Taiwan-2026/pull/36)：修正 iPhone 安裝成 PWA 後，歌曲頁頂端的播放進度條落在狀態列下方的模糊區而看起來糊掉；進度條改放在頂列下緣、影片正上方。
+
 ## [**v1.15.2**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/87c8e573c06ce1a62d3a89b389ccf5488c07eb67)
 
 - [PR #34](https://github.com/watain666/Vaundy-Taiwan-2026/pull/34)：修正〈風神〉開頭「誰よりも 「救いたい」 と悲劇を気取ってた」漏掉的「誰」，讀音、羅馬拼音與中文翻譯同步更新。

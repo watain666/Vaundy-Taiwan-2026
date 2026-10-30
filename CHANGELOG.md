@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## [**v1.14.7**]
+
+- [PR #26](https://github.com/watain666/Vaundy-Taiwan-2026/pull/26)：修正在 VAWS 交流區點回覆留言開頭的「@暱稱」時，背後的應援指南會被換成首頁並跳回頁首；現在只會在交流區內捲到被回覆的留言，網址與頁面維持不變。
+
 ## [**v1.14.6**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/868b351b05d96f256d7a9e60f79336a106dec218)
 
 - [PR #25](https://github.com/watain666/Vaundy-Taiwan-2026/pull/25)：修正 VAWS 交流區的留言含有長網址時，整個聊天視窗被撐寬、可以左右捲動；長網址現在會自動換行，點擊連結不受影響。

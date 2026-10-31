@@ -321,6 +321,11 @@
   color:var(--support-chat-ink);
   text-align:left;
 }
+/* 連結預設用 --ui-accent，跟自己的氣泡同色會看不見，改用氣泡字色加底線 */
+.support-board .wl-cards > .wl-card-item.is-mine > .wl-card > .wl-content a{
+  color:inherit;
+  text-decoration:underline;
+}
 
 /* 回覆串縮排顯示在原訊息下方 */
 .support-board .wl-quote{

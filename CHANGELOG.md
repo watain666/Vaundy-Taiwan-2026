@@ -2,6 +2,11 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.16.2**
+
+- [PR #47](https://github.com/watain666/Vaundy-Taiwan-2026/pull/47)：〈東京フラッシュ〉日本版新增主歌開頭英文字的合唱：0:42–0:57 與 2:03–2:17 每行開頭的「STAY」「FAKE」「STAGE」「AGE」一起喊，只有這幾個字標色，應援說明同步更新；韓國版不變。
+- [PR #47](https://github.com/watain666/Vaundy-Taiwan-2026/pull/47)：〈東京フラッシュ〉歌詞與翻譯的「STAGE4」改為「STAGE 4」。
+
 ## [**v1.16.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/38d79583bdf71428236aa9d95c0a4be36f66c8bd)
 
 - [PR #46](https://github.com/watain666/Vaundy-Taiwan-2026/pull/46)：〈イデアが溢れて眠れない〉副歌的長句在手機上會換行，現在依酷狗逐字時間的斷句拆成兩行，例如「この 偶然の先、必然の先」／「言葉は光すらも超えて」、「この 天井の先、星々の先」／「宇宙の先、銀河を超えて」；中文翻譯、假名與羅馬拼音同步拆開。

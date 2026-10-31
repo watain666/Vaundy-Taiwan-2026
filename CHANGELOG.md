@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.15.10**
+
+- [PR #44](https://github.com/watain666/Vaundy-Taiwan-2026/pull/44)：修正 VAWS 交流區中自己發出的訊息若含網址，連結顏色與自己的訊息氣泡底色相同而看不見；現在自己訊息裡的連結改為深色字加底線，其他人的訊息不變。
+
 ## [**v1.15.9**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/ec899fe88e802e5b3efeeb68d74a935925165c47)
 
 - [PR #43](https://github.com/watain666/Vaundy-Taiwan-2026/pull/43)：修正手機直屏展開較長的「應援說明」時，說明下半部被下方控制列蓋住、也無法往下捲動；展開時影片與說明區改為停在控制列上方並可捲動，收起後版面不變。

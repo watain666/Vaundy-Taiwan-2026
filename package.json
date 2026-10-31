@@ -1,7 +1,7 @@
 {
   "name": "vaundy-taipei-2026-guide",
   "private": true,
-  "version": "1.15.9",
+  "version": "1.15.10",
   "type": "module",
   "scripts": {
     "dev": "vite",

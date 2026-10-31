@@ -15,7 +15,7 @@ export const SONG_MARKS = {
   "Shiwaawase'": { chant: { jp: 11, kr: 11 }, clap: false, wave: false, jump: false, spin: false },
   Homunculus: { chant: { jp: 23, kr: 20 }, clap: true, wave: true, jump: false, spin: false },
   soramimi: { chant: { jp: 3, kr: 25 }, clap: true, wave: true, jump: true, spin: false },
-  TokyoFlash: { chant: { jp: 12, kr: 31 }, clap: false, wave: true, jump: false, spin: false },
+  TokyoFlash: { chant: { jp: 20, kr: 31 }, clap: false, wave: true, jump: false, spin: false },
   NakiJizo: { chant: { jp: 8, kr: 8 }, clap: true, wave: true, jump: false, spin: false },
   napori: { chant: { jp: 18, kr: 18 }, clap: false, wave: false, jump: false, spin: false },
   Backlight: { chant: { jp: 18, kr: 12 }, clap: true, wave: true, jump: false, spin: false },

@@ -1777,7 +1777,9 @@
     font-family:'Noto Sans JP',var(--font-tw-sans);
     font-size:calc(clamp(13px,3.6vw,14px) * var(--lyric-scale, 1));
     color:#a99a80;
-    line-height:1.5;
+    /* 行距要容得下 ruby 假名。太窄時 Chrome 會依上一行的揮手動畫與
+       逐字高亮光暈即時調整換行後的行距，造成歌詞上下抖動。 */
+    line-height:1.9;
   }
   /* 歌詞內的逐字 Karaoke 進度：未唱到的字維持暗色，唱到後沿用字幕藍。 */
   .lyric-jp .karaoke-unit,
@@ -2747,7 +2749,7 @@
   /* 簡潔模式放大繁中主字幕；日文原文仍保留，應援圖示也保留。 */
   .song-page.venue .lyric-jp{
     font-size:calc(clamp(14px,3.8vw,17px) * var(--lyric-scale, 1));
-    line-height:1.5;
+    line-height:1.9;
     margin:0 0 2px;
   }
   .song-page.venue .lyric-romaji{

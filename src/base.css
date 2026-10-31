@@ -1901,6 +1901,24 @@
     color:var(--chant);
     font-style:italic;
   }
+  /* 日本版背景合唱：主歌詞照常顯示，台下要唱的那句放在下方並加上標籤。 */
+  .lyric-bg-label{
+    display:inline-block;
+    margin-right:6px;
+    padding:0 6px;
+    border-radius:var(--radius-pill, 999px);
+    background:rgba(245,148,44,.16);
+    font-size:.78em;
+    font-style:normal;
+    vertical-align:.1em;
+  }
+  .lyric-bg rt{ color:rgba(245,210,145,.9); font-style:normal; }
+  .lyric-bg-romaji{
+    display:block;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.86em;
+    font-style:normal;
+  }
   .seg-chant{color:var(--chant);}
   .seg-clap{color:var(--clap);}
 

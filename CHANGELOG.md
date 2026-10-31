@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.15.10**
+## [**v1.15.10**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/68159431d97b688829f6f5da79a189043011897b)
 
 - [PR #44](https://github.com/watain666/Vaundy-Taiwan-2026/pull/44)：修正 VAWS 交流區中自己發出的訊息若含網址，連結顏色與自己的訊息氣泡底色相同而看不見；現在自己訊息裡的連結改為深色字加底線，其他人的訊息不變。
 

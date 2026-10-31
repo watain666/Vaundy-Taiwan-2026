@@ -27,7 +27,7 @@ export const SONG_MARKS = {
   Fujin: { chant: { jp: 19, kr: 19 }, clap: true, wave: true, jump: false, spin: false },
   Jonetsu: { chant: { jp: 0, kr: 18 }, clap: true, wave: true, jump: false, spin: false },
   Kagero: { chant: { jp: 19, kr: 19 }, clap: false, wave: true, jump: false, spin: false },
-  IdeagaAfureteNemurenai: { chant: { jp: 12, kr: 16 }, clap: false, wave: true, jump: false, spin: false },
+  IdeagaAfureteNemurenai: { chant: { jp: 14, kr: 24 }, clap: false, wave: true, jump: false, spin: false },
   flyaway: { chant: { jp: 22, kr: 22 }, clap: true, wave: true, jump: true, spin: false },
   mabuta: { chant: { jp: 11, kr: 11 }, clap: true, wave: true, jump: false, spin: false },
   Hitomibore: { chant: { jp: 2, kr: 2 }, clap: true, wave: true, jump: false, spin: false },

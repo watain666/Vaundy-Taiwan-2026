@@ -4139,16 +4139,21 @@ function lineIsChant(line, song = currentSong){
 }
 
 /* 日本版的背景合唱：主唱照常唱主歌詞，台下同時唱另一句（例如
-   〈イデアが溢れて眠れない〉1:26–1:42 的背景童聲）。主歌詞不標成
-   合唱，只在區間內每一行下方加一列 .lyric-bg。 */
+   〈イデアが溢れて眠れない〉1:25–1:42 的背景童聲）。主歌詞不標成
+   合唱，只在和區間重疊的每一行下方加一列 .lyric-bg；背景合唱可能
+   從一行的中間開始，所以比的是整行的播放區間，不只是行的起點。 */
 function backingChantsForLine(line, song = currentSong){
   if (chantVersion !== "jp" || !line || !song) return [];
   const guide = JP_CHANT_GUIDES[song.id];
   if (!guide || !Array.isArray(guide.backingChants)) return [];
   const time = Number(line.time);
   if (!Number.isFinite(time)) return [];
+  const lines = Array.isArray(song.lyrics) ? song.lyrics : [];
+  const index = lines.indexOf(line);
+  const next = index >= 0 ? Number(lines[index + 1]?.time) : NaN;
+  const lineEnd = Number.isFinite(next) ? next : Infinity;
   return guide.backingChants.filter(item => item && item.text
-    && time >= Number(item.start) && time < Number(item.end));
+    && time < Number(item.end) && lineEnd > Number(item.start));
 }
 
 function backingChantHtml(line, song = currentSong){

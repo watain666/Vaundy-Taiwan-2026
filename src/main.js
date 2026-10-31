@@ -2333,6 +2333,7 @@ function repaintChantVersionLines(song = currentSong){
     line.classList.toggle("has-chant-segment", chantClass.split(" ").includes("has-chant-segment"));
     const icons = line.querySelector(".lyric-icons");
     if (icons) icons.innerHTML = lyricIconsHtml(lyric, song);
+    paintBackingChant(line, lyric, song);
   });
 }
 
@@ -2655,6 +2656,7 @@ function renderSong(song){
           <span class="lyric-jp" lang="ja">${renderJapaneseLyricLine(l, song)}</span>
           <span class="lyric-romaji" lang="ja-Latn">${readingMode === "both" ? renderRomajiLyricLine(l, song) : ""}</span>
           <span class="lyric-zh">${withIcons(l.tr || "")}</span>
+          ${backingChantHtml(l, song)}
         </span>
       </button>
     </li>`).join("");
@@ -2889,6 +2891,7 @@ function repaintJapaneseReadings(){
         : "";
     }
     markLyricChantSegments(line, lyric);
+    paintBackingChant(line, lyric, currentSong);
     decorateKaraokeLine(target);
     if (romajiTarget) decorateKaraokeLine(romajiTarget);
     assignKaraokeLineTiming(line, karaokeLineTiming(currentSong, idx));
@@ -4034,7 +4037,7 @@ function hasIconToken(str, name){
 // 한 줄의 jp 조각들을 훑어서 박수·동작 아이콘과 현재 선택한
 // 응원 버전의 대합창 아이콘을 만들어 줍니다.
 function lyricIconsHtml(line, song = currentSong){
-  const hasChant = lineIsChant(line, song);
+  const hasChant = lineHasChantCue(line, song);
   let hasClap = false, wave = false;
   const scan = (arr) => {
     if (typeof arr === "string"){
@@ -4135,6 +4138,42 @@ function lineIsChant(line, song = currentSong){
     : lineIsChantKr(line);
 }
 
+/* 日本版的背景合唱：主唱照常唱主歌詞，台下同時唱另一句（例如
+   〈イデアが溢れて眠れない〉1:26–1:42 的背景童聲）。主歌詞不標成
+   合唱，只在區間內每一行下方加一列 .lyric-bg。 */
+function backingChantsForLine(line, song = currentSong){
+  if (chantVersion !== "jp" || !line || !song) return [];
+  const guide = JP_CHANT_GUIDES[song.id];
+  if (!guide || !Array.isArray(guide.backingChants)) return [];
+  const time = Number(line.time);
+  if (!Number.isFinite(time)) return [];
+  return guide.backingChants.filter(item => item && item.text
+    && time >= Number(item.start) && time < Number(item.end));
+}
+
+function backingChantHtml(line, song = currentSong){
+  return backingChantsForLine(line, song).map(item => {
+    const romaji = readingMode === "both"
+      ? `<span class="lyric-bg-romaji" lang="ja-Latn">${renderRomajiLine(item.text, false)}</span>`
+      : "";
+    return `<span class="lyric-bg" lang="ja"><span class="lyric-bg-label">背景合唱</span>${renderJapaneseLine(item.text)}${romaji}</span>`;
+  }).join("");
+}
+
+function paintBackingChant(lineEl, lyric, song = currentSong){
+  const body = lineEl && lineEl.querySelector(".lyric-body");
+  if (!body) return;
+  body.querySelectorAll(".lyric-bg").forEach(el => el.remove());
+  const html = backingChantHtml(lyric, song);
+  if (html) body.insertAdjacentHTML("beforeend", html);
+}
+
+/* 合唱行與背景合唱行都算「這裡要唱」：左側麥克風、只聽大合唱與
+   歌曲徽章共用同一個判斷。 */
+function lineHasChantCue(line, song = currentSong){
+  return lineIsChant(line, song) || backingChantsForLine(line, song).length > 0;
+}
+
 const CHANT_LEAD_SEC  = 1.2;   // 떼창 직전 한 박자 먼저 들어가 준비할 시간
 const CHANT_TAIL_SEC  = 0.6;   // 마지막 글자가 잘리지 않도록 뒤에 남기는 여유
 const CHANT_GAP_MERGE = 2.5;   // 실제로 붙어 있는 짧은 공백만 이어서 듣는다
@@ -4152,9 +4191,9 @@ function chantBlocks(song){
                                      : playbackTimeForLine(song, i) + 8;
   const raw = [];
   for (let i = 0; i < lines.length; i++){
-    if (!lineIsChant(lines[i], song)) continue;
+    if (!lineHasChantCue(lines[i], song)) continue;
     let e = i;
-    while (e + 1 < lines.length && lineIsChant(lines[e + 1], song)) e++;
+    while (e + 1 < lines.length && lineHasChantCue(lines[e + 1], song)) e++;
     raw.push({
       from: i, to: e,
       start: Math.max(0, playbackTimeForLine(song, i) - CHANT_LEAD_SEC),
@@ -4218,7 +4257,7 @@ function songMarks(song){
     scanPart(line.jpSegments || line.jp);
     scanPart(line.trSegments || line.tr);
     // 판단 기준은 lineIsChant 한 곳에서만 (떼창만 듣기와 어긋나지 않도록)
-    if (lineIsChant(line, song)) mark.chant++;
+    if (lineHasChantCue(line, song)) mark.chant++;
   });
 
   songMarksCache.set(cacheKey, mark);

@@ -62,6 +62,16 @@ for (const song of SONGS) {
 }
 
 for (const [song, guide] of Object.entries(JP_CHANT_GUIDES || {})) {
+  for (const [index, backing] of (guide.backingChants || []).entries()) {
+    const source = String(backing?.text || "");
+    if (!japaneseCharacters.test(source)) continue;
+    const romaji = romajiByLine[source];
+    if (typeof romaji !== "string") {
+      missingChantSegments.push({ song, index, time: backing.start, source });
+    } else if (japaneseCharacters.test(romaji)) {
+      leaking.push({ song, index, time: backing.start, source, romaji, kind: "backing chant" });
+    }
+  }
   for (const [index, segment] of (guide.chantSegments || []).entries()) {
     if (!segment || typeof segment.romaji !== "string") continue;
     if (japaneseCharacters.test(segment.romaji)) {

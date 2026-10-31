@@ -339,9 +339,11 @@ export const FURIGANA_CORRECTIONS = Object.freeze({
 
   // 理念滿溢而無法入睡 (イデアが溢れて眠れない) — https://utaten.com/lyric/sz26033006/
   "「全てを失ったその後で": "「<ruby>全<rt>すべ</rt></ruby>てを<ruby>失<rt>うしな</rt></ruby>ったその<ruby>後<rt>あと</rt></ruby>で",
-  "[wave]この 天井の先、星々の先、宇宙の先、銀河を超えて": "[wave]この <ruby>天井<rt>てんじょう</rt></ruby>の<ruby>先<rt>さき</rt></ruby>、<ruby>星々<rt>ほしぼし</rt></ruby>の<ruby>先<rt>さき</rt></ruby>、<ruby>宇宙<rt>うちゅう</rt></ruby>の<ruby>先<rt>さき</rt></ruby>、<ruby>銀河<rt>ぎんが</rt></ruby>を<ruby>超<rt>こ</rt></ruby>えて",
+  "[wave]この 天井の先、星々の先": "[wave]この <ruby>天井<rt>てんじょう</rt></ruby>の<ruby>先<rt>さき</rt></ruby>、<ruby>星々<rt>ほしぼし</rt></ruby>の<ruby>先<rt>さき</rt></ruby>",
+  "[wave]宇宙の先、銀河を超えて": "[wave]<ruby>宇宙<rt>うちゅう</rt></ruby>の<ruby>先<rt>さき</rt></ruby>、<ruby>銀河<rt>ぎんが</rt></ruby>を<ruby>超<rt>こ</rt></ruby>えて",
   "[wave]僕の瞼流る 軌道はいつも同じ": "[wave]<ruby>僕<rt>ぼく</rt></ruby>の<ruby>瞼流<rt>まぶたなが</rt></ruby>る <ruby>軌道<rt>きどう</rt></ruby>はいつも<ruby>同<rt>おな</rt></ruby>じ",
-  "[wave]この 天井の光、星々の光、宇宙の光、銀河を超えて": "[wave]この <ruby>天井<rt>てんじょう</rt></ruby>の<ruby>光<rt>ひかり</rt></ruby>、<ruby>星々<rt>ほしぼし</rt></ruby>の<ruby>光<rt>ひかり</rt></ruby>、<ruby>宇宙<rt>うちゅう</rt></ruby>の<ruby>光<rt>ひかり</rt></ruby>、<ruby>銀河<rt>ぎんが</rt></ruby>を<ruby>超<rt>こ</rt></ruby>えて",
+  "[wave]この 天井の光、星々の光": "[wave]この <ruby>天井<rt>てんじょう</rt></ruby>の<ruby>光<rt>ひかり</rt></ruby>、<ruby>星々<rt>ほしぼし</rt></ruby>の<ruby>光<rt>ひかり</rt></ruby>",
+  "[wave]宇宙の光、銀河を超えて": "[wave]<ruby>宇宙<rt>うちゅう</rt></ruby>の<ruby>光<rt>ひかり</rt></ruby>、<ruby>銀河<rt>ぎんが</rt></ruby>を<ruby>超<rt>こ</rt></ruby>えて",
   "イデアが溢れて眠れない": "イデアが<ruby>溢<rt>あふ</rt></ruby>れて<ruby>眠<rt>ねむ</rt></ruby>れない",
 
   // 飛翔之時 (飛ぶ時) — https://utaten.com/lyric/sz26020427/
@@ -759,9 +761,11 @@ export const ROMAJI_CORRECTIONS = Object.freeze({
 
   // 理念滿溢而無法入睡 (イデアが溢れて眠れない) — https://utaten.com/lyric/sz26033006/
   "「全てを失ったその後で": "\" subete o ushinatta sono ato de",
-  "[wave]この 天井の先、星々の先、宇宙の先、銀河を超えて": "[wave]kono tenjō no saki, hoshiboshi no saki, uchū no saki, ginga o koe te",
+  "[wave]この 天井の先、星々の先": "[wave]kono tenjō no saki, hoshiboshi no saki",
+  "[wave]宇宙の先、銀河を超えて": "[wave]uchū no saki, ginga o koe te",
   "[wave]僕の瞼流る 軌道はいつも同じ": "[wave]boku no mabuta nagaru kidō wa itsumo onaji",
-  "[wave]この 天井の光、星々の光、宇宙の光、銀河を超えて": "[wave]kono tenjō no hikari, hoshiboshi no hikari, uchū no hikari, ginga o koe te",
+  "[wave]この 天井の光、星々の光": "[wave]kono tenjō no hikari, hoshiboshi no hikari",
+  "[wave]宇宙の光、銀河を超えて": "[wave]uchū no hikari, ginga o koe te",
   "イデアが溢れて眠れない": "idea ga afure te nemure nai",
 
   // 飛翔之時 (飛ぶ時) — https://utaten.com/lyric/sz26020427/

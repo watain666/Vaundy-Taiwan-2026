@@ -285,6 +285,12 @@ export function createDocumentPip({
     root = nextRoot;
     resetRenderCache();
     nextWindow.addEventListener("resize", ()=>scrollToActive(false));
+    // The copied <link> stylesheets and web fonts load after the first render,
+    // which changes every line's height and leaves the first scroll pointing at
+    // empty space. Re-anchor whenever the list's size changes.
+    const Observer = nextWindow.ResizeObserver;
+    const list = nextRoot.querySelector(".pip-lyrics-list");
+    if (Observer && list) new Observer(()=>scrollToActive(false)).observe(list);
   }
 
   async function open(model = {}){

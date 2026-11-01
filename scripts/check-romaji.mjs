@@ -1,15 +1,10 @@
-import fs from "node:fs";
-import vm from "node:vm";
+import { JP_ROMAJI } from "../furigana.js";
 import { SONG_LYRICS as SONGS } from "../src/song-lyrics.js";
 import { ROMAJI_CORRECTIONS } from "../src/furigana-corrections.js";
 import { JP_CHANT_GUIDES } from "../src/chant-guide.js";
 
-const furiganaSource = fs.readFileSync(new URL("../furigana.js", import.meta.url), "utf8");
-const generated = { window: {} };
-vm.runInNewContext(furiganaSource, generated, { filename: "furigana.js" });
-
 const romajiByLine = {
-  ...(generated.window.JP_ROMAJI || {}),
+  ...JP_ROMAJI,
   ...ROMAJI_CORRECTIONS,
 };
 const japaneseCharacters = /[ぁ-ゖ゠-ヿ一-鿿]/u;

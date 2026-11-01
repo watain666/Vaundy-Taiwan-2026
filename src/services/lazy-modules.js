@@ -54,7 +54,11 @@ export function loadFurigana(){
       import("../../furigana.js"),
       loadCorrections()
     ])
-      .then(([, corrections]) => applyFuriganaCorrections(corrections))
+      .then(([{ JP_FURIGANA, JP_ROMAJI }, corrections]) => {
+        window.JP_FURIGANA = JP_FURIGANA;
+        window.JP_ROMAJI = JP_ROMAJI;
+        applyFuriganaCorrections(corrections);
+      })
       .catch(() => undefined);
   }
   return furiganaPromise;

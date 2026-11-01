@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import vm from "node:vm";
 import { SONG_LYRICS as SONGS } from "../src/song-lyrics.js";
+import { JP_FURIGANA, JP_ROMAJI } from "../furigana.js";
 import { FURIGANA_CORRECTIONS, ROMAJI_CORRECTIONS } from "../src/furigana-corrections.js";
 
 const source = fs.readFileSync(new URL("../karaoke-sources.js", import.meta.url), "utf8");
@@ -8,15 +9,12 @@ const sourceContext = { window: {} };
 vm.runInNewContext(source, sourceContext, { filename: "karaoke-sources.js" });
 const karaoke = sourceContext.window.KARAOKE_SOURCES;
 
-const furiganaSource = fs.readFileSync(new URL("../furigana.js", import.meta.url), "utf8");
-const furiganaContext = { window: {} };
-vm.runInNewContext(furiganaSource, furiganaContext, { filename: "furigana.js" });
 const furiganaByLine = {
-  ...(furiganaContext.window.JP_FURIGANA || {}),
+  ...JP_FURIGANA,
   ...FURIGANA_CORRECTIONS,
 };
 const romajiByLine = {
-  ...(furiganaContext.window.JP_ROMAJI || {}),
+  ...JP_ROMAJI,
   ...ROMAJI_CORRECTIONS,
 };
 

@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.17.0**
+## [**v1.17.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/06a3dd0d8e28f5655bbecbc254a34b4c35ae84a6)
 
 - [PR #51](https://github.com/watain666/Vaundy-Taiwan-2026/pull/51)：歌曲頁下方控制列改成一排，只留演出中常用的「只練合唱」「日文」「中文」「簡潔」「PiP」「設定」；按鈕文字放大、不再半透明，縮寫改成完整名稱，手機上不會再折成三排擋住歌詞。
 - [PR #51](https://github.com/watain666/Vaundy-Taiwan-2026/pull/51)：新增「顯示設定」面板，收進主題（淺色／深色）、播放速度、歌詞字級、日文讀音（假名／羅馬字／兩者）、應援版本（附國旗）、逐字卡拉 OK 高亮與歌詞自動捲動。

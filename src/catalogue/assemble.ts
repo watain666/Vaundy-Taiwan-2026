@@ -163,7 +163,7 @@ export const RULE_SEVERITY = {
   "time-order": "error",
   "spotify-track-id": "error",
   "unknown-song": "error",
-  "dead-reading-key": "warning",
+  "dead-reading-key": "error",
   "id-punctuation": "warning",
 } as const;
 

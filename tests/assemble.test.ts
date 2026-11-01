@@ -236,14 +236,17 @@ describe("build errors", () => {
   });
 });
 
-describe("warnings", () => {
-  test("dead reading keys are listed", () => {
+describe("dead reading keys", () => {
+  test("a reading key that matches no lyric text is a build error", () => {
     const sources = makeSources();
     sources.readings.romaji = { ...sources.readings.romaji, "[clap]古い歌詞": "[clap]furui kashi" };
-    const catalogue = assembleCatalogue(sources);
-    expect(catalogue.deadReadingKeys).toEqual([{ table: "romaji", key: "[clap]古い歌詞" }]);
-    expect(catalogue.warnings.map(issue => issue.rule)).toEqual(["dead-reading-key"]);
+    const error = catalogueError(sources);
+    expect(error.issues).toEqual([expect.objectContaining({ rule: "dead-reading-key", severity: "error" })]);
+    expect(error.message).toContain('[dead-reading-key]: romaji key "[clap]古い歌詞"');
   });
+});
+
+describe("warnings", () => {
 
   test("ids with whitespace or punctuation are listed and kept verbatim", () => {
     const sources = makeSources();

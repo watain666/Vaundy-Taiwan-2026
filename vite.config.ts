@@ -1,14 +1,14 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import { cpSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { homeHtml } from "./src/ui/home.js";
 
-function prerenderHome(){
+function prerenderHome(): Plugin {
   return {
     name: "prerender-home",
     transformIndexHtml: {
       order: "pre",
-      handler(html){
+      handler(html: string){
         const { version } = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
         return html.replace('<main id="app"></main>', `<main id="app">${homeHtml(`v${version}`)}</main>`);
       }
@@ -16,7 +16,7 @@ function prerenderHome(){
   };
 }
 
-function copyRootStaticAssets(){
+function copyRootStaticAssets(): Plugin {
   return {
     name: "copy-root-static-assets",
     apply: "build",

@@ -7,11 +7,15 @@
     "dev": "vite",
     "check:lyrics": "node scripts/check-romaji.mjs",
     "check:karaoke": "node scripts/check-karaoke-alignment.mjs",
+    "typecheck": "tsc --noEmit",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^7.1.7"
+    "@types/node": "^22.20.5",
+    "typescript": "^7.0.2",
+    "vite": "^7.1.7",
+    "vitest": "^5.0.5"
   },
   "dependencies": {
     "@waline/client": "^3.16.1"

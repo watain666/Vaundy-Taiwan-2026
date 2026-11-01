@@ -2137,7 +2137,7 @@ function buildSongShell(){
               </div>
             </div>
             <div class="settings-row">
-              <span class="settings-label" id="karaoke-label">逐字卡拉OK高亮</span>
+              <span class="settings-label" id="karaoke-label">逐字卡拉 OK 高亮</span>
               <button class="settings-switch${karaokeEnabled ? " active" : ""}" id="karaoke-btn" type="button" aria-pressed="${karaokeEnabled ? "true" : "false"}" aria-labelledby="karaoke-label">
                 <span class="venue-switch"><span class="venue-knob"></span></span>
               </button>
@@ -2942,7 +2942,7 @@ function updateKaraokeUi(){
   if (btn){
     btn.classList.toggle("active", karaokeEnabled);
     btn.setAttribute("aria-pressed", karaokeEnabled ? "true" : "false");
-    btn.setAttribute("aria-label", `切換逐字卡拉OK高亮：目前${karaokeEnabled ? "開啟" : "關閉"}`);
+    btn.setAttribute("aria-label", `切換逐字卡拉 OK 高亮：目前${karaokeEnabled ? "開啟" : "關閉"}`);
   }
 
   if (!karaokeEnabled){

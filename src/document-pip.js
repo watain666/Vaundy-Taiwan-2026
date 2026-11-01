@@ -242,10 +242,11 @@ export function createDocumentPip({
     const nextRoot = documentRef.createElement("main");
     nextRoot.className = "document-pip song-page";
     nextRoot.innerHTML = `
-      <div class="pip-progress" role="progressbar" aria-label="播放進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="正在載入播放進度">
-        <span class="pip-progress-fill"></span>
-      </div>
-      <header class="pip-controls" aria-label="字幕窗控制"></header>
+      <header class="pip-controls" aria-label="字幕窗控制">
+        <div class="pip-progress" role="progressbar" aria-label="播放進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="正在載入播放進度">
+          <span class="pip-progress-fill"></span>
+        </div>
+      </header>
       <p class="pip-status" role="status" aria-live="polite" hidden></p>
       <section class="pip-lyrics" aria-label="同步歌詞">
         <div class="pip-line-group pip-current-group">

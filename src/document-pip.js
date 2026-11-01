@@ -97,10 +97,12 @@ export function createDocumentPip({
   let closeWhenReady = false;
   let listKey = null;
   let renderedActiveIdx = null;
+  let renderedPlaying = null;
 
   function resetRenderCache(){
     listKey = null;
     renderedActiveIdx = null;
+    renderedPlaying = null;
   }
 
   function clearWindow(windowRef, notify = true){
@@ -215,10 +217,16 @@ export function createDocumentPip({
     if (play){
       const playing = model.isPlaying === true;
       play.disabled = model.canPlayPause !== true;
-      play.classList.toggle("is-playing", playing);
-      play.querySelector(".pip-action-icon").innerHTML = playing ? PAUSE_SVG : PLAY_SVG;
-      play.querySelector(".pip-action-label").textContent = playing ? "暫停" : "播放";
-      play.setAttribute("aria-label", playing ? "暫停主頁影片" : "播放主頁影片");
+      // render() runs on every sync tick (~100ms). Swapping the icon each time
+      // can remove the element a press started on, and the click gets lost,
+      // so only touch the button when the play state actually changes.
+      if (playing !== renderedPlaying){
+        play.classList.toggle("is-playing", playing);
+        play.querySelector(".pip-action-icon").innerHTML = playing ? PAUSE_SVG : PLAY_SVG;
+        play.querySelector(".pip-action-label").textContent = playing ? "暫停" : "播放";
+        play.setAttribute("aria-label", playing ? "暫停主頁影片" : "播放主頁影片");
+        renderedPlaying = playing;
+      }
     }
 
     const focus = root.querySelector(".pip-return");

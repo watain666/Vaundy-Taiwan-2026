@@ -132,6 +132,11 @@ body{
   cursor:default;
   pointer-events:none;
 }
+/* 小窗通常很矮：收緊每句的上下內距與羅馬字、中文行高，讓下一句露出更多。
+   日文行高維持主頁面的 1.9，否則逐字高亮時整行會上下抖動。 */
+.document-pip.song-page .pip-lyrics-list .lyric-line{padding-top:6px;padding-bottom:6px;}
+.document-pip.song-page .pip-lyrics-list .lyric-romaji{line-height:1.3;}
+.document-pip.song-page .pip-lyrics-list .lyric-zh{line-height:1.35;}
 /* 字級跟著小窗自己的大小變：預設大小（內容約 450×169）時等於主頁面桌機的
    14／17px，拉大就變大；用寬與高較緊的一邊計算，矮窗時不會大到放不下。
    日文、羅馬字、中文維持主頁面的比例，再乘上「歌詞字級」設定。 */
@@ -185,12 +190,14 @@ body{
 .document-pip .pip-action:focus-visible{outline:2px solid var(--ui-accent, #e9d9a3);outline-offset:2px;}
 .document-pip .pip-action:active{transform:scale(.97);}
 .document-pip .pip-action:disabled{cursor:not-allowed;opacity:.42;}
-/* 圖示外層若是行內排版會多出行高、把圖示往上推，改用 flex 讓圖示真正置中。 */
+/* 圖示外層若是行內排版會多出行高、把圖示往上推，改用 flex 讓圖示真正置中。
+   圖示不接收點擊，點擊一律落在按鈕本身，圖示更換時才不會吃掉點擊。 */
 .document-pip .pip-action-icon{
   display:flex;
   align-items:center;
   justify-content:center;
   line-height:0;
+  pointer-events:none;
 }
 .document-pip .pip-action svg{display:block;flex:none;width:16px;height:16px;}
 .document-pip .pip-play{color:var(--ui-accent, #e9d9a3);}

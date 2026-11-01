@@ -221,6 +221,8 @@ body{
 }
 .document-pip .pip-action svg{display:block;flex:none;width:16px;height:16px;}
 .document-pip .pip-play{color:var(--ui-accent, #e9d9a3);}
+/* 播放中（顯示暫停）與主頁面一致用綠色。 */
+.document-pip .pip-play.is-playing{color:var(--ui-playing, #8de05f);}
 .document-pip .pip-play svg,
 .document-pip .pip-return svg{width:18px;height:18px;}
 .document-pip .pip-prev svg,

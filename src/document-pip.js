@@ -215,6 +215,7 @@ export function createDocumentPip({
     if (play){
       const playing = model.isPlaying === true;
       play.disabled = model.canPlayPause !== true;
+      play.classList.toggle("is-playing", playing);
       play.querySelector(".pip-action-icon").innerHTML = playing ? PAUSE_SVG : PLAY_SVG;
       play.querySelector(".pip-action-label").textContent = playing ? "暫停" : "播放";
       play.setAttribute("aria-label", playing ? "暫停主頁影片" : "播放主頁影片");

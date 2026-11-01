@@ -441,6 +441,7 @@ button{touch-action:manipulation;}
 }
 :root[data-theme="light"]{
   color-scheme:light;
+  --ui-playing:#3d8a28;
   --ui-bg:#f5f5f7;
   --ui-surface:#fff;
   --ui-raised:#eaeaed;
@@ -462,6 +463,7 @@ button{touch-action:manipulation;}
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
+  --ui-playing:#8de05f;
   --ui-bg:#151619;
   --ui-surface:#202125;
   --ui-raised:#2b2c30;
@@ -1098,8 +1100,8 @@ button{touch-action:manipulation;}
 
 
 /* ── 下方控制列：單排主控制＋顯示設定面板 ─────────────────────────
-   演唱會中常按的（播放、只練合唱、日文、中文、簡潔、PiP）留在一排，
-   不常調整的（倍速、字級、讀音、應援版本、卡拉OK、自動捲動）
+   演唱會中常按的（只練合唱、日文、中文、簡潔、PiP）留在一排，
+   不常調整的（主題、倍速、字級、讀音、應援版本、卡拉OK、自動捲動）
    收進「設定」面板，控制列不再折成多排、也不必左右滑動。 */
 .song-page .player-controls{
   flex-wrap:nowrap;
@@ -1108,10 +1110,6 @@ button{touch-action:manipulation;}
   overflow:visible;
   padding:var(--space-2) var(--space-3) calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
 }
-/* 播放鈕一般模式與簡潔模式都顯示；離線時沒有影片可播才隱藏。 */
-.song-page .player-controls .play-toggle{display:flex;}
-.song-page.offline .player-controls .play-toggle{display:none;}
-.song-page .player-controls .play-toggle,
 .song-page .player-controls .bar-chip{
   flex:0 1 auto;
   min-width:var(--touch-height);
@@ -1151,8 +1149,7 @@ button{touch-action:manipulation;}
 .song-page .player-controls .bar-chip.active .chant-ico,
 .song-page .player-controls .bar-chip.active .venue-label{color:var(--ui-bg);}
 .song-page .player-controls .settings-toggle[aria-expanded="true"]{background:var(--ui-hover);}
-.song-page .player-controls .bar-chip:focus-visible,
-.song-page .player-controls .play-toggle:focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px;}
+.song-page .player-controls .bar-chip:focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px;}
 
 /* 窄螢幕：先收「只練合唱」的字，再更窄才收「設定」的字（按鈕仍有 aria-label）。 */
 @media (max-width:400px){
@@ -1166,7 +1163,6 @@ button{touch-action:manipulation;}
 }
 @media (max-width:340px){
   .song-page .player-controls{gap:4px;padding-left:6px;padding-right:6px;}
-  .song-page .player-controls .play-toggle,
   .song-page .player-controls .bar-chip{min-width:40px;padding:0 6px;}
 }
 @media (orientation: landscape) and (max-height: 600px){
@@ -1275,3 +1271,29 @@ button{touch-action:manipulation;}
   .song-page .settings-switch .venue-knob,
   .song-page .settings-switch .venue-switch{transition:none;}
 }
+
+/* 播放鍵放在頂列右上，與 PiP 小窗的位置一致；播放中（顯示暫停）用綠色。
+   主題切換移進「顯示設定」，頂列不再放主題鈕。 */
+.song-page .song-play-btn{
+  flex:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:var(--control-height);
+  min-height:var(--control-height);
+  padding:var(--space-2);
+  border:0;
+  border-radius:var(--radius-pill);
+  background:var(--stage-raised);
+  color:var(--ui-accent);
+  cursor:pointer;
+}
+.song-page .song-play-btn svg{display:block;width:19px;height:19px;}
+.song-page .song-play-btn:hover{background:var(--ui-surface);}
+.song-page .song-play-btn.playing{color:var(--ui-playing);}
+.song-page .song-play-btn:focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px;}
+.song-page.offline .song-play-btn{display:none;}
+.song-page .settings-option-icon{display:inline-flex;}
+.song-page .settings-option-icon svg{display:block;width:16px;height:16px;}
+/* 面板打開時焦點放在面板本身（給鍵盤與報讀器），不畫外框。 */
+.song-page .song-sheet-panel:focus{outline:none;}

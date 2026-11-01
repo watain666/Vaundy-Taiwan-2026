@@ -249,11 +249,22 @@ function applyTheme(theme, save = false){
     button.setAttribute("aria-label", `切換至${label}`);
     button.setAttribute("title", `切換至${label}`);
   });
+  document.querySelectorAll("[data-theme-set]").forEach(option => {
+    const active = option.dataset.themeSet === theme;
+    option.classList.toggle("active", active);
+    option.setAttribute("aria-pressed", active ? "true" : "false");
+  });
   updateDocumentPip();
 }
 document.addEventListener("click", event => {
   if (!event.target.closest("[data-theme-toggle]")) return;
   applyTheme(currentTheme === "dark" ? "light" : "dark", true);
+});
+document.addEventListener("click", event => {
+  const option = event.target.closest("[data-theme-set]");
+  if (!option) return;
+  const theme = option.dataset.themeSet;
+  if ((theme === "light" || theme === "dark") && theme !== currentTheme) applyTheme(theme, true);
 });
 if (themePreference.addEventListener){
   themePreference.addEventListener("change", event => {
@@ -1860,7 +1871,7 @@ function openSongSheet(){
   songView.querySelectorAll("#song-page > .song-topbar, #song-page > .song-body, #song-page > .player-controls, #song-page > .song-dock").forEach(el => { el.inert = true; });
   const cur = list && list.querySelector(".song-sheet-item.current");
   if (cur) list.scrollTop = Math.max(0, cur.offsetTop - list.clientHeight / 2 + cur.offsetHeight / 2);
-  sheet.querySelector(".song-sheet-close").focus();
+  sheet.querySelector(".song-sheet-panel").focus();
 }
 function closeSongSheet(){
   const sheet = document.getElementById("song-sheet");
@@ -1890,7 +1901,7 @@ function openSettingsSheet(){
   sheet.setAttribute("aria-hidden", "false");
   if (btn) btn.setAttribute("aria-expanded", "true");
   setSongPageInert(true);
-  sheet.querySelector(".song-sheet-close").focus();
+  sheet.querySelector(".song-sheet-panel").focus();
 }
 function closeSettingsSheet(){
   const sheet = document.getElementById("settings-sheet");
@@ -1993,7 +2004,7 @@ function buildSongShell(){
           <button class="song-nav-btn" id="next-song" aria-label="下一首">${TRACK_NEXT_SVG}</button>
         </div>
         </nav>
-        ${themeToggleHtml()}
+        <button class="song-play-btn" id="play-toggle" type="button" aria-label="播放">${PLAY_SVG}</button>
       </div>
 
       <div class="song-body">
@@ -2061,7 +2072,6 @@ function buildSongShell(){
       </div>
 
       <div class="player-controls" id="player-controls">
-        <button class="play-toggle" id="play-toggle" aria-label="播放／暫停">${PLAY_SVG}</button>
         <button class="venue-toggle bar-chip chant-toggle" id="chant-btn" type="button" aria-pressed="false" aria-label="只練合唱" title="只播放大合唱段落">
           <span class="chant-ico">${STATIC_MIC_SVG}</span>
           <span class="venue-label">只練合唱</span>
@@ -2087,13 +2097,20 @@ function buildSongShell(){
 
       <div class="song-sheet settings-sheet" id="settings-sheet" aria-hidden="true" inert>
         <div class="song-sheet-backdrop" data-close-settings></div>
-        <div class="song-sheet-panel settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-sheet-title">
+        <div class="song-sheet-panel settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-sheet-title" tabindex="-1">
           <span class="song-sheet-grip"></span>
           <div class="song-sheet-head">
             <span class="song-sheet-title" id="settings-sheet-title">顯示設定</span>
             <button class="song-sheet-close" type="button" data-close-settings aria-label="關閉顯示設定">${CLOSE_SVG}</button>
           </div>
           <div class="settings-list">
+            <div class="settings-row">
+              <span class="settings-label" id="theme-mode-label">主題</span>
+              <div class="chant-version-segment settings-segment" role="group" aria-labelledby="theme-mode-label">
+                <button type="button" class="chant-version-option" data-theme-set="light" aria-pressed="${currentTheme === "light" ? "true" : "false"}"><span class="settings-option-icon" aria-hidden="true">${SUN_SVG}</span>淺色</button>
+                <button type="button" class="chant-version-option" data-theme-set="dark" aria-pressed="${currentTheme === "dark" ? "true" : "false"}"><span class="settings-option-icon" aria-hidden="true">${MOON_SVG}</span>深色</button>
+              </div>
+            </div>
             <div class="settings-row">
               <label class="settings-label" for="playback-rate">播放速度</label>
               <select class="settings-select" id="playback-rate" aria-label="目前倍速x1">
@@ -2137,7 +2154,7 @@ function buildSongShell(){
 
       <div class="song-sheet" id="song-sheet" aria-hidden="true" inert>
         <div class="song-sheet-backdrop" data-close-sheet></div>
-        <div class="song-sheet-panel" role="dialog" aria-modal="true" aria-label="選擇歌曲">
+        <div class="song-sheet-panel" role="dialog" aria-modal="true" aria-label="選擇歌曲" tabindex="-1">
           <span class="song-sheet-grip"></span>
           <div class="song-sheet-head">
             <span class="song-sheet-title" id="song-sheet-title">選擇歌曲</span>
@@ -2355,7 +2372,8 @@ function buildSongShell(){
         const focusable = [...sheet.querySelectorAll("button, input, select")].filter(el => !el.disabled && el.offsetParent !== null);
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+        const onPanel = document.activeElement === sheet.querySelector(".song-sheet-panel");
+        if (e.shiftKey && (document.activeElement === first || onPanel)){ e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
       }
       return;

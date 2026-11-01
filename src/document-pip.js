@@ -11,7 +11,7 @@ const PIP_WIDTH = 450;
 const PIP_HEIGHT = 225;
 // The active line sits near the top of the lyrics area so the space below
 // goes to the upcoming line (PiP is often too short to show both centered).
-const ACTIVE_LINE_TOP_OFFSET = 8;
+const ACTIVE_LINE_TOP_OFFSET = 4;
 // Song page classes that change how lyrics look; mirrored onto the PiP root.
 // Simple mode is left out on purpose: PiP sizes lyrics by its own window.
 const MIRRORED_PAGE_CLASSES = ["reading-both", "hide-japanese", "hide-chinese", "karaoke-off", "chant-only"];

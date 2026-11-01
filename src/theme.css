@@ -1108,6 +1108,9 @@ button{touch-action:manipulation;}
   overflow:visible;
   padding:var(--space-2) var(--space-3) calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
 }
+/* 播放鈕一般模式與簡潔模式都顯示；離線時沒有影片可播才隱藏。 */
+.song-page .player-controls .play-toggle{display:flex;}
+.song-page.offline .player-controls .play-toggle{display:none;}
 .song-page .player-controls .play-toggle,
 .song-page .player-controls .bar-chip{
   flex:0 1 auto;

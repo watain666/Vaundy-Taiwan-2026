@@ -2213,6 +2213,8 @@ function buildSongShell(){
       updateDocumentPip();
     }).observe(lyricsListEl, { childList:true, subtree:true, characterData:true });
   }
+  // 主視窗大小改變會改變歌詞字級（例如手機橫屏規則），暫停時也要讓 PiP 跟上。
+  window.addEventListener("resize", ()=>updateDocumentPip());
 
   // 顯示設定面板
   document.getElementById("settings-btn").addEventListener("click", ()=>{
@@ -3626,6 +3628,24 @@ let lyricsListVersion = 0;
 let pipListCache = { key: null, markup: "" };
 const PIP_MIRRORED_PAGE_CLASSES = ["venue", "reading-both", "hide-japanese", "hide-chinese", "karaoke-off", "chant-only"];
 
+/* The song page sizes lyrics by its own viewport (phone landscape, simple
+   mode, lyric size…). PiP is a different window, so it copies the sizes the
+   song page actually computed instead of re-evaluating those rules. */
+function documentPipLyricTypography(list){
+  const line = list ? list.querySelector(".lyric-line") : null;
+  if (!line) return null;
+  const style = el => (el ? getComputedStyle(el) : null);
+  const lineStyle = style(line);
+  return {
+    jp: style(line.querySelector(".lyric-jp"))?.fontSize || "",
+    romaji: style(line.querySelector(".lyric-romaji"))?.fontSize || "",
+    zh: style(line.querySelector(".lyric-zh"))?.fontSize || "",
+    linePadding: lineStyle.padding,
+    lineGap: lineStyle.gap,
+    iconsWidth: style(line.querySelector(".lyric-icons"))?.width || ""
+  };
+}
+
 function documentPipListMarkup(list){
   const key = `${currentSong ? currentSong.id : ""}:${lyricsListVersion}`;
   if (pipListCache.key === key) return pipListCache;
@@ -3673,6 +3693,7 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
     activeIdx: currentLine ? currentIndex : -1,
     currentMarkup: documentPipLineMarkup(currentLine, true),
     pageClasses: page ? PIP_MIRRORED_PAGE_CLASSES.filter(name => page.classList.contains(name)) : [],
+    lyricTypography: documentPipLyricTypography(list),
     isPlaying: playerIsPlaying(),
     canPlayPause: Boolean(player && playerReady
       && typeof player.playVideo === "function"

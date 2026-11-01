@@ -148,6 +148,13 @@ export function createDocumentPip({
     const pageClasses = new Set(Array.isArray(model.pageClasses) ? model.pageClasses : []);
     MIRRORED_PAGE_CLASSES.forEach(name => root.classList.toggle(name, pageClasses.has(name)));
     root.classList.toggle("lyrics-hidden", lyricsHidden);
+    const typography = model.lyricTypography || {};
+    [["--pip-lyric-jp", typography.jp], ["--pip-lyric-romaji", typography.romaji], ["--pip-lyric-zh", typography.zh],
+      ["--pip-line-padding", typography.linePadding], ["--pip-line-gap", typography.lineGap], ["--pip-icons-width", typography.iconsWidth]]
+      .forEach(([name, value]) => {
+        if (value) root.style.setProperty(name, value);
+        else root.style.removeProperty(name);
+      });
     const lyricScale = Number(model.lyricScale);
     if (Number.isFinite(lyricScale) && lyricScale > 0){
       root.style.setProperty("--lyric-scale", String(lyricScale));

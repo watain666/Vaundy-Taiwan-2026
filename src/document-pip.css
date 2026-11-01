@@ -131,6 +131,15 @@ body{
   cursor:default;
   pointer-events:none;
 }
+/* 字級與間距照主頁面實際算出的值（由主頁面傳入），兩個視窗大小不同也一致。 */
+.document-pip.song-page .pip-lyrics-list .lyric-line{
+  gap:var(--pip-line-gap, 10px);
+  padding:var(--pip-line-padding, 13px 10px);
+}
+.document-pip.song-page .pip-lyrics-list .lyric-icons{width:var(--pip-icons-width, 22px);}
+.document-pip.song-page .pip-lyrics-list .lyric-jp{font-size:var(--pip-lyric-jp, 14px);}
+.document-pip.song-page .pip-lyrics-list .lyric-romaji{font-size:var(--pip-lyric-romaji, 14px);}
+.document-pip.song-page .pip-lyrics-list .lyric-zh{font-size:var(--pip-lyric-zh, 17px);}
 
 .document-pip .pip-empty{
   margin:0;

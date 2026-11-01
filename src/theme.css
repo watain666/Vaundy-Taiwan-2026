@@ -1050,18 +1050,17 @@ button{touch-action:manipulation;}
     padding:8px 10px 20px;
   }
 
-  /* 只套在手機橫屏的歌曲頁；PiP 小窗也是矮的橫向視窗，但歌詞要和桌面主頁面一致。 */
-  .song-page:not(.document-pip) .lyric-line{
+  .song-page .lyric-line{
     gap:8px;
     padding:10px 8px;
   }
 
-  .song-page:not(.document-pip) .lyric-jp,
-  .song-page:not(.document-pip) .lyric-romaji{
+  .song-page .lyric-jp,
+  .song-page .lyric-romaji{
     font-size:calc(12px * var(--lyric-scale, 1));
   }
 
-  .song-page:not(.document-pip) .lyric-zh{
+  .song-page .lyric-zh{
     font-size:calc(15px * var(--lyric-scale, 1));
   }
 

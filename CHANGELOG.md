@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.16.4**
+## [**v1.16.4**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/868db89499aa0c1d87b9f56f56967b9a6f0571f8)
 
 - [PR #50](https://github.com/watain666/Vaundy-Taiwan-2026/pull/50)：手機橫屏時，歌曲頁的播放進度條會掉到頂列下方、壓在歌詞上（安裝成 App 時特別明顯），現在固定貼在頂列下緣。
 

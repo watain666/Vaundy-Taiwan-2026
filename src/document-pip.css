@@ -208,7 +208,14 @@ body{
 .document-pip .pip-action:focus-visible{outline:2px solid var(--ui-accent, #e9d9a3);outline-offset:2px;}
 .document-pip .pip-action:active{transform:scale(.97);}
 .document-pip .pip-action:disabled{cursor:not-allowed;opacity:.42;}
-.document-pip .pip-action svg{flex:none;width:16px;height:16px;}
+/* 圖示外層若是行內排版會多出行高、把圖示往上推，改用 flex 讓圖示真正置中。 */
+.document-pip .pip-action-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:0;
+}
+.document-pip .pip-action svg{display:block;flex:none;width:16px;height:16px;}
 .document-pip .pip-play{color:var(--ui-accent, #e9d9a3);}
 .document-pip .pip-play svg,
 .document-pip .pip-return svg{width:18px;height:18px;}

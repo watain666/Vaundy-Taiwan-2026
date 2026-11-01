@@ -37,6 +37,22 @@ function loadWaline(){
   return walinePromise;
 }
 
+// Warm the board before the first open: download the Waline chunk and open the
+// connection to the server, so opening the chat only waits for the list API.
+// Skipped when the visitor asked the browser to save data.
+let prefetched = false;
+export function prefetchSupportBoard(){
+  if (prefetched || !SUPPORT_BOARD_SERVER_URL) return;
+  prefetched = true;
+  if (navigator.connection?.saveData) return;
+  const link = document.createElement("link");
+  link.rel = "preconnect";
+  link.href = SUPPORT_BOARD_SERVER_URL;
+  link.crossOrigin = "anonymous";
+  document.head.append(link);
+  loadWaline().catch(() => { /* the open path shows its own error */ });
+}
+
 function setStatus(host, text){
   const status = document.createElement("p");
   status.className = "support-board-status";

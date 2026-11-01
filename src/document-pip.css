@@ -166,6 +166,8 @@ body{
 }
 
 .document-pip .lyric-body{overflow-wrap:anywhere;}
+/* 沒有大合唱麥克風的句子不保留左側圖示欄，文字直接靠左。 */
+.document-pip .lyric-icons:empty{display:none;}
 .document-pip .pip-current-line .lyric-jp{font-size:calc(clamp(14px, 3.2vw, 18px) * var(--lyric-scale, 1));line-height:1.3;}
 .document-pip .pip-current-line .lyric-romaji{font-size:calc(clamp(10px, 2.5vw, 13px) * var(--lyric-scale, 1));line-height:1.25;}
 .document-pip .pip-current-line .lyric-zh{font-size:calc(clamp(12px, 2.8vw, 15px) * var(--lyric-scale, 1));line-height:1.3;}

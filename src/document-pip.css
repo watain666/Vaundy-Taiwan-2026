@@ -131,15 +131,16 @@ body{
   cursor:default;
   pointer-events:none;
 }
-/* 字級與間距照主頁面實際算出的值（由主頁面傳入），兩個視窗大小不同也一致。 */
-.document-pip.song-page .pip-lyrics-list .lyric-line{
-  gap:var(--pip-line-gap, 10px);
-  padding:var(--pip-line-padding, 13px 10px);
+/* 字級跟著小窗自己的大小變：預設大小（內容約 450×169）時等於主頁面桌機的
+   14／17px，拉大就變大；用寬與高較緊的一邊計算，矮窗時不會大到放不下。
+   日文、羅馬字、中文維持主頁面的比例，再乘上「歌詞字級」設定。 */
+.document-pip.song-page .pip-lyrics-list .lyric-jp,
+.document-pip.song-page .pip-lyrics-list .lyric-romaji{
+  font-size:calc(clamp(12px, min(3.1vw, 8.3vh), 24px) * var(--lyric-scale, 1));
 }
-.document-pip.song-page .pip-lyrics-list .lyric-icons{width:var(--pip-icons-width, 22px);}
-.document-pip.song-page .pip-lyrics-list .lyric-jp{font-size:var(--pip-lyric-jp, 14px);}
-.document-pip.song-page .pip-lyrics-list .lyric-romaji{font-size:var(--pip-lyric-romaji, 14px);}
-.document-pip.song-page .pip-lyrics-list .lyric-zh{font-size:var(--pip-lyric-zh, 17px);}
+.document-pip.song-page .pip-lyrics-list .lyric-zh{
+  font-size:calc(clamp(14px, min(3.8vw, 10vh), 29px) * var(--lyric-scale, 1));
+}
 
 .document-pip .pip-empty{
   margin:0;

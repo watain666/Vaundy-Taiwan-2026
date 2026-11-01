@@ -10,7 +10,8 @@ import {
 const PIP_WIDTH = 450;
 const PIP_HEIGHT = 225;
 // Song page classes that change how lyrics look; mirrored onto the PiP root.
-const MIRRORED_PAGE_CLASSES = ["venue", "reading-both", "hide-japanese", "hide-chinese", "karaoke-off", "chant-only"];
+// Simple mode is left out on purpose: PiP sizes lyrics by its own window.
+const MIRRORED_PAGE_CLASSES = ["reading-both", "hide-japanese", "hide-chinese", "karaoke-off", "chant-only"];
 
 function isDocumentPipSupported(){
   try {
@@ -148,13 +149,6 @@ export function createDocumentPip({
     const pageClasses = new Set(Array.isArray(model.pageClasses) ? model.pageClasses : []);
     MIRRORED_PAGE_CLASSES.forEach(name => root.classList.toggle(name, pageClasses.has(name)));
     root.classList.toggle("lyrics-hidden", lyricsHidden);
-    const typography = model.lyricTypography || {};
-    [["--pip-lyric-jp", typography.jp], ["--pip-lyric-romaji", typography.romaji], ["--pip-lyric-zh", typography.zh],
-      ["--pip-line-padding", typography.linePadding], ["--pip-line-gap", typography.lineGap], ["--pip-icons-width", typography.iconsWidth]]
-      .forEach(([name, value]) => {
-        if (value) root.style.setProperty(name, value);
-        else root.style.removeProperty(name);
-      });
     const lyricScale = Number(model.lyricScale);
     if (Number.isFinite(lyricScale) && lyricScale > 0){
       root.style.setProperty("--lyric-scale", String(lyricScale));

@@ -121,11 +121,12 @@ body{
 .document-pip .pip-lyrics::-webkit-scrollbar{display:none;}
 
 /* 歌詞清單直接用主頁面的 .lyrics-list 與 .lyric-line 樣式（base.css / theme.css）：
-   目前這句的底色與金線、其他句變淡、字級與行高都一樣。這裡只補小窗的捲動空間，
-   讓第一句與最後一句也能捲到中間。 */
+   目前這句的底色與金線、其他句變淡都一樣。小窗通常很矮，目前這句固定靠上
+   （document-pip.js 的 ACTIVE_LINE_TOP_OFFSET），下方留給下一句；
+   底部留一整個視窗高，最後一句也能捲到最上面。 */
 .document-pip .pip-lyrics-list{
   margin:0;
-  padding:50vh 18px;
+  padding:8px 18px 100vh;
 }
 .document-pip .pip-lyrics-list .lyric-line{
   cursor:default;

@@ -9,6 +9,9 @@ import {
 
 const PIP_WIDTH = 450;
 const PIP_HEIGHT = 225;
+// The active line sits near the top of the lyrics area so the space below
+// goes to the upcoming line (PiP is often too short to show both centered).
+const ACTIVE_LINE_TOP_OFFSET = 8;
 // Song page classes that change how lyrics look; mirrored onto the PiP root.
 // Simple mode is left out on purpose: PiP sizes lyrics by its own window.
 const MIRRORED_PAGE_CLASSES = ["reading-both", "hide-japanese", "hide-chinese", "karaoke-off", "chant-only"];
@@ -117,7 +120,7 @@ export function createDocumentPip({
     return true;
   }
 
-  // Center the active line the same way the song page keeps it in view.
+  // Keep the active line pinned near the top of the lyrics area.
   function scrollToActive(smooth){
     if (!root) return;
     const scroller = root.querySelector(".pip-lyrics");
@@ -130,7 +133,7 @@ export function createDocumentPip({
     }
     const lineRect = line.getBoundingClientRect();
     const boxRect = scroller.getBoundingClientRect();
-    const top = scroller.scrollTop + (lineRect.top - boxRect.top) - (scroller.clientHeight - lineRect.height) / 2;
+    const top = scroller.scrollTop + (lineRect.top - boxRect.top) - ACTIVE_LINE_TOP_OFFSET;
     const reduceMotion = root.ownerDocument.defaultView?.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     scroller.scrollTo({ top: Math.max(0, top), behavior: smooth && !reduceMotion ? "smooth" : "auto" });
   }

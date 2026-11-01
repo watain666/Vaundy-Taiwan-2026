@@ -441,6 +441,7 @@ button{touch-action:manipulation;}
 }
 :root[data-theme="light"]{
   color-scheme:light;
+  --ui-playing:#3d8a28;
   --ui-bg:#f5f5f7;
   --ui-surface:#fff;
   --ui-raised:#eaeaed;
@@ -462,6 +463,7 @@ button{touch-action:manipulation;}
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
+  --ui-playing:#8de05f;
   --ui-bg:#151619;
   --ui-surface:#202125;
   --ui-raised:#2b2c30;
@@ -1095,3 +1097,203 @@ button{touch-action:manipulation;}
     border-left:0;
   }
 }
+
+
+/* ── 下方控制列：單排主控制＋顯示設定面板 ─────────────────────────
+   演唱會中常按的（只練合唱、日文、中文、簡潔、PiP）留在一排，
+   不常調整的（主題、倍速、字級、讀音、應援版本、卡拉OK、自動捲動）
+   收進「設定」面板，控制列不再折成多排、也不必左右滑動。 */
+.song-page .player-controls{
+  flex-wrap:nowrap;
+  justify-content:center;
+  gap:var(--space-2);
+  overflow:visible;
+  padding:var(--space-2) var(--space-3) calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+}
+.song-page .player-controls .bar-chip{
+  flex:0 1 auto;
+  min-width:var(--touch-height);
+  min-height:var(--touch-height);
+  border-radius:8px;
+}
+.song-page .player-controls .bar-chip{
+  justify-content:center;
+  gap:6px;
+  padding:0 14px;
+  opacity:1;
+  color:var(--ui-text);
+  background:var(--stage-raised);
+  transition:background-color .15s ease, color .15s ease;
+}
+.song-page .player-controls .bar-chip .venue-label{
+  display:inline;
+  color:inherit;
+  font:600 14px/1 var(--font-tw-sans);
+  letter-spacing:0;
+}
+.song-page .player-controls .bar-chip .chant-ico{
+  width:18px;height:18px;
+  margin:0;
+  opacity:1;
+  color:var(--chant);
+}
+.song-page .player-controls .bar-chip > svg{flex:none;width:18px;height:18px;}
+/* 設定圖示的圓鈕用按鈕底色挖空，線條才不會穿過圓心。 */
+.song-page .player-controls .settings-toggle svg circle{fill:var(--stage-raised);}
+.song-page .player-controls .bar-chip:hover{background:var(--ui-hover);}
+.song-page .player-controls .bar-chip.active,
+.song-page .player-controls .bar-chip.active:hover{
+  background:var(--ui-accent);
+  color:var(--ui-bg);
+}
+.song-page .player-controls .bar-chip.active .chant-ico,
+.song-page .player-controls .bar-chip.active .venue-label{color:var(--ui-bg);}
+.song-page .player-controls .settings-toggle[aria-expanded="true"]{background:var(--ui-hover);}
+.song-page .player-controls .bar-chip:focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px;}
+
+/* 窄螢幕：先收「只練合唱」的字，再更窄才收「設定」的字（按鈕仍有 aria-label）。 */
+@media (max-width:400px){
+  .song-page .player-controls{gap:6px;padding-left:var(--space-2);padding-right:var(--space-2);}
+  .song-page .player-controls .bar-chip{padding:0 12px;}
+  .song-page .player-controls .bar-chip.chant-toggle .venue-label,
+  .song-page .player-controls .bar-chip .pip-label{display:none;}
+}
+@media (max-width:380px){
+  .song-page .player-controls .bar-chip .settings-label{display:none;}
+}
+@media (max-width:340px){
+  .song-page .player-controls{gap:4px;padding-left:6px;padding-right:6px;}
+  .song-page .player-controls .bar-chip{min-width:40px;padding:0 6px;}
+}
+@media (orientation: landscape) and (max-height: 600px){
+  .song-page .player-controls{justify-content:center;overflow:visible;}
+}
+
+/* 顯示設定面板：沿用歌曲選單的底部面板外觀。 */
+.song-page .settings-panel{max-height:82svh;}
+.song-page .settings-panel .song-sheet-title{font-size:17px;font-weight:700;}
+.song-page .settings-list{
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:0 18px 18px;
+}
+.song-page .settings-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--space-4);
+  min-height:60px;
+  border-bottom:1px solid var(--ui-line);
+}
+.song-page .settings-row:last-child{border-bottom:0;}
+.song-page .settings-row[hidden]{display:none;}
+.song-page .settings-label{
+  flex:none;
+  white-space:nowrap;
+  color:var(--ui-text);
+  font:500 15px/1.4 var(--font-tw-sans);
+}
+.song-page .settings-select{
+  flex:none;
+  min-width:112px;
+  min-height:40px;
+  padding:0 34px 0 14px;
+  border:0;
+  border-radius:8px;
+  background:var(--ui-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 10px center / 16px 16px;
+  color:var(--ui-text);
+  font:500 15px/1.2 var(--font-tw-sans);
+  -webkit-appearance:none;
+  appearance:none;
+  cursor:pointer;
+}
+.song-page .settings-segment{
+  flex:0 1 auto;
+  width:auto;
+  background:var(--ui-bg);
+}
+.song-page .settings-segment .chant-version-option{
+  flex:none;
+  min-height:36px;
+  padding:6px 12px;
+  color:var(--ui-muted);
+  font:600 14px/1.2 var(--font-tw-sans);
+}
+.song-page .settings-segment .chant-version-option.active{background:var(--ui-accent);color:var(--ui-bg);}
+.song-page .settings-flag{display:inline-flex;}
+.song-page .settings-flag svg{display:block;width:20px;height:14px;}
+.song-page .player-controls .pip-toggle[hidden]{display:none;}
+.song-page .settings-switch{
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  min-width:var(--touch-height);
+  min-height:var(--touch-height);
+  padding:0;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+}
+.song-page .settings-switch .venue-switch{
+  width:46px;height:28px;
+  padding:3px;
+  background:var(--ui-bg);
+}
+.song-page .settings-switch .venue-knob{
+  width:22px;height:22px;
+  background:var(--ui-muted);
+}
+.song-page .settings-switch.active .venue-switch{background:var(--ui-accent);}
+.song-page .settings-switch.active .venue-knob{transform:translateX(18px);background:var(--ui-bg);}
+.song-page .settings-action{
+  flex:none;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-height:40px;
+  padding:0 14px;
+  border:0;
+  border-radius:8px;
+  background:var(--ui-bg);
+  color:var(--ui-text);
+  font:600 14px/1.2 var(--font-tw-sans);
+  cursor:pointer;
+}
+.song-page .settings-action svg{width:16px;height:16px;}
+.song-page .settings-action.active{color:var(--ui-accent);}
+.song-page .settings-select:focus-visible,
+.song-page .settings-switch:focus-visible,
+.song-page .settings-action:focus-visible,
+.song-page .settings-segment .chant-version-option:focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){
+  .song-page .player-controls .bar-chip,
+  .song-page .settings-switch .venue-knob,
+  .song-page .settings-switch .venue-switch{transition:none;}
+}
+
+/* 播放鍵放在頂列右上，與 PiP 小窗的位置一致；播放中（顯示暫停）用綠色。
+   主題切換移進「顯示設定」，頂列不再放主題鈕。 */
+.song-page .song-play-btn{
+  flex:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:var(--control-height);
+  min-height:var(--control-height);
+  padding:var(--space-2);
+  border:0;
+  border-radius:var(--radius-pill);
+  background:var(--stage-raised);
+  color:var(--ui-accent);
+  cursor:pointer;
+}
+.song-page .song-play-btn svg{display:block;width:19px;height:19px;}
+.song-page .song-play-btn:hover{background:var(--ui-surface);}
+.song-page .song-play-btn.playing{color:var(--ui-playing);}
+.song-page .song-play-btn:focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px;}
+.song-page.offline .song-play-btn{display:none;}
+.song-page .settings-option-icon{display:inline-flex;}
+.song-page .settings-option-icon svg{display:block;width:16px;height:16px;}
+/* 面板打開時焦點放在面板本身（給鍵盤與報讀器），不畫外框。 */
+.song-page .song-sheet-panel:focus{outline:none;}

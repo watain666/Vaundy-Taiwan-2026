@@ -16,6 +16,7 @@ import {
   TRACK_PREV_SVG,
   TRACK_NEXT_SVG,
   PIP_SVG,
+  SLIDERS_SVG,
   CLOSE_SVG,
   SUN_SVG,
   MOON_SVG,
@@ -248,11 +249,22 @@ function applyTheme(theme, save = false){
     button.setAttribute("aria-label", `切換至${label}`);
     button.setAttribute("title", `切換至${label}`);
   });
+  document.querySelectorAll("[data-theme-set]").forEach(option => {
+    const active = option.dataset.themeSet === theme;
+    option.classList.toggle("active", active);
+    option.setAttribute("aria-pressed", active ? "true" : "false");
+  });
   updateDocumentPip();
 }
 document.addEventListener("click", event => {
   if (!event.target.closest("[data-theme-toggle]")) return;
   applyTheme(currentTheme === "dark" ? "light" : "dark", true);
+});
+document.addEventListener("click", event => {
+  const option = event.target.closest("[data-theme-set]");
+  if (!option) return;
+  const theme = option.dataset.themeSet;
+  if ((theme === "light" || theme === "dark") && theme !== currentTheme) applyTheme(theme, true);
 });
 if (themePreference.addEventListener){
   themePreference.addEventListener("change", event => {
@@ -972,7 +984,7 @@ function setupOneAccordion(card){
     }
   });
 
-  // 預設展開的卡片（演出資訊，含現場配置圖）在首頁載入時直接打開，不播展開動畫。
+  // 加上 data-default-open="1" 的卡片在首頁載入時直接打開，不播展開動畫。
   if (card.dataset.defaultOpen === "1" && !card.classList.contains("open")){
     panel.style.transition = "none";
     openInfoCard(card, btn, panel);
@@ -1859,7 +1871,7 @@ function openSongSheet(){
   songView.querySelectorAll("#song-page > .song-topbar, #song-page > .song-body, #song-page > .player-controls, #song-page > .song-dock").forEach(el => { el.inert = true; });
   const cur = list && list.querySelector(".song-sheet-item.current");
   if (cur) list.scrollTop = Math.max(0, cur.offsetTop - list.clientHeight / 2 + cur.offsetHeight / 2);
-  sheet.querySelector(".song-sheet-close").focus();
+  sheet.querySelector(".song-sheet-panel").focus();
 }
 function closeSongSheet(){
   const sheet = document.getElementById("song-sheet");
@@ -1868,6 +1880,35 @@ function closeSongSheet(){
   const wasOpen = sheet.classList.contains("open");
   resetSheetFilter();
   songView.querySelectorAll("#song-page > .song-topbar, #song-page > .song-body, #song-page > .player-controls, #song-page > .song-dock").forEach(el => { el.inert = false; });
+  sheet.classList.remove("open");
+  sheet.setAttribute("aria-hidden", "true");
+  sheet.inert = true;
+  if (btn) btn.setAttribute("aria-expanded", "false");
+  if (wasOpen && btn) btn.focus();
+}
+
+/* Display settings sheet: the less frequent playback and lyric options live
+   here so the bottom bar stays one row. */
+function setSongPageInert(inert){
+  songView.querySelectorAll("#song-page > .song-topbar, #song-page > .song-body, #song-page > .player-controls, #song-page > .song-dock").forEach(el => { el.inert = inert; });
+}
+function openSettingsSheet(){
+  const sheet = document.getElementById("settings-sheet");
+  const btn = document.getElementById("settings-btn");
+  if (!sheet) return;
+  sheet.inert = false;
+  sheet.classList.add("open");
+  sheet.setAttribute("aria-hidden", "false");
+  if (btn) btn.setAttribute("aria-expanded", "true");
+  setSongPageInert(true);
+  sheet.querySelector(".song-sheet-panel").focus();
+}
+function closeSettingsSheet(){
+  const sheet = document.getElementById("settings-sheet");
+  const btn = document.getElementById("settings-btn");
+  if (!sheet) return;
+  const wasOpen = sheet.classList.contains("open");
+  setSongPageInert(false);
   sheet.classList.remove("open");
   sheet.setAttribute("aria-hidden", "true");
   sheet.inert = true;
@@ -1963,7 +2004,7 @@ function buildSongShell(){
           <button class="song-nav-btn" id="next-song" aria-label="下一首">${TRACK_NEXT_SVG}</button>
         </div>
         </nav>
-        ${themeToggleHtml()}
+        <button class="song-play-btn" id="play-toggle" type="button" aria-label="播放">${PLAY_SVG}</button>
       </div>
 
       <div class="song-body">
@@ -2006,12 +2047,12 @@ function buildSongShell(){
           <!-- 떼창만 듣기 — 켜져 있을 때만 보이는 띠 -->
           <div class="chant-bar" id="chant-bar" hidden role="status">
             <span class="chant-ico">${STATIC_MIC_SVG}</span>
-            <span class="chant-bar-label">只聽大合唱</span>
+            <span class="chant-bar-label">只練合唱</span>
             <span class="chant-bar-msg" id="chant-msg"></span>
             <span class="chant-bar-count" id="chant-count"></span>
             <button class="chant-step" id="chant-prev" aria-label="上一段大合唱">${CHEV_LEFT_SVG}</button>
             <button class="chant-step" id="chant-next" aria-label="下一段大合唱">${CHEV_RIGHT_SVG}</button>
-            <button class="chant-bar-off" id="chant-off" aria-label="關閉只聽大合唱">${CLOSE_SVG}</button>
+            <button class="chant-bar-off" id="chant-off" aria-label="關閉只練合唱">${CLOSE_SVG}</button>
           </div>
 
           <!-- 짤방(동작 사진) — 지정한 가사에서만 떴다가 사라집니다 -->
@@ -2030,67 +2071,90 @@ function buildSongShell(){
         </div>
       </div>
 
-      <div class="player-controls">
-        <button class="play-toggle" id="play-toggle" aria-label="播放／暫停">${PLAY_SVG}</button>
-        <label class="playback-rate-control" for="playback-rate">
-          <select class="playback-rate-select" id="playback-rate" aria-label="目前倍速x1">
-            ${PLAYBACK_RATE_OPTIONS.map(rate => "<option value=\"" + rate + "\">" + formatPlaybackRate(rate) + "</option>").join("")}
-          </select>
-        </label>
-        <label class="playback-rate-control lyric-size-control" for="lyric-size" title="歌詞字級">
-          <span class="lyric-size-icon" aria-hidden="true">字</span>
-          <select class="playback-rate-select lyric-size-select" id="lyric-size" aria-label="歌詞字級：${lyricSizeOption().label}">
-            ${LYRIC_SIZE_OPTIONS.map(option => "<option value=\"" + option.value + "\">" + option.label + "</option>").join("")}
-          </select>
-        </label>
-        <button class="venue-toggle pip-toggle" id="pip-btn" type="button" aria-pressed="false" aria-label="開啟或聚焦同步字幕小窗" title="開啟或聚焦同步字幕小窗"${documentPip.supported ? "" : " hidden"}>
-          ${PIP_SVG}
-          <span class="venue-label venue-label-desktop">PiP</span>
-          <span class="venue-label venue-label-mobile" aria-hidden="true">PiP</span>
-        </button>
-        <button class="venue-toggle chant-toggle" id="chant-btn" aria-pressed="false" aria-label="開啟／關閉只聽大合唱">
+      <div class="player-controls" id="player-controls">
+        <button class="venue-toggle bar-chip chant-toggle" id="chant-btn" type="button" aria-pressed="false" aria-label="只練合唱" title="只播放大合唱段落">
           <span class="chant-ico">${STATIC_MIC_SVG}</span>
-          <span class="venue-label">只聽大合唱</span>
+          <span class="venue-label">只練合唱</span>
         </button>
-        <button class="venue-toggle chant-version-toggle" id="chant-version-btn" data-chant-version-toggle aria-pressed="false" aria-label="切換應援版本">
-          <span class="venue-label venue-label-desktop">應援版</span>
-          <span class="venue-label venue-label-mobile" aria-hidden="true">應援</span>
-          <span class="chant-version-value">${chantVersionIcon()}</span>
+        <button class="venue-toggle bar-chip display-toggle${showJapanese ? " active" : ""}" id="japanese-toggle" type="button" aria-pressed="${showJapanese ? "true" : "false"}" aria-label="切換日文歌詞：目前${showJapanese ? "顯示" : "隱藏"}">
+          <span class="venue-label">日文</span>
         </button>
-        <button class="venue-toggle" id="venue-btn" aria-label="開啟／關閉簡潔模式">
+        <button class="venue-toggle bar-chip display-toggle${showChinese ? " active" : ""}" id="chinese-toggle" type="button" aria-pressed="${showChinese ? "true" : "false"}" aria-label="切換繁中翻譯：目前${showChinese ? "顯示" : "隱藏"}">
+          <span class="venue-label">中文</span>
+        </button>
+        <button class="venue-toggle bar-chip" id="venue-btn" type="button" aria-pressed="false" aria-label="簡潔模式：隱藏影片，只看歌詞" title="隱藏影片，只看歌詞">
           <span class="venue-label">簡潔</span>
-          <span class="venue-switch"><span class="venue-knob"></span></span>
         </button>
-        <button class="venue-toggle reading-toggle" id="reading-btn" aria-pressed="${readingMode !== "kana" ? "true" : "false"}" aria-label="切換日文讀音：目前顯示${readingModeLabel()}">
-          <span class="venue-label">讀音</span>
-          <span class="reading-value reading-value-desktop" id="reading-value">${readingModeLabel()}</span>
-          <span class="reading-value reading-value-mobile" id="reading-value-mobile" aria-hidden="true">${readingModeShortLabel()}</span>
+        <button class="venue-toggle bar-chip pip-toggle" id="pip-btn" type="button" aria-pressed="false" aria-label="開啟或聚焦同步字幕小窗" title="開啟或聚焦同步字幕小窗"${documentPip.supported ? "" : " hidden"}>
+          ${PIP_SVG}
+          <span class="venue-label pip-label">PiP</span>
         </button>
-        <button class="venue-toggle display-toggle${showJapanese ? " active" : ""}" id="japanese-toggle" aria-pressed="${showJapanese ? "true" : "false"}" aria-label="切換日文歌詞：目前${showJapanese ? "顯示" : "隱藏"}">
-          <span class="venue-label venue-label-desktop">日文</span>
-          <span class="venue-label venue-label-mobile" aria-hidden="true">日</span>
-          <span class="venue-switch"><span class="venue-knob"></span></span>
+        <button class="venue-toggle bar-chip settings-toggle" id="settings-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="settings-sheet" aria-label="顯示設定" title="顯示設定">
+          ${SLIDERS_SVG}
+          <span class="venue-label settings-label">設定</span>
         </button>
-        <button class="venue-toggle display-toggle${showChinese ? " active" : ""}" id="chinese-toggle" aria-pressed="${showChinese ? "true" : "false"}" aria-label="切換繁中翻譯：目前${showChinese ? "顯示" : "隱藏"}">
-          <span class="venue-label venue-label-desktop">中文</span>
-          <span class="venue-label venue-label-mobile" aria-hidden="true">中</span>
-          <span class="venue-switch"><span class="venue-knob"></span></span>
-        </button>
-        <button class="venue-toggle display-toggle karaoke-toggle${karaokeEnabled ? " active" : ""}" id="karaoke-btn" aria-pressed="${karaokeEnabled ? "true" : "false"}" aria-label="切換逐字卡拉OK高亮：目前${karaokeEnabled ? "開啟" : "關閉"}">
-          <span class="venue-label venue-label-desktop">卡拉OK</span>
-          <span class="venue-label venue-label-mobile" aria-hidden="true">卡拉</span>
-          <span class="venue-switch"><span class="venue-knob"></span></span>
-        </button>
-        <button class="venue-toggle autoscroll-toggle${autoScrollEnabled ? " active" : ""}" id="autoscroll-btn" aria-label="開啟／關閉自動捲動">
-          <span class="venue-label venue-label-desktop">自動捲動</span>
-          <span class="venue-label venue-label-mobile" aria-hidden="true">同步</span>
-          <span class="venue-switch"><span class="venue-knob"></span></span>
-        </button>
+      </div>
+
+      <div class="song-sheet settings-sheet" id="settings-sheet" aria-hidden="true" inert>
+        <div class="song-sheet-backdrop" data-close-settings></div>
+        <div class="song-sheet-panel settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-sheet-title" tabindex="-1">
+          <span class="song-sheet-grip"></span>
+          <div class="song-sheet-head">
+            <span class="song-sheet-title" id="settings-sheet-title">顯示設定</span>
+            <button class="song-sheet-close" type="button" data-close-settings aria-label="關閉顯示設定">${CLOSE_SVG}</button>
+          </div>
+          <div class="settings-list">
+            <div class="settings-row">
+              <span class="settings-label" id="theme-mode-label">主題</span>
+              <div class="chant-version-segment settings-segment" role="group" aria-labelledby="theme-mode-label">
+                <button type="button" class="chant-version-option" data-theme-set="light" aria-pressed="${currentTheme === "light" ? "true" : "false"}"><span class="settings-option-icon" aria-hidden="true">${SUN_SVG}</span>淺色</button>
+                <button type="button" class="chant-version-option" data-theme-set="dark" aria-pressed="${currentTheme === "dark" ? "true" : "false"}"><span class="settings-option-icon" aria-hidden="true">${MOON_SVG}</span>深色</button>
+              </div>
+            </div>
+            <div class="settings-row">
+              <label class="settings-label" for="playback-rate">播放速度</label>
+              <select class="settings-select" id="playback-rate" aria-label="目前倍速x1">
+                ${PLAYBACK_RATE_OPTIONS.map(rate => "<option value=\"" + rate + "\">" + formatPlaybackRate(rate) + "</option>").join("")}
+              </select>
+            </div>
+            <div class="settings-row">
+              <label class="settings-label" for="lyric-size">歌詞字級</label>
+              <select class="settings-select" id="lyric-size" aria-label="歌詞字級：${lyricSizeOption().label}">
+                ${LYRIC_SIZE_OPTIONS.map(option => "<option value=\"" + option.value + "\">" + option.label + "</option>").join("")}
+              </select>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label" id="reading-mode-label">日文讀音</span>
+              <div class="chant-version-segment settings-segment" role="group" aria-labelledby="reading-mode-label">
+                ${READING_MODES.map(mode => "<button type=\"button\" class=\"chant-version-option\" data-reading-mode=\"" + mode + "\" aria-pressed=\"" + (mode === readingMode ? "true" : "false") + "\" aria-label=\"" + readingModeLabel(mode) + "\">" + (mode === "both" ? "兩者" : readingModeLabel(mode)) + "</button>").join("")}
+              </div>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label" id="chant-version-label">應援版本</span>
+              <div class="chant-version-segment settings-segment" role="group" aria-labelledby="chant-version-label">
+                <button type="button" class="chant-version-option" data-chant-version="jp" aria-pressed="false"><span class="settings-flag" aria-hidden="true">${chantVersionIcon("jp")}</span>${CHANT_VERSIONS.jp.label}</button>
+                <button type="button" class="chant-version-option" data-chant-version="kr" aria-pressed="false"><span class="settings-flag" aria-hidden="true">${chantVersionIcon("kr")}</span>${CHANT_VERSIONS.kr.label}</button>
+              </div>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label" id="karaoke-label">逐字卡拉 OK 高亮</span>
+              <button class="settings-switch${karaokeEnabled ? " active" : ""}" id="karaoke-btn" type="button" aria-pressed="${karaokeEnabled ? "true" : "false"}" aria-labelledby="karaoke-label">
+                <span class="venue-switch"><span class="venue-knob"></span></span>
+              </button>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label" id="autoscroll-label">歌詞自動捲動</span>
+              <button class="settings-switch${autoScrollEnabled ? " active" : ""}" id="autoscroll-btn" type="button" aria-pressed="${autoScrollEnabled ? "true" : "false"}" aria-labelledby="autoscroll-label">
+                <span class="venue-switch"><span class="venue-knob"></span></span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="song-sheet" id="song-sheet" aria-hidden="true" inert>
         <div class="song-sheet-backdrop" data-close-sheet></div>
-        <div class="song-sheet-panel" role="dialog" aria-modal="true" aria-label="選擇歌曲">
+        <div class="song-sheet-panel" role="dialog" aria-modal="true" aria-label="選擇歌曲" tabindex="-1">
           <span class="song-sheet-grip"></span>
           <div class="song-sheet-head">
             <span class="song-sheet-title" id="song-sheet-title">選擇歌曲</span>
@@ -2139,6 +2203,24 @@ function buildSongShell(){
   });
   document.getElementById("song-sheet").querySelectorAll("[data-close-sheet]").forEach(el=>{
     el.addEventListener("click", closeSongSheet);
+  });
+
+  // PiP 跟著歌詞清單內容更新（換歌、讀音、假名、應援圖示等）
+  const lyricsListEl = document.getElementById("lyrics-list");
+  if (lyricsListEl && "MutationObserver" in window){
+    new MutationObserver(()=>{
+      lyricsListVersion++;
+      updateDocumentPip();
+    }).observe(lyricsListEl, { childList:true, subtree:true, characterData:true });
+  }
+
+  // 顯示設定面板
+  document.getElementById("settings-btn").addEventListener("click", ()=>{
+    const sheet = document.getElementById("settings-sheet");
+    sheet.classList.contains("open") ? closeSettingsSheet() : openSettingsSheet();
+  });
+  document.getElementById("settings-sheet").querySelectorAll("[data-close-settings]").forEach(el=>{
+    el.addEventListener("click", closeSettingsSheet);
   });
   document.getElementById("song-sheet-list").addEventListener("click", (e)=>{
     const item = e.target.closest(".song-sheet-item");
@@ -2247,9 +2329,11 @@ function buildSongShell(){
     applyVenueMode();
   });
 
-  document.getElementById("reading-btn").addEventListener("click", ()=>{
-    const current = READING_MODES.indexOf(readingMode);
-    readingMode = READING_MODES[(current + 1) % READING_MODES.length];
+  document.getElementById("settings-sheet").addEventListener("click", (e)=>{
+    const option = e.target.closest("[data-reading-mode]");
+    if (!option || !READING_MODES.includes(option.dataset.readingMode)) return;
+    if (option.dataset.readingMode === readingMode) return;
+    readingMode = option.dataset.readingMode;
     store("horo-reading", readingMode);
     updateReadingUi();
     repaintJapaneseReadings();
@@ -2276,6 +2360,7 @@ function buildSongShell(){
   document.getElementById("autoscroll-btn").addEventListener("click", (e)=>{
     autoScrollEnabled = !autoScrollEnabled;
     e.currentTarget.classList.toggle("active", autoScrollEnabled);
+    e.currentTarget.setAttribute("aria-pressed", autoScrollEnabled ? "true" : "false");
     if (autoScrollEnabled) updateLyricsSync(true);   // 켜는 즉시 현재 위치로 이동
   });
 
@@ -2283,14 +2368,21 @@ function buildSongShell(){
   if (songKeyHandler) document.removeEventListener("keydown", songKeyHandler);
   songKeyHandler = (e)=>{
     if (!isSongViewActive()) return;                      // 다른 화면이면 무시
-    const sheet = document.getElementById("song-sheet");
-    if (e.key === "Escape" && sheet.classList.contains("open")){ e.preventDefault(); closeSongSheet(); return; }
-    if (sheet.classList.contains("open")){
+    const songSheet = document.getElementById("song-sheet");
+    const settingsSheet = document.getElementById("settings-sheet");
+    const sheet = [songSheet, settingsSheet].find(el => el && el.classList.contains("open"));
+    if (e.key === "Escape" && sheet){
+      e.preventDefault();
+      sheet === settingsSheet ? closeSettingsSheet() : closeSongSheet();
+      return;
+    }
+    if (sheet){
       if (e.key === "Tab"){
-        const focusable = [...sheet.querySelectorAll("button, input")].filter(el => !el.disabled && el.offsetParent !== null);
+        const focusable = [...sheet.querySelectorAll("button, input, select")].filter(el => !el.disabled && el.offsetParent !== null);
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+        const onPanel = document.activeElement === sheet.querySelector(".song-sheet-panel");
+        if (e.shiftKey && (document.activeElement === first || onPanel)){ e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
       }
       return;
@@ -2378,6 +2470,7 @@ function syncChantUi(){
     btn.classList.toggle("active", chantOnly);
     btn.setAttribute("aria-pressed", chantOnly ? "true" : "false");
   }
+  updateDocumentPip();
 }
 
 /* 띠의 글자와 버튼 상태를 지금 상황에 맞춘다 */
@@ -2680,6 +2773,7 @@ function renderSong(song){
     songFrom === "setlist" ? "歌單歌曲" : "選擇歌曲";
 
   closeSongSheet();
+  closeSettingsSheet();
   applySheetFilter();
 
   // 곡 화면 보이기 (먼저 보여야 컨테이너 높이를 정확히 잴 수 있음)
@@ -2765,7 +2859,10 @@ function applyVenueMode(){
   if (!page) return;
   page.classList.toggle("venue", venueMode);
   page.classList.toggle("offline", !navigator.onLine);
-  if (btn) btn.classList.toggle("active", venueMode);
+  if (btn){
+    btn.classList.toggle("active", venueMode);
+    btn.setAttribute("aria-pressed", venueMode ? "true" : "false");
+  }
   if (venueMode){
     const notesButton = document.getElementById("chant-notes-toggle");
     const notesPanel = document.getElementById("chant-notes");
@@ -2783,20 +2880,13 @@ function applyVenueMode(){
 }
 
 function updateReadingUi(){
-  const btn = document.getElementById("reading-btn");
-  const value = document.getElementById("reading-value");
-  const shortValue = document.getElementById("reading-value-mobile");
-  const label = readingModeLabel();
-  const shortLabel = readingModeShortLabel();
   const page = document.getElementById("song-page");
   if (page) page.classList.toggle("reading-both", readingMode === "both");
-  if (value) value.textContent = label;
-  if (shortValue) shortValue.textContent = shortLabel;
-  if (btn){
-    btn.classList.toggle("active", readingMode !== "kana");
-    btn.setAttribute("aria-pressed", readingMode !== "kana" ? "true" : "false");
-    btn.setAttribute("aria-label", `切換日文讀音：目前顯示${label}`);
-  }
+  document.querySelectorAll("[data-reading-mode]").forEach(option => {
+    const active = option.dataset.readingMode === readingMode;
+    option.classList.toggle("active", active);
+    option.setAttribute("aria-pressed", active ? "true" : "false");
+  });
   updateDocumentPip();
 }
 
@@ -2862,7 +2952,7 @@ function updateKaraokeUi(){
   if (btn){
     btn.classList.toggle("active", karaokeEnabled);
     btn.setAttribute("aria-pressed", karaokeEnabled ? "true" : "false");
-    btn.setAttribute("aria-label", `切換逐字卡拉OK高亮：目前${karaokeEnabled ? "開啟" : "關閉"}`);
+    btn.setAttribute("aria-label", `切換逐字卡拉 OK 高亮：目前${karaokeEnabled ? "開啟" : "關閉"}`);
   }
 
   if (!karaokeEnabled){
@@ -2912,6 +3002,7 @@ function leaveSongView(){
   stopActiveGuard();
   pendingVideoId = null;
   closeSongSheet();
+  closeSettingsSheet();
   hideTipPic();
   if (lyricObserver){ lyricObserver.disconnect(); lyricObserver = null; }
   releaseWakeLock();
@@ -3137,12 +3228,6 @@ function readingModeLabel(mode = readingMode){
   if (mode === "romaji") return "羅馬字";
   if (mode === "both") return "假名+羅馬字";
   return "假名";
-}
-
-function readingModeShortLabel(mode = readingMode){
-  if (mode === "romaji") return "羅";
-  if (mode === "both") return "假+羅";
-  return "假";
 }
 
 function renderJapaneseLine(str){
@@ -3533,13 +3618,32 @@ function documentPipLineMarkup(line, active){
   return output.outerHTML;
 }
 
-function nextDocumentPipLineIndex(song, index){
-  const lines = song && Array.isArray(song.lyrics) ? song.lyrics : [];
-  const start = Number.isInteger(index) ? index + 1 : 0;
-  for (let i = start; i < lines.length; i++){
-    if (hasDisplayedLyricText(lines[i])) return i;
+/* PiP shows the same lyrics list as the song page. The list markup is resent
+   only when its content changes (song, readings, chant icons, furigana…);
+   attribute-only changes such as the active line or karaoke progress are
+   synced per update instead. */
+let lyricsListVersion = 0;
+let pipListCache = { key: null, markup: "" };
+// Simple mode (venue) is not mirrored: it hides the song page video and enlarges
+// lyrics there, while PiP has no video and sizes lyrics by its own window.
+const PIP_MIRRORED_PAGE_CLASSES = ["reading-both", "hide-japanese", "hide-chinese", "karaoke-off", "chant-only"];
+
+function documentPipListMarkup(list){
+  const key = `${currentSong ? currentSong.id : ""}:${lyricsListVersion}`;
+  if (pipListCache.key === key) return pipListCache;
+  const clone = list ? list.cloneNode(true) : null;
+  if (clone){
+    clone.querySelectorAll("button.lyric-line").forEach(button => {
+      const line = document.createElement("div");
+      line.className = button.className;
+      line.classList.remove("active");
+      line.dataset.idx = button.dataset.idx || "";
+      line.innerHTML = button.innerHTML;
+      button.replaceWith(line);
+    });
   }
-  return -1;
+  pipListCache = { key, markup: clone ? clone.innerHTML.trim() : "" };
+  return pipListCache;
 }
 
 function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
@@ -3548,8 +3652,7 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
   const lines = list ? [...list.querySelectorAll(".lyric-line")] : [];
   const currentIndex = Number.isInteger(activeIdx) ? activeIdx : -1;
   const currentLine = currentIndex >= 0 ? lines[currentIndex] : null;
-  const nextIndex = nextDocumentPipLineIndex(currentSong, currentIndex);
-  const nextLine = nextIndex >= 0 ? lines[nextIndex] : null;
+  const listInfo = documentPipListMarkup(list);
   const duration = getPlayerDuration();
   const currentTime = getPlayerTime();
   const progress = duration && currentTime !== null
@@ -3567,8 +3670,11 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
     progressText: duration && currentTime !== null
       ? `${formatPlaybackTime(currentTime)} / ${formatPlaybackTime(duration)}`
       : "正在載入播放進度",
+    listKey: listInfo.key,
+    listMarkup: listInfo.markup,
+    activeIdx: currentLine ? currentIndex : -1,
     currentMarkup: documentPipLineMarkup(currentLine, true),
-    nextMarkup: documentPipLineMarkup(nextLine, false),
+    pageClasses: page ? PIP_MIRRORED_PAGE_CLASSES.filter(name => page.classList.contains(name)) : [],
     isPlaying: playerIsPlaying(),
     canPlayPause: Boolean(player && playerReady
       && typeof player.playVideo === "function"

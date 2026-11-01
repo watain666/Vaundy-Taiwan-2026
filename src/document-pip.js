@@ -9,7 +9,12 @@ import {
 
 const PIP_WIDTH = 450;
 const PIP_HEIGHT = 225;
-const KARAOKE_DYNAMIC_CLASSES = new Set(["karaoke-lit", "karaoke-current"]);
+// The active line sits near the top of the lyrics area so the space below
+// goes to the upcoming line (PiP is often too short to show both centered).
+const ACTIVE_LINE_TOP_OFFSET = 4;
+// Song page classes that change how lyrics look; mirrored onto the PiP root.
+// Simple mode is left out on purpose: PiP sizes lyrics by its own window.
+const MIRRORED_PAGE_CLASSES = ["reading-both", "hide-japanese", "hide-chinese", "karaoke-off", "chant-only"];
 
 function isDocumentPipSupported(){
   try {
@@ -40,17 +45,6 @@ function copyStyles(sourceDocument, targetDocument){
 function copyIconSprite(sourceDocument, targetDocument){
   const sprite = sourceDocument.querySelector(".icon-sprite");
   if (sprite) targetDocument.body.appendChild(sprite.cloneNode(true));
-}
-
-function stableMarkup(markup){
-  return String(markup || "")
-    .replace(/\s+class="([^"]*)"/gu, (_match, value)=>{
-      const classes = value
-        .split(/\s+/u)
-        .filter(name => name && !KARAOKE_DYNAMIC_CLASSES.has(name));
-      return classes.length ? ` class="${classes.join(" ")}"` : "";
-    })
-    .replace(/\s+style="[^"]*"/gu, "");
 }
 
 function syncKaraokeState(target, markup){
@@ -101,12 +95,14 @@ export function createDocumentPip({
   let root = null;
   let openingPromise = null;
   let closeWhenReady = false;
-  let currentMarkupKey = null;
-  let nextMarkupKey = null;
+  let listKey = null;
+  let renderedActiveIdx = null;
+  let renderedPlaying = null;
 
   function resetRenderCache(){
-    currentMarkupKey = null;
-    nextMarkupKey = null;
+    listKey = null;
+    renderedActiveIdx = null;
+    renderedPlaying = null;
   }
 
   function clearWindow(windowRef, notify = true){
@@ -126,19 +122,22 @@ export function createDocumentPip({
     return true;
   }
 
-  function replaceMarkup(target, markup, emptyMessage){
-    target.replaceChildren();
-    if (!markup){
-      const empty = target.ownerDocument.createElement("p");
-      empty.className = "pip-empty";
-      empty.textContent = emptyMessage || "等待同步…";
-      target.appendChild(empty);
+  // Keep the active line pinned near the top of the lyrics area.
+  function scrollToActive(smooth){
+    if (!root) return;
+    const scroller = root.querySelector(".pip-lyrics");
+    const list = root.querySelector(".pip-lyrics-list");
+    if (!scroller || !list) return;
+    const line = list.querySelector(".lyric-line.active");
+    if (!line){
+      scroller.scrollTo({ top: 0 });
       return;
     }
-
-    const template = target.ownerDocument.createElement("template");
-    template.innerHTML = markup;
-    target.appendChild(template.content.cloneNode(true));
+    const lineRect = line.getBoundingClientRect();
+    const boxRect = scroller.getBoundingClientRect();
+    const top = scroller.scrollTop + (lineRect.top - boxRect.top) - ACTIVE_LINE_TOP_OFFSET;
+    const reduceMotion = root.ownerDocument.defaultView?.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    scroller.scrollTo({ top: Math.max(0, top), behavior: smooth && !reduceMotion ? "smooth" : "auto" });
   }
 
   function render(model = {}){
@@ -148,19 +147,12 @@ export function createDocumentPip({
     const showJapanese = model.showJapanese !== false;
     const showChinese = model.showChinese !== false;
     const lyricsHidden = !showJapanese && !showChinese;
-    const currentMarkup = lyricsHidden ? "" : String(model.currentMarkup || "");
-    const nextMarkup = lyricsHidden ? "" : String(model.nextMarkup || "");
-    const currentEmptyMessage = lyricsHidden
-      ? "歌詞已隱藏"
-      : (currentMarkup ? "" : "等待第一句…");
 
     const theme = model.theme === "light" ? "light" : "dark";
     documentRef.documentElement.dataset.theme = theme;
     root.dataset.theme = theme;
-    root.classList.toggle("reading-both", model.readingMode === "both");
-    root.classList.toggle("hide-japanese", !showJapanese);
-    root.classList.toggle("hide-chinese", !showChinese);
-    root.classList.toggle("karaoke-off", model.karaokeEnabled === false);
+    const pageClasses = new Set(Array.isArray(model.pageClasses) ? model.pageClasses : []);
+    MIRRORED_PAGE_CLASSES.forEach(name => root.classList.toggle(name, pageClasses.has(name)));
     root.classList.toggle("lyrics-hidden", lyricsHidden);
     const lyricScale = Number(model.lyricScale);
     if (Number.isFinite(lyricScale) && lyricScale > 0){
@@ -191,33 +183,50 @@ export function createDocumentPip({
       status.hidden = !model.status;
     }
 
-    const current = root.querySelector(".pip-current-line");
-    if (current){
-      const key = `${stableMarkup(currentMarkup)}\u0000${currentEmptyMessage}`;
-      if (key !== currentMarkupKey || !syncKaraokeState(current, currentMarkup)){
-        replaceMarkup(current, currentMarkup, currentEmptyMessage);
-        currentMarkupKey = key;
-      }
-    }
+    const list = root.querySelector(".pip-lyrics-list");
+    const empty = root.querySelector(".pip-empty");
+    if (list && empty){
+      const message = lyricsHidden ? "歌詞已隱藏" : (model.listMarkup ? "" : "等待歌詞載入…");
+      empty.textContent = message;
+      empty.hidden = !message;
+      list.hidden = Boolean(message);
 
-    const nextGroup = root.querySelector(".pip-next-group");
-    const next = root.querySelector(".pip-next-line");
-    if (nextGroup && next){
-      nextGroup.hidden = !nextMarkup;
-      const key = stableMarkup(nextMarkup);
-      if (key !== nextMarkupKey || !syncKaraokeState(next, nextMarkup)){
-        replaceMarkup(next, nextMarkup, "");
-        nextMarkupKey = key;
+      let rebuilt = false;
+      if (model.listKey !== listKey){
+        list.innerHTML = String(model.listMarkup || "");
+        listKey = model.listKey;
+        renderedActiveIdx = null;
+        rebuilt = true;
       }
+
+      const activeIdx = Number.isInteger(model.activeIdx) ? model.activeIdx : -1;
+      const lines = list.querySelectorAll(".lyric-line");
+      const activeLine = activeIdx >= 0 ? lines[activeIdx] || null : null;
+      if (activeIdx !== renderedActiveIdx){
+        list.querySelectorAll(".lyric-line.active").forEach(line => line.classList.remove("active"));
+        if (activeLine) activeLine.classList.add("active");
+        renderedActiveIdx = activeIdx;
+        scrollToActive(!rebuilt);
+      } else if (rebuilt){
+        scrollToActive(false);
+      }
+      if (activeLine && model.currentMarkup) syncKaraokeState(activeLine, model.currentMarkup);
     }
 
     const play = root.querySelector(".pip-play");
     if (play){
       const playing = model.isPlaying === true;
       play.disabled = model.canPlayPause !== true;
-      play.querySelector(".pip-action-icon").innerHTML = playing ? PAUSE_SVG : PLAY_SVG;
-      play.querySelector(".pip-action-label").textContent = playing ? "暫停" : "播放";
-      play.setAttribute("aria-label", playing ? "暫停主頁影片" : "播放主頁影片");
+      // render() runs on every sync tick (~100ms). Swapping the icon each time
+      // can remove the element a press started on, and the click gets lost,
+      // so only touch the button when the play state actually changes.
+      if (playing !== renderedPlaying){
+        play.classList.toggle("is-playing", playing);
+        play.querySelector(".pip-action-icon").innerHTML = playing ? PAUSE_SVG : PLAY_SVG;
+        play.querySelector(".pip-action-label").textContent = playing ? "暫停" : "播放";
+        play.setAttribute("aria-label", playing ? "暫停主頁影片" : "播放主頁影片");
+        renderedPlaying = playing;
+      }
     }
 
     const focus = root.querySelector(".pip-return");
@@ -242,20 +251,15 @@ export function createDocumentPip({
     const nextRoot = documentRef.createElement("main");
     nextRoot.className = "document-pip song-page";
     nextRoot.innerHTML = `
-      <div class="pip-progress" role="progressbar" aria-label="播放進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="正在載入播放進度">
-        <span class="pip-progress-fill"></span>
-      </div>
-      <header class="pip-controls" aria-label="字幕窗控制"></header>
+      <header class="pip-controls" aria-label="字幕窗控制">
+        <div class="pip-progress" role="progressbar" aria-label="播放進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="正在載入播放進度">
+          <span class="pip-progress-fill"></span>
+        </div>
+      </header>
       <p class="pip-status" role="status" aria-live="polite" hidden></p>
       <section class="pip-lyrics" aria-label="同步歌詞">
-        <div class="pip-line-group pip-current-group">
-          <div class="pip-line-label">目前</div>
-          <div class="pip-current-line"></div>
-        </div>
-        <div class="pip-line-group pip-next-group">
-          <div class="pip-line-label">下一句</div>
-          <div class="pip-next-line"></div>
-        </div>
+        <p class="pip-empty" hidden></p>
+        <ul class="lyrics-list pip-lyrics-list"></ul>
       </section>
     `;
 
@@ -280,6 +284,13 @@ export function createDocumentPip({
     documentRef.body.appendChild(nextRoot);
     root = nextRoot;
     resetRenderCache();
+    nextWindow.addEventListener("resize", ()=>scrollToActive(false));
+    // The copied <link> stylesheets and web fonts load after the first render,
+    // which changes every line's height and leaves the first scroll pointing at
+    // empty space. Re-anchor whenever the list's size changes.
+    const Observer = nextWindow.ResizeObserver;
+    const list = nextRoot.querySelector(".pip-lyrics-list");
+    if (Observer && list) new Observer(()=>scrollToActive(false)).observe(list);
   }
 
   async function open(model = {}){

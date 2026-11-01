@@ -28,11 +28,12 @@ body{
   color:var(--ui-text, #f5f5f7);
 }
 
+/* 進度條與主頁面一致：貼在頂部控制列的下緣，跟著控制列高度走。 */
 .document-pip .pip-progress{
   position:absolute;
-  inset:0 0 auto;
+  inset:auto 0 0;
   z-index:2;
-  height:4px;
+  height:3px;
   overflow:hidden;
   background:var(--stage-raised, var(--ui-raised, #2b2c30));
   pointer-events:none;
@@ -48,14 +49,15 @@ body{
 }
 
 .document-pip .pip-controls{
+  position:relative;
   flex:none;
   display:grid;
-  grid-template-columns:44px minmax(0, 1fr) 44px;
+  grid-template-columns:40px minmax(0, 1fr) 40px;
   align-items:center;
   gap:8px;
   min-width:0;
-  min-height:68px;
-  padding:16px 22px 8px;
+  min-height:72px;
+  padding:16px 18px;
   box-sizing:border-box;
 }
 
@@ -63,16 +65,16 @@ body{
   display:flex;
   align-items:center;
   min-width:0;
-  height:44px;
+  height:40px;
   overflow:hidden;
   border-radius:var(--radius-pill, 999px);
-  background:var(--stage-surface, var(--ui-surface, #202125));
+  background:var(--ui-hover, rgba(255,255,255,.07));
 }
 
 .document-pip .pip-song-label{
   flex:1 1 auto;
   min-width:0;
-  height:44px;
+  height:40px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -83,7 +85,7 @@ body{
 .document-pip .pip-song-number{
   flex:none;
   color:var(--ui-muted, #a9a9af);
-  font-size:12px;
+  font-size:13px;
   font-variant-numeric:tabular-nums;
   white-space:nowrap;
 }
@@ -93,7 +95,7 @@ body{
   overflow:hidden;
   color:var(--ui-text, #f5f5f7);
   font-family:var(--font-tw-sans, system-ui, sans-serif);
-  font-size:14px;
+  font-size:15px;
   font-weight:600;
   line-height:1.35;
   text-overflow:ellipsis;
@@ -109,78 +111,57 @@ body{
 }
 
 .document-pip .pip-lyrics{
+  position:relative;
   flex:1 1 auto;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  /* 字級放大到放不下時改從上方排，確保目前這一句完整，只裁掉下一句。 */
-  justify-content:safe center;
   min-height:0;
-  overflow:hidden;
-  padding:0 24px 10px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:none;
 }
+.document-pip .pip-lyrics::-webkit-scrollbar{display:none;}
 
-.document-pip .pip-line-group{min-width:0;}
-.document-pip .pip-line-label{display:none;}
-
-.document-pip .pip-current-line,
-.document-pip .pip-next-line{min-width:0;}
+/* 歌詞清單直接用主頁面的 .lyrics-list 與 .lyric-line 樣式（base.css / theme.css）：
+   目前這句的底色與金線、其他句變淡都一樣。小窗通常很矮，目前這句固定靠上
+   （document-pip.js 的 ACTIVE_LINE_TOP_OFFSET），下方留給下一句；
+   底部留一整個視窗高，最後一句也能捲到最上面。 */
+.document-pip .pip-lyrics-list{
+  margin:0;
+  padding:4px 18px 100vh;
+}
+.document-pip .pip-lyrics-list .lyric-line{
+  cursor:default;
+  pointer-events:none;
+}
+/* 小窗通常很矮：收緊每句的上下內距與羅馬字、中文行高，讓下一句露出更多。
+   日文行高維持主頁面的 1.9，否則逐字高亮時整行會上下抖動。 */
+.document-pip.song-page .pip-lyrics-list .lyric-line{padding-top:3px;padding-bottom:3px;}
+.document-pip.song-page .pip-lyrics-list .lyric-romaji{line-height:1.2;}
+.document-pip.song-page .pip-lyrics-list .lyric-zh{line-height:1.25;}
+/* 字級跟著小窗自己的大小變：預設大小（內容約 450×169）時等於主頁面桌機的
+   14／17px，拉大就變大；用寬與高較緊的一邊計算，矮窗時不會大到放不下。
+   日文、羅馬字、中文維持主頁面的比例，再乘上「歌詞字級」設定。 */
+.document-pip.song-page .pip-lyrics-list .lyric-jp,
+.document-pip.song-page .pip-lyrics-list .lyric-romaji{
+  font-size:calc(clamp(12px, min(3.1vw, 8.3vh), 24px) * var(--lyric-scale, 1));
+}
+.document-pip.song-page .pip-lyrics-list .lyric-zh{
+  font-size:calc(clamp(14px, min(3.8vw, 10vh), 29px) * var(--lyric-scale, 1));
+}
 
 .document-pip .pip-empty{
   margin:0;
-  padding:12px 9px;
-  border-radius:8px;
+  padding:24px 18px;
   color:var(--ui-muted, #a9a9af);
   font-size:13px;
   line-height:1.45;
   text-align:center;
 }
 
-/* lyric-line markup is cloned from the main song page and rendered as inert text. */
-.document-pip .lyric-line{
-  width:100%;
-  box-sizing:border-box;
-  display:flex;
-  align-items:flex-start;
-  gap:6px;
-  margin:0;
-  padding:5px 7px;
-  border:0;
-  border-radius:8px;
-  background:transparent;
-  color:var(--ui-text, #f5f5f7);
-  cursor:default;
-  pointer-events:none;
-  text-align:left;
-}
-
-.document-pip .pip-current-line .lyric-line{
-  min-height:48px;
-  border-left:3px solid var(--ui-accent, #e9d9a3);
-  background:var(--ui-hover, rgba(255,255,255,.08));
-}
-
-.document-pip .pip-next-line{
-  margin-top:5px;
-  opacity:.58;
-}
-
-.document-pip .lyric-body{overflow-wrap:anywhere;}
-.document-pip .pip-current-line .lyric-jp{font-size:calc(clamp(14px, 3.2vw, 18px) * var(--lyric-scale, 1));line-height:1.3;}
-.document-pip .pip-current-line .lyric-romaji{font-size:calc(clamp(10px, 2.5vw, 13px) * var(--lyric-scale, 1));line-height:1.25;}
-.document-pip .pip-current-line .lyric-zh{font-size:calc(clamp(12px, 2.8vw, 15px) * var(--lyric-scale, 1));line-height:1.3;}
-.document-pip .pip-next-line .lyric-jp{font-size:calc(clamp(11px, 2.6vw, 14px) * var(--lyric-scale, 1));line-height:1.28;}
-.document-pip .pip-next-line .lyric-romaji{font-size:calc(clamp(9px, 2.2vw, 11px) * var(--lyric-scale, 1));line-height:1.25;}
-.document-pip .pip-next-line .lyric-zh{font-size:calc(clamp(11px, 2.6vw, 13px) * var(--lyric-scale, 1));line-height:1.3;}
-
-.document-pip.lyrics-hidden .pip-current-line > .lyric-line,
-.document-pip.lyrics-hidden .pip-next-group{display:none;}
-
 .document-pip .pip-action{
-  width:44px;
-  min-width:44px;
-  height:44px;
-  min-height:44px;
+  width:40px;
+  min-width:40px;
+  height:40px;
+  min-height:40px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -194,26 +175,38 @@ body{
 }
 
 .document-pip .pip-controls > .pip-action{flex:none;}
+/* 上一首／下一首與主頁面頂列一致：40px 按鈕、18px 白色圖示。 */
 .document-pip .pip-track-controls .pip-action{
-  width:36px;
-  min-width:36px;
-  height:36px;
-  min-height:36px;
-  margin:4px;
+  width:40px;
+  min-width:40px;
+  height:40px;
+  min-height:40px;
+  margin:0;
   background:transparent;
-  color:var(--ui-muted, #a9a9af);
+  color:var(--ui-text, #f5f5f7);
 }
 .document-pip .pip-action-label{display:none;}
 .document-pip .pip-action:hover{background:var(--ui-hover, rgba(255,255,255,.13));}
 .document-pip .pip-action:focus-visible{outline:2px solid var(--ui-accent, #e9d9a3);outline-offset:2px;}
 .document-pip .pip-action:active{transform:scale(.97);}
 .document-pip .pip-action:disabled{cursor:not-allowed;opacity:.42;}
-.document-pip .pip-action svg{flex:none;width:16px;height:16px;}
+/* 圖示外層若是行內排版會多出行高、把圖示往上推，改用 flex 讓圖示真正置中。
+   圖示不接收點擊，點擊一律落在按鈕本身，圖示更換時才不會吃掉點擊。 */
+.document-pip .pip-action-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:0;
+  pointer-events:none;
+}
+.document-pip .pip-action svg{display:block;flex:none;width:16px;height:16px;}
 .document-pip .pip-play{color:var(--ui-accent, #e9d9a3);}
+/* 播放中（顯示暫停）與主頁面一致用綠色。 */
+.document-pip .pip-play.is-playing{color:var(--ui-playing, #8de05f);}
 .document-pip .pip-play svg,
-.document-pip .pip-return svg{width:18px;height:18px;}
+.document-pip .pip-return svg{width:19px;height:19px;}
 .document-pip .pip-prev svg,
-.document-pip .pip-next svg{width:16px;height:16px;}
+.document-pip .pip-next svg{width:18px;height:18px;}
 
 @media (prefers-reduced-motion: reduce){
   .document-pip *,

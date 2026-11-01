@@ -2036,12 +2036,12 @@ function buildSongShell(){
           <!-- 떼창만 듣기 — 켜져 있을 때만 보이는 띠 -->
           <div class="chant-bar" id="chant-bar" hidden role="status">
             <span class="chant-ico">${STATIC_MIC_SVG}</span>
-            <span class="chant-bar-label">只聽大合唱</span>
+            <span class="chant-bar-label">只練合唱</span>
             <span class="chant-bar-msg" id="chant-msg"></span>
             <span class="chant-bar-count" id="chant-count"></span>
             <button class="chant-step" id="chant-prev" aria-label="上一段大合唱">${CHEV_LEFT_SVG}</button>
             <button class="chant-step" id="chant-next" aria-label="下一段大合唱">${CHEV_RIGHT_SVG}</button>
-            <button class="chant-bar-off" id="chant-off" aria-label="關閉只聽大合唱">${CLOSE_SVG}</button>
+            <button class="chant-bar-off" id="chant-off" aria-label="關閉只練合唱">${CLOSE_SVG}</button>
           </div>
 
           <!-- 짤방(동작 사진) — 지정한 가사에서만 떴다가 사라집니다 -->
@@ -2062,9 +2062,9 @@ function buildSongShell(){
 
       <div class="player-controls" id="player-controls">
         <button class="play-toggle" id="play-toggle" aria-label="播放／暫停">${PLAY_SVG}</button>
-        <button class="venue-toggle bar-chip chant-toggle" id="chant-btn" type="button" aria-pressed="false" aria-label="只聽大合唱" title="只播放大合唱段落">
+        <button class="venue-toggle bar-chip chant-toggle" id="chant-btn" type="button" aria-pressed="false" aria-label="只練合唱" title="只播放大合唱段落">
           <span class="chant-ico">${STATIC_MIC_SVG}</span>
-          <span class="venue-label">只聽合唱</span>
+          <span class="venue-label">只練合唱</span>
         </button>
         <button class="venue-toggle bar-chip display-toggle${showJapanese ? " active" : ""}" id="japanese-toggle" type="button" aria-pressed="${showJapanese ? "true" : "false"}" aria-label="切換日文歌詞：目前${showJapanese ? "顯示" : "隱藏"}">
           <span class="venue-label">日文</span>
@@ -2074,6 +2074,10 @@ function buildSongShell(){
         </button>
         <button class="venue-toggle bar-chip" id="venue-btn" type="button" aria-pressed="false" aria-label="簡潔模式：隱藏影片，只看歌詞" title="隱藏影片，只看歌詞">
           <span class="venue-label">簡潔</span>
+        </button>
+        <button class="venue-toggle bar-chip pip-toggle" id="pip-btn" type="button" aria-pressed="false" aria-label="開啟或聚焦同步字幕小窗" title="開啟或聚焦同步字幕小窗"${documentPip.supported ? "" : " hidden"}>
+          ${PIP_SVG}
+          <span class="venue-label pip-label">PiP</span>
         </button>
         <button class="venue-toggle bar-chip settings-toggle" id="settings-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="settings-sheet" aria-label="顯示設定" title="顯示設定">
           ${SLIDERS_SVG}
@@ -2111,8 +2115,8 @@ function buildSongShell(){
             <div class="settings-row">
               <span class="settings-label" id="chant-version-label">應援版本</span>
               <div class="chant-version-segment settings-segment" role="group" aria-labelledby="chant-version-label">
-                <button type="button" class="chant-version-option" data-chant-version="jp" aria-pressed="false">${CHANT_VERSIONS.jp.label}</button>
-                <button type="button" class="chant-version-option" data-chant-version="kr" aria-pressed="false">${CHANT_VERSIONS.kr.label}</button>
+                <button type="button" class="chant-version-option" data-chant-version="jp" aria-pressed="false"><span class="settings-flag" aria-hidden="true">${chantVersionIcon("jp")}</span>${CHANT_VERSIONS.jp.label}</button>
+                <button type="button" class="chant-version-option" data-chant-version="kr" aria-pressed="false"><span class="settings-flag" aria-hidden="true">${chantVersionIcon("kr")}</span>${CHANT_VERSIONS.kr.label}</button>
               </div>
             </div>
             <div class="settings-row">
@@ -2125,13 +2129,6 @@ function buildSongShell(){
               <span class="settings-label" id="autoscroll-label">歌詞自動捲動</span>
               <button class="settings-switch${autoScrollEnabled ? " active" : ""}" id="autoscroll-btn" type="button" aria-pressed="${autoScrollEnabled ? "true" : "false"}" aria-labelledby="autoscroll-label">
                 <span class="venue-switch"><span class="venue-knob"></span></span>
-              </button>
-            </div>
-            <div class="settings-row"${documentPip.supported ? "" : " hidden"}>
-              <span class="settings-label">同步字幕小窗</span>
-              <button class="settings-action pip-toggle" id="pip-btn" type="button" aria-pressed="false" aria-label="開啟或聚焦同步字幕小窗" title="開啟或聚焦同步字幕小窗">
-                ${PIP_SVG}
-                <span>開啟</span>
               </button>
             </div>
           </div>

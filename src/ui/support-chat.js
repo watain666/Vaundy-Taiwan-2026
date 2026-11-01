@@ -1,5 +1,5 @@
 import { CHAT_SVG, CLOSE_SVG } from "./icons.js";
-import { SUPPORT_BOARD_IMAGE_URL, fetchSupportBoardCount, mountSupportBoard, unmountSupportBoard } from "../services/support-board.js";
+import { SUPPORT_BOARD_IMAGE_URL, fetchSupportBoardCount, mountSupportBoard, prefetchSupportBoard, unmountSupportBoard } from "../services/support-board.js";
 
 // Floating support-goods chat: a bottom-right launcher that opens the Waline
 // board styled as a chat window. Shown only on the home and guide routes.
@@ -186,6 +186,16 @@ function close({ restoreFocus = false } = {}){
 }
 
 // Called on every route change.
+// Prefetch once the page has settled; Safari has no requestIdleCallback.
+let prefetchScheduled = false;
+function schedulePrefetch(){
+  if (prefetchScheduled) return;
+  prefetchScheduled = true;
+  const run = () => prefetchSupportBoard();
+  if (window.requestIdleCallback) requestIdleCallback(run, { timeout: 5000 });
+  else setTimeout(run, 2000);
+}
+
 export function syncSupportChat(visible){
   if (!launcher){
     if (!visible) return;
@@ -196,6 +206,7 @@ export function syncSupportChat(visible){
   if (visible){
     delete launcher.dataset.routeHidden;
     if (panel.hidden) launcher.hidden = false;
+    schedulePrefetch();
   } else {
     launcher.dataset.routeHidden = "1";
     close();

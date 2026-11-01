@@ -52,12 +52,12 @@ body{
   position:relative;
   flex:none;
   display:grid;
-  grid-template-columns:44px minmax(0, 1fr) 44px;
+  grid-template-columns:40px minmax(0, 1fr) 40px;
   align-items:center;
   gap:8px;
   min-width:0;
-  min-height:68px;
-  padding:12px 22px;
+  min-height:72px;
+  padding:16px 18px;
   box-sizing:border-box;
 }
 
@@ -65,16 +65,16 @@ body{
   display:flex;
   align-items:center;
   min-width:0;
-  height:44px;
+  height:40px;
   overflow:hidden;
   border-radius:var(--radius-pill, 999px);
-  background:var(--stage-surface, var(--ui-surface, #202125));
+  background:var(--ui-hover, rgba(255,255,255,.07));
 }
 
 .document-pip .pip-song-label{
   flex:1 1 auto;
   min-width:0;
-  height:44px;
+  height:40px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -111,74 +111,41 @@ body{
 }
 
 .document-pip .pip-lyrics{
+  position:relative;
   flex:1 1 auto;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  /* 字級放大到放不下時改從上方排，確保目前這一句完整，只裁掉下一句。 */
-  justify-content:safe center;
   min-height:0;
-  overflow:hidden;
-  padding:0 24px 10px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:none;
 }
+.document-pip .pip-lyrics::-webkit-scrollbar{display:none;}
 
-.document-pip .pip-line-group{min-width:0;}
-.document-pip .pip-line-label{display:none;}
-
-.document-pip .pip-current-line,
-.document-pip .pip-next-line{min-width:0;}
+/* 歌詞清單直接用主頁面的 .lyrics-list 與 .lyric-line 樣式（base.css / theme.css）：
+   目前這句的底色與金線、其他句變淡、字級與行高都一樣。這裡只補小窗的捲動空間，
+   讓第一句與最後一句也能捲到中間。 */
+.document-pip .pip-lyrics-list{
+  margin:0;
+  padding:50vh 18px;
+}
+.document-pip .pip-lyrics-list .lyric-line{
+  cursor:default;
+  pointer-events:none;
+}
 
 .document-pip .pip-empty{
   margin:0;
-  padding:12px 9px;
-  border-radius:8px;
+  padding:24px 18px;
   color:var(--ui-muted, #a9a9af);
   font-size:13px;
   line-height:1.45;
   text-align:center;
 }
 
-/* lyric-line markup is cloned from the main song page and rendered as inert text.
-   字級、行高、顏色都沿用主頁面的歌詞樣式（base.css / theme.css），這裡只處理
-   小窗的排列，間距與目前這一句的標示也比照主頁面。 */
-.document-pip .lyric-line{
-  width:100%;
-  box-sizing:border-box;
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  margin:0;
-  padding:13px 10px;
-  border:0;
-  border-radius:10px;
-  background:transparent;
-  color:var(--ui-text, #f5f5f7);
-  cursor:default;
-  pointer-events:none;
-  text-align:left;
-}
-
-.document-pip .pip-current-line .lyric-line{
-  border-left:3px solid var(--ui-accent, #e9d9a3);
-  background:rgba(255,255,255,.07);
-}
-:root[data-theme="light"] .document-pip .pip-current-line .lyric-line{background:rgba(29,29,31,.055);}
-
-.document-pip .pip-next-line{opacity:.45;}
-:root[data-theme="light"] .document-pip .pip-next-line{opacity:.55;}
-
-.document-pip .lyric-body{overflow-wrap:anywhere;}
-/* 沒有大合唱麥克風的句子不保留左側圖示欄，文字直接靠左。 */
-.document-pip .lyric-icons:empty{display:none;}
-
-.document-pip.lyrics-hidden .pip-current-line > .lyric-line,
-.document-pip.lyrics-hidden .pip-next-group{display:none;}
-
 .document-pip .pip-action{
-  width:44px;
-  min-width:44px;
-  height:44px;
-  min-height:44px;
+  width:40px;
+  min-width:40px;
+  height:40px;
+  min-height:40px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -198,7 +165,7 @@ body{
   min-width:40px;
   height:40px;
   min-height:40px;
-  margin:2px;
+  margin:0;
   background:transparent;
   color:var(--ui-text, #f5f5f7);
 }
@@ -219,7 +186,7 @@ body{
 /* 播放中（顯示暫停）與主頁面一致用綠色。 */
 .document-pip .pip-play.is-playing{color:var(--ui-playing, #8de05f);}
 .document-pip .pip-play svg,
-.document-pip .pip-return svg{width:18px;height:18px;}
+.document-pip .pip-return svg{width:19px;height:19px;}
 .document-pip .pip-prev svg,
 .document-pip .pip-next svg{width:18px;height:18px;}
 

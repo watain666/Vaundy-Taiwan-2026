@@ -2205,6 +2205,15 @@ function buildSongShell(){
     el.addEventListener("click", closeSongSheet);
   });
 
+  // PiP 跟著歌詞清單內容更新（換歌、讀音、假名、應援圖示等）
+  const lyricsListEl = document.getElementById("lyrics-list");
+  if (lyricsListEl && "MutationObserver" in window){
+    new MutationObserver(()=>{
+      lyricsListVersion++;
+      updateDocumentPip();
+    }).observe(lyricsListEl, { childList:true, subtree:true, characterData:true });
+  }
+
   // 顯示設定面板
   document.getElementById("settings-btn").addEventListener("click", ()=>{
     const sheet = document.getElementById("settings-sheet");
@@ -2461,6 +2470,7 @@ function syncChantUi(){
     btn.classList.toggle("active", chantOnly);
     btn.setAttribute("aria-pressed", chantOnly ? "true" : "false");
   }
+  updateDocumentPip();
 }
 
 /* 띠의 글자와 버튼 상태를 지금 상황에 맞춘다 */
@@ -3608,13 +3618,30 @@ function documentPipLineMarkup(line, active){
   return output.outerHTML;
 }
 
-function nextDocumentPipLineIndex(song, index){
-  const lines = song && Array.isArray(song.lyrics) ? song.lyrics : [];
-  const start = Number.isInteger(index) ? index + 1 : 0;
-  for (let i = start; i < lines.length; i++){
-    if (hasDisplayedLyricText(lines[i])) return i;
+/* PiP shows the same lyrics list as the song page. The list markup is resent
+   only when its content changes (song, readings, chant icons, furigana…);
+   attribute-only changes such as the active line or karaoke progress are
+   synced per update instead. */
+let lyricsListVersion = 0;
+let pipListCache = { key: null, markup: "" };
+const PIP_MIRRORED_PAGE_CLASSES = ["venue", "reading-both", "hide-japanese", "hide-chinese", "karaoke-off", "chant-only"];
+
+function documentPipListMarkup(list){
+  const key = `${currentSong ? currentSong.id : ""}:${lyricsListVersion}`;
+  if (pipListCache.key === key) return pipListCache;
+  const clone = list ? list.cloneNode(true) : null;
+  if (clone){
+    clone.querySelectorAll("button.lyric-line").forEach(button => {
+      const line = document.createElement("div");
+      line.className = button.className;
+      line.classList.remove("active");
+      line.dataset.idx = button.dataset.idx || "";
+      line.innerHTML = button.innerHTML;
+      button.replaceWith(line);
+    });
   }
-  return -1;
+  pipListCache = { key, markup: clone ? clone.innerHTML.trim() : "" };
+  return pipListCache;
 }
 
 function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
@@ -3623,8 +3650,7 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
   const lines = list ? [...list.querySelectorAll(".lyric-line")] : [];
   const currentIndex = Number.isInteger(activeIdx) ? activeIdx : -1;
   const currentLine = currentIndex >= 0 ? lines[currentIndex] : null;
-  const nextIndex = nextDocumentPipLineIndex(currentSong, currentIndex);
-  const nextLine = nextIndex >= 0 ? lines[nextIndex] : null;
+  const listInfo = documentPipListMarkup(list);
   const duration = getPlayerDuration();
   const currentTime = getPlayerTime();
   const progress = duration && currentTime !== null
@@ -3642,8 +3668,11 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
     progressText: duration && currentTime !== null
       ? `${formatPlaybackTime(currentTime)} / ${formatPlaybackTime(duration)}`
       : "正在載入播放進度",
+    listKey: listInfo.key,
+    listMarkup: listInfo.markup,
+    activeIdx: currentLine ? currentIndex : -1,
     currentMarkup: documentPipLineMarkup(currentLine, true),
-    nextMarkup: documentPipLineMarkup(nextLine, false),
+    pageClasses: page ? PIP_MIRRORED_PAGE_CLASSES.filter(name => page.classList.contains(name)) : [],
     isPlaying: playerIsPlaying(),
     canPlayPause: Boolean(player && playerReady
       && typeof player.playVideo === "function"

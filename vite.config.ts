@@ -24,7 +24,10 @@ function copyRootStaticAssets(): Plugin {
   return {
     name: "copy-root-static-assets",
     apply: "build",
-    closeBundle(){
+    closeBundle(error){
+      // Rollup still calls closeBundle after a failed build; copying then
+      // would throw ENOENT and hide the original error.
+      if (error) return;
       const outputDir = resolve("dist");
       ["CNAME", "sw.js", "manifest.json", "robots.txt", "sitemap.xml", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png"]
         .forEach(file => cpSync(resolve(file), resolve(outputDir, file)));

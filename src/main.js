@@ -973,7 +973,7 @@ function setupOneAccordion(card){
     }
   });
 
-  // 預設展開的卡片（演出資訊，含現場配置圖）在首頁載入時直接打開，不播展開動畫。
+  // 加上 data-default-open="1" 的卡片在首頁載入時直接打開，不播展開動畫。
   if (card.dataset.defaultOpen === "1" && !card.classList.contains("open")){
     panel.style.transition = "none";
     openInfoCard(card, btn, panel);

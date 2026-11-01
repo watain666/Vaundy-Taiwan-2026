@@ -45,7 +45,7 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
 
         <section class="info-section">
       <div class="menu-card">
-      <div class="info-card" id="info-card" data-default-open="1">
+      <div class="info-card" id="info-card">
         <button class="menu-row info-toggle" id="info-toggle" aria-expanded="false" aria-controls="info-panel">
           <span class="info-toggle-icon">${INFO_SVG}</span>
           <span class="info-toggle-label">演出資訊</span>

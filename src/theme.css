@@ -958,10 +958,6 @@ button{touch-action:manipulation;}
    但橫屏的可用高度很短，影片一旦佔滿上方，歌詞就完全沒有空間。
    這裡用「橫向＋短高度」作為桌面式版型的第二個入口。 */
 @media (orientation: landscape) and (max-height: 600px){
-  .song-page .song-playback-progress{
-    top:calc(var(--safe-top, 0px) + 52px);
-  }
-
   .song-page .player-controls{
     left:max(0px, env(safe-area-inset-left, 0px));
     right:max(0px, env(safe-area-inset-right, 0px));

@@ -2,6 +2,15 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.17.0**
+
+- [PR #51](https://github.com/watain666/Vaundy-Taiwan-2026/pull/51)：歌曲頁下方控制列改成一排，只留演出中常用的「只練合唱」「日文」「中文」「簡潔」「PiP」「設定」；按鈕文字放大、不再半透明，縮寫改成完整名稱，手機上不會再折成三排擋住歌詞。
+- [PR #51](https://github.com/watain666/Vaundy-Taiwan-2026/pull/51)：新增「顯示設定」面板，收進主題（淺色／深色）、播放速度、歌詞字級、日文讀音（假名／羅馬字／兩者）、應援版本（附國旗）、逐字卡拉 OK 高亮與歌詞自動捲動。
+- [PR #51](https://github.com/watain666/Vaundy-Taiwan-2026/pull/51)：播放／暫停鍵移到歌曲頁右上角，與同步字幕小窗位置一致，一般模式也能直接按；播放中統一顯示綠色。
+- [PR #51](https://github.com/watain666/Vaundy-Taiwan-2026/pull/51)：同步字幕小窗（PiP）改成顯示整首歌詞，外觀與歌曲頁相同，字級依小窗大小調整；目前這句固定靠上，讓下一句更容易看到，播放進度條也移到控制列下緣。
+- [PR #51](https://github.com/watain666/Vaundy-Taiwan-2026/pull/51)：修正同步字幕小窗剛打開時歌詞一片黑、要等到下一句才出現，以及暫停／播放鍵偶爾按了沒反應。
+- [PR #51](https://github.com/watain666/Vaundy-Taiwan-2026/pull/51)：首頁「演出資訊」改為預設收合。
+
 ## [**v1.16.4**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/868db89499aa0c1d87b9f56f56967b9a6f0571f8)
 
 - [PR #50](https://github.com/watain666/Vaundy-Taiwan-2026/pull/50)：手機橫屏時，歌曲頁的播放進度條會掉到頂列下方、壓在歌詞上（安裝成 App 時特別明顯），現在固定貼在頂列下緣。

@@ -76,6 +76,28 @@ _Avoid_: 和聲、副歌詞
 歌單上每首歌的應援徽章：兩個應援版本的大合唱行數，以及有無拍手、揮手、跳躍、轉臂，由歌詞與應援指南推導。
 _Avoid_: 徽章表、SONG_MARKS
 
+## 歌詞 view
+
+**歌詞 view**（lyric view）:
+歌詞列表的唯一實作（`src/lyric-view/`）：由一首歌與 view 選項畫出歌詞行，並在播放中更新目前句、可見範圍與逐字高亮；歌曲頁與 PiP 都用它。
+_Avoid_: 鏡射、clone、listMarkup
+
+**mount**:
+歌詞 view 在一個容器上的實例；歌曲頁與 PiP 各建一個，只透過它的 `render`、`setPlayhead` 等方法改歌詞行。
+_Avoid_: 副本、鏡射列表
+
+**view 選項**:
+會改變歌詞行 markup 的設定：讀音模式（假名、羅馬字、兩者）與應援版本；逐字時間與分配器只改行內的時間屬性。
+_Avoid_: 顯示模式、render 參數
+
+**播放位置**（playhead）:
+目前行索引、播放秒數與卡拉 OK 是否開啟；每個 tick 由頁面腳本算一次，同樣的值送給每個 mount。
+_Avoid_: currentMarkup、目前行 HTML
+
+**容器設定**:
+不進歌詞行、只變成歌詞容器 class 的顯示設定：顯示日文、顯示中文、卡拉 OK、只練合唱與讀音模式「兩者」；由同一個函式推導，兩個 mount 的容器共用。
+_Avoid_: 鏡射 class、pageClasses
+
 ## 建置
 
 **authoring 檔**:

@@ -6,7 +6,6 @@ import {
   PAUSE_SVG,
   MD_SVG,
   CHEVRON_SVG,
-  WARN_SVG,
   useSvg,
   INLINE_ICONS,
   STATIC_MIC_SVG,
@@ -404,7 +403,6 @@ function router({ resetScroll = true } = {}){
   cancelJapaneseFontLoad();
   songListComplete = null;
   stopCountdown();
-  teardownSetlistReveal();
   const hash = location.hash.replace(/^#\/?/, "");
   let song = null;
   if (hash.startsWith("song/")) {
@@ -420,6 +418,7 @@ function router({ resetScroll = true } = {}){
   } else if (hash === "guide") {
     leaveSongView();
     setSongFrom("guide");
+    setlistScrollY = 0;   // 離開歌單流程，下次進歌單從頂端開始
     renderGuide();
   } else if (hash === "setlist") {
     leaveSongView();
@@ -427,7 +426,7 @@ function router({ resetScroll = true } = {}){
   } else {
     leaveSongView();
     setSongFrom("guide");
-    resetSetlistSpoiler();   // 홈에 나온 순간 셋리스트는 처음 상태로
+    setlistScrollY = 0;
     renderHome();
   }
   syncSupportChat(!song && hash !== "setlist");
@@ -1167,7 +1166,7 @@ function renderGuide(){
 
       <section class="songs-section">
         <div class="songs-head">
-          <h1>應援指南 無劇透</h1>
+          <h1>全部歌曲</h1>
           <p>選擇歌曲，搭配影片查看歌詞與大合唱重點</p>
           <div class="song-legend">
             <span class="legend-item"><span class="legend-icon chant">${INLINE_ICONS.mic}</span>大合唱 <b class="legend-num">12</b> 行</span>
@@ -1245,24 +1244,16 @@ function renderGuide(){
   scheduleJapaneseFontAfterInteraction(guideJapaneseFontText(), [500], "#/guide");
 }
 
-/* ---------------- SETLIST (스포일러) ----------------
-   보기 방식을 직접 고르기 전까지 목록 데이터를 화면에 넣지 않는다. */
-let setlistScrollHandler = null;
+/* ---------------- SETLIST ----------------
+   공연 순서대로 바로 보여 준다. */
 
 /* ── 곡 화면에서 '뒤로'를 눌렀을 때 돌아갈 곳 ──────────────────
-   새로고침 뒤에는 셋리스트 맥락을 복원하지 않아 순서가 노출되지 않는다. */
+   새로고침 뒤에는 셋리스트 맥락을 복원하지 않는다. */
 let songFrom = "guide";
 function setSongFrom(v){
   songFrom = (v === "setlist") ? "setlist" : "guide";
 }
 function songBackHash(){ return songFrom === "setlist" ? "#/setlist" : "#/guide"; }
-
-function teardownSetlistReveal(){
-  if (setlistScrollHandler){
-    window.removeEventListener("scroll", setlistScrollHandler);
-    setlistScrollHandler = null;
-  }
-}
 
 function setlistTitle(entry){
   const s = getSong(entry.id);
@@ -1277,29 +1268,9 @@ function renderSongTitle(title){
 }
 
 /* ── 셋리스트 보기 상태 ──────────────────────────────────────
-   mode "order"  : 실제 공연 순서 (번호 있음, 토·일로 갈린 자리도 그대로)
-   mode "random" : 순서를 감추고 곡을 하나씩 섞어서 보여 줌
-                   (번호 없음, 토·일 구분도 없음 — 둘 다 순서 단서가 되므로)
-
-   보기 방식은 가림막을 걷기 '전에' 고른다. 스크롤만 내려도 목록이 드러나면
-   랜덤을 고르기 전에 실제 순서를 보게 되어 스포가 되기 때문이다.
-
-   섞은 순서는 저장해 둔다. 곡을 보고 뒤로 돌아와도 같은 화면이 다시 나오므로
-   실제 순서가 드러나지 않는다. */
-let setlistMode     = "random";
-let setlistShuffle  = null;   // 섞은 순서 (곡 키 배열)
-let setlistRevealed = false;  // 가림막을 이미 걷었는지 (이번 방문 동안)
+   곡을 보러 가기 전 스크롤 위치만 기억한다. */
 let setlistScrollY  = 0;      // 곡을 보러 가기 전 스크롤 위치
 
-/* 홈으로 나가면 셋리스트를 처음 상태로 되돌린다.
-   · 곡을 보러 갔다 '뒤로' 오는 건 보던 화면 그대로 (중간에 끊기면 불편하므로)
-   · 홈까지 나갔다가 다시 들어오면 → 스포주의 화면부터 다시
-   옆 사람에게 폰을 건네줬을 때 실수로 순서가 보이는 일을 막아 준다. */
-function resetSetlistSpoiler(){
-  setlistRevealed = false;
-  setlistScrollY  = 0;
-  setlistMode     = "random";
-}
 /* 셋리스트에서 곡을 눌러 들어갔을 때, 그 곡이 셋리스트의 몇 번째였는지.
    이전/다음 곡이 셋리스트 순서를 그대로 따라가게 하려고 기억해 둔다. */
 let setlistPos = (()=>{
@@ -1311,9 +1282,7 @@ function setSetlistPos(i){
   store("horo-set-pos", String(i));
 }
 
-/* 토·일로 갈린 자리까지 풀어서 곡 하나하나를 낱개로 만든다.
-   랜덤에서는 이 낱개들을 통째로 섞기 때문에 "몇 번째 자리에서 곡이 갈렸는지"가
-   드러나지 않는다. */
+/* 토·일로 갈린 자리까지 풀어서 곡 하나하나를 낱개로 만든다. */
 function setlistFlat(){
   const out = [];
   SETLIST_TOKYO.items.forEach(it =>
@@ -1322,45 +1291,10 @@ function setlistFlat(){
   return out;
 }
 
-function makeSetlistShuffle(){
-  const keys = setlistFlat().map(x => x.key);
-  for (let i = keys.length - 1; i > 0; i--){          // 피셔–예이츠 섞기
-    const j = Math.floor(Math.random() * (i + 1));
-    const t = keys[i]; keys[i] = keys[j]; keys[j] = t;
-  }
-  setlistShuffle = keys;
-  store("horo-set-shuffle2", JSON.stringify(keys));
-}
-
-function ensureSetlistShuffle(){
-  const flat = setlistFlat();
-  if (setlistShuffle && setlistShuffle.length === flat.length) return;
-  const saved = store("horo-set-shuffle2");
-  if (saved){
-    try {
-      const arr = JSON.parse(saved);
-      if (Array.isArray(arr) && arr.length === flat.length){
-        setlistShuffle = arr;
-        return;
-      }
-    } catch(e){ /* 저장값이 깨졌으면 새로 섞는다 */ }
-  }
-  makeSetlistShuffle();
-}
-
-function setlistRandomSongs(){
-  ensureSetlistShuffle();
-  const byKey = new Map(setlistFlat().map(x => [x.key, x]));
-  return setlistShuffle.map(k => byKey.get(k)).filter(Boolean);
-}
-
-/* 셋리스트 화면에 보이는 그대로의 곡 순서.
-   · 공연 순서 모드 → 실제 공연 순서 (토·일로 갈린 자리는 낱개로 풀어서)
-   · 랜덤 모드      → 그때 섞어 둔 바로 그 순서
+/* 셋리스트 화면에 보이는 그대로의 곡 순서 (토·일로 갈린 자리는 낱개로 풀어서).
    가이드가 없는 곡은 눌러도 안 열리므로 빼 둔다. */
 function setlistNavList(){
-  const list = (setlistMode === "random") ? setlistRandomSongs() : setlistFlat();
-  return list.filter(x => Boolean(getSong(x.id)));
+  return setlistFlat().filter(x => Boolean(getSong(x.id)));
 }
 
 /* 공연 순서 한 줄 — 번호 + 제목. 토·일로 갈린 자리는 둘을 묶어서 보여 준다. */
@@ -1397,58 +1331,25 @@ function setlistRowHtml(item){
     </li>`;
 }
 
-/* 랜덤 한 줄 — 번호도 날짜 표시도 없이 곡 제목만 */
-function setlistRandomRowHtml(x){
-  const exists = Boolean(getSong(x.id));
-  return `
-    <li class="set-item">
-      <button class="set-row" data-id="${escapeHtml(x.id)}" ${exists ? "" : "disabled"}>
-        <span class="set-num rand">♪</span>
-        <span class="set-title">${renderSongTitle(setlistTitle(x))}</span>
-        <span class="set-go">${exists ? "›" : ""}</span>
-      </button>
-    </li>`;
-}
-
-/* 목록만 다시 그린다 (보기 방식을 바꿀 때 화면 전체를 새로 그리지 않도록) */
+/* 목록을 그린다 */
 function paintSetlist(){
   const listEl = document.getElementById("set-list");
   if (!listEl) return;
-  const isOrder = setlistMode === "order";
   const total = setlistFlat().length;
 
-  listEl.innerHTML = isOrder
-    ? SETLIST_TOKYO.items.map(setlistRowHtml).join("")
-    : setlistRandomSongs().map(setlistRandomRowHtml).join("");
+  listEl.innerHTML = SETLIST_TOKYO.items.map(setlistRowHtml).join("");
 
   const countEl = document.getElementById("setlist-count");
-  if (countEl) countEl.textContent = isOrder
-    ? `東京/首爾 ${SETLIST_TOKYO.items.length} 首・共 ${total} 首`
-    : `共 ${total} 首`;
-
-  const metaEl = document.getElementById("setlist-mode-meta");
-  if (metaEl) metaEl.textContent = isOrder ? "劇透" : "隨機";
-
-  const shufEl = document.getElementById("set-shuffle");
-  if (shufEl) shufEl.hidden = isOrder;
+  if (countEl) countEl.textContent =
+    `${SETLIST_TOKYO.label} ${SETLIST_TOKYO.items.length} 首・共 ${total} 首`;
 
   const desc = document.getElementById("setlist-desc");
-  if (desc) desc.innerHTML = isOrder
-    ? `${escapeHtml(SETLIST_TOKYO.dates)}<br>點選歌曲即可前往應援指南`
-    : `${escapeHtml(SETLIST_TOKYO.dates)}<br>目前將歌曲<b>打亂顯示，不公開演出順序</b>`;
+  if (desc) desc.innerHTML =
+    `${escapeHtml(SETLIST_TOKYO.dates)}<br>點選歌曲即可前往應援指南。找不到的歌曲請到<a href="#/guide">全部歌曲</a>。`;
 
   const note = document.getElementById("setlist-note");
-  if (note) note.innerHTML = isOrder
-    ? `※ 這是整理自粉絲紀錄的非官方東京/首爾歌單，首爾場順序與東京場相同；台北場實際演出順序仍以官方公告為準。<br>
-       ※ 日期不同而有變化的曲目，已分為<b>六</b>・<b>日</b>。`
-    : `※ 這是整理自粉絲紀錄的非官方東京/首爾歌單，首爾場順序與東京場相同；台北場實際演出順序仍以官方公告為準。<br>
-       ※ 演出順序與日期差異曲目皆已隱藏。想查看完整內容，請在上方點選<b>演出順序</b>。`;
-
-  app.querySelectorAll(".set-mode").forEach(b=>{
-    const on = b.dataset.mode === setlistMode;
-    b.classList.toggle("active", on);
-    b.setAttribute("aria-pressed", on ? "true" : "false");
-  });
+  if (note) note.innerHTML =
+    `※ 整理自粉絲紀錄的非官方歌單；台北 10/31、11/01 與東京、首爾場順序相同，六・日不同的曲目已分開標示。`;
 
   // 눌린 줄이 셋리스트의 몇 번째인지 같이 기억해 둔다 (이전/다음 곡용)
   let pos = 0;
@@ -1478,51 +1379,15 @@ function renderSetlist(){
         ${themeToggleHtml()}
       </div>
 
-      <section class="spoiler-hero">
-        <div class="spoiler-mark">${WARN_SVG}</div>
-        <h2 class="spoiler-title">劇透注意</h2>
-        <p class="spoiler-desc">
-          這個頁面包含<b>${SETLIST_TOKYO.label}的歌曲名稱與順序</b>。<br>
-          選擇查看方式前，不會顯示內容。
-        </p>
-        <button class="spoiler-safe" type="button" id="spoiler-safe">不看劇透，返回首頁</button>
-
-        <div class="spoiler-choice">
-          <button class="spoiler-open soft" type="button" data-mode="random">
-            <b>只看歌曲名稱<span class="tag">歌曲劇透</span></b>
-            <span>打亂顯示演出順序</span>
-          </button>
-          <button class="spoiler-open" type="button" data-mode="order">
-            <b>依演出順序查看<span class="tag">完整劇透</span></b>
-            <span>公開歌曲名稱與完整順序</span>
-          </button>
-        </div>
-      </section>
-
-      <section class="setlist-body" id="setlist-body" hidden inert>
+      <section class="setlist-body" id="setlist-body">
         <div class="setlist-head">
           <h2>${escapeHtml(SETLIST_TOKYO.label)}歌單</h2>
           <p id="setlist-desc"></p>
         </div>
 
-        <div class="set-modes" role="group" aria-label="歌單查看方式">
-          <button class="set-mode" type="button" data-mode="order">演出順序<span class="set-mode-badge">劇透</span></button>
-          <button class="set-mode" type="button" data-mode="random">隨機順序</button>
-        </div>
-        <div class="set-order-confirm" id="set-order-confirm" role="group" aria-label="確認公開演出順序" hidden>
-          <p>演出順序將完整公開。</p>
-          <button type="button" id="set-order-cancel">取消</button>
-          <button type="button" id="set-order-reveal">公開順序</button>
-        </div>
-
-        <div class="set-shuffle" id="set-shuffle" hidden>
-          <span><b>已將順序打亂。</b>先看看有哪些歌曲，把順序留到演出當天揭曉吧。</span>
-          <button type="button" id="set-reshuffle">重新打亂</button>
-        </div>
-
         <div class="setlist-meta">
           <span id="setlist-count"></span>
-          <span id="setlist-mode-meta">劇透</span>
+          <span id="setlist-mode-meta">演出順序</span>
         </div>
 
         <ul class="set-list" id="set-list"></ul>
@@ -1533,70 +1398,21 @@ function renderSetlist(){
   `;
 
   document.getElementById("setlist-back-btn").addEventListener("click", ()=>{ location.hash = "#/"; });
-  document.getElementById("spoiler-safe").addEventListener("click", ()=>{ location.hash = "#/"; });
 
-  const body = document.getElementById("setlist-body");
-  const orderConfirm = document.getElementById("set-order-confirm");
+  paintSetlist();
 
-  /* 보기 방식을 고른 순간에만 목록 데이터를 만들고 표시한다. */
-  const reveal = (mode, smooth)=>{
-    setlistMode = (mode === "order") ? "order" : "random";
-    setlistRevealed = true;
-    paintSetlist();
-    body.hidden = false;
-    body.inert = false;
-    if (smooth !== false) body.scrollIntoView({ behavior:"smooth", block:"start" });
-  };
-
-  app.querySelectorAll(".spoiler-choice .spoiler-open").forEach(b=>{
-    b.addEventListener("click", ()=> reveal(b.dataset.mode));
-  });
-
-  // 이미 펼친 뒤 보기 방식을 바꿀 때
-  app.querySelectorAll(".set-mode").forEach(b=>{
-    b.addEventListener("click", ()=>{
-      if (b.dataset.mode === "order" && setlistMode !== "order"){
-        orderConfirm.hidden = false;
-        document.getElementById("set-order-cancel").focus();
-        return;
-      }
-      orderConfirm.hidden = true;
-      if (setlistMode === b.dataset.mode) return;
-      setlistMode = b.dataset.mode === "random" ? "random" : "order";
-      paintSetlist();
-    });
-  });
-  document.getElementById("set-order-cancel").addEventListener("click", ()=>{
-    orderConfirm.hidden = true;
-    app.querySelector('.set-mode[data-mode="order"]').focus();
-  });
-  document.getElementById("set-order-reveal").addEventListener("click", ()=>{
-    orderConfirm.hidden = true;
-    setlistMode = "order";
-    paintSetlist();
-    app.querySelector('.set-mode[data-mode="order"]').focus();
-  });
-  document.getElementById("set-reshuffle").addEventListener("click", ()=>{
-    makeSetlistShuffle();
-    paintSetlist();
-  });
-
-  /* 곱을 보고 '뒤로' 돌아온 경우 — 가림막과 스크롤 위치를 그대로 되살린다.
-     (보기 방식도 그대로라 실제 순서가 잠깐이라도 비치지 않는다)
-     홈까지 나갔다 온 경우에는 resetSetlistSpoiler() 가 이미 초기화해 둔다. */
-  if (setlistRevealed){
-    reveal(setlistMode, false);
-    if (setlistScrollY > 0){
-      const y = setlistScrollY;
-      // 글꼴·레이아웃이 늦게 잡히면 페이지가 짧아 위치가 잘리므로 몇 번 더 맞춘다
-      const restore = ()=>{
-        const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-        window.scrollTo(0, Math.min(y, max));
-      };
-      requestAnimationFrame(restore);
-      setTimeout(restore, 80);
-      setTimeout(restore, 260);
-    }
+  /* 곡을 보고 '뒤로' 돌아온 경우 — 스크롤 위치를 되살린다. */
+  if (setlistScrollY > 0){
+    const y = setlistScrollY;
+    setlistScrollY = 0;   // 한 번만 복원한다
+    // 글꼴·레이아웃이 늦게 잡히면 페이지가 짧아 위치가 잘리므로 몇 번 더 맞춘다
+    const restore = ()=>{
+      const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      window.scrollTo(0, Math.min(y, max));
+    };
+    requestAnimationFrame(restore);
+    setTimeout(restore, 80);
+    setTimeout(restore, 260);
   }
 }
 
@@ -2065,8 +1881,7 @@ let songShellBuilt = false;
 
 /* 곡 선택 목록에 보여 줄 곡들.
    셋리스트에서 들어왔으면 전체 곡이 아니라 셋리스트에 있는 곡만,
-   셋리스트 화면에서 보던 그 순서 그대로 보여 준다.
-   (랜덤 모드면 섞여 있던 그 순서) */
+   셋리스트 화면에서 보던 공연 순서 그대로 보여 준다. */
 function sheetSongs(){
   if (songFrom === "setlist"){
     const list = setlistNavList();
@@ -2079,15 +1894,14 @@ function sheetSongs(){
 }
 
 /* 이전/다음 곡의 순서는 "어디서 들어왔는지"에 따라 달라진다.
-   · 셋리스트에서 들어왔으면 → 셋리스트에서 보던 그 순서 그대로
-     (공연 순서 모드면 공연 순서, 랜덤 모드면 섞여 있던 그 순서)
+   · 셋리스트에서 들어왔으면 → 셋리스트의 공연 순서 그대로
    · 곡 목록에서 들어왔으면  → 곡 목록에서 고른 정렬 순서 */
 function songNeighbors(song){
   if (songFrom === "setlist"){
     const list = setlistNavList();
     if (list.length){
       let pos = setlistPos;
-      // 기억해 둔 자리가 어긋났으면(모드를 바꿨다거나) 곡으로 다시 찾는다
+      // 기억해 둔 자리가 어긋났으면(셋리스트가 바뀌었다거나) 곡으로 다시 찾는다
       if (!(pos >= 0 && pos < list.length && list[pos].id === song.id))
         pos = list.findIndex(x => x.id === song.id);
       if (pos >= 0){
@@ -2796,7 +2610,7 @@ function renderSong(song){
     const { prev, next } = songNeighbors(song);
     const page = document.getElementById("song-page");
     document.getElementById("song-page-heading").textContent = song.title;
-    document.getElementById("song-picker-number").textContent = `${pad(songNo(song))}.`;
+    document.getElementById("song-picker-number").textContent = `${pad(displaySongNo(song))}.`;
     document.getElementById("song-picker-title").innerHTML = renderSongTitle(song.title);
     document.getElementById("prev-song").title = `上一首：${prev.title}`;
     document.getElementById("next-song").title = `下一首：${next.title}`;
@@ -2851,7 +2665,7 @@ function renderSong(song){
   if (song.cover) page.style.setProperty("--song-cover", `url('${song.cover}')`);
   else            page.style.removeProperty("--song-cover");
 
-  document.getElementById("song-picker-number").textContent = `${pad(songNo(song))}.`;
+  document.getElementById("song-picker-number").textContent = `${pad(displaySongNo(song))}.`;
   document.getElementById("song-picker-title").innerHTML = renderSongTitle(song.title);
   document.getElementById("song-page-heading").textContent = song.title;
   const lyricsCredit = document.getElementById("lyrics-credit");
@@ -2906,7 +2720,7 @@ function renderSong(song){
   document.getElementById("song-sheet-list").innerHTML = sheetSongs().map((s, i)=>`
     <li data-no="${songNo(s)}">
       <button class="song-sheet-item${s.id === song.id ? " current" : ""}" data-id="${s.id}" data-pos="${i}"${s.id === song.id ? ' aria-current="true"' : ""}>
-        <span class="song-sheet-num">${pad(songNo(s))}</span>
+        <span class="song-sheet-num">${pad(displaySongNo(s))}</span>
         <span class="song-sheet-name">${renderSongTitle(s.title)}</span>
         ${s.id === song.id ? `<span class="song-sheet-now">目前播放</span>` : ""}
       </button>
@@ -3810,7 +3624,7 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
 
   return {
     title: currentSong ? currentSong.title : "同步字幕",
-    songNumber: currentSong ? `${pad(songNo(currentSong))}.` : "",
+    songNumber: currentSong ? `${pad(displaySongNo(currentSong))}.` : "",
     canNavigate: Boolean(currentSong),
     progress,
     progressText: duration && currentTime !== null
@@ -4533,6 +4347,20 @@ let songSort = (()=>{
 
 /* 곡의 원래 번호(1부터). 정렬을 바꿔도 이 번호는 그대로라 번호 검색이 계속 통한다. */
 function songNo(song){ return getSong(song.id)?.number || 0; }
+
+/* 歌曲頁與選曲清單顯示的編號：從歌單進來時用歌單的場次序號（六・日同一格共用同一號），
+   從「全部歌曲」進來時用目錄登錄序號；搜尋欄的編號仍是目錄序號。 */
+function setlistSlotNo(song){
+  const item = SETLIST_TOKYO.items.find(it => it.songs.some(e => e.id === song.id));
+  return item ? item.n : 0;
+}
+function displaySongNo(song){
+  if (songFrom === "setlist"){
+    const n = setlistSlotNo(song);
+    if (n) return n;
+  }
+  return songNo(song);
+}
 
 const startsHangul = (t)=> /^[\u3131-\u318E\uAC00-\uD7A3]/.test(String(t).trim());
 function byTitle(a, b){

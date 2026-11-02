@@ -21,7 +21,7 @@ const PRECACHE = [
   "./icon-512.png",
   "./icon-maskable-512.png",
   "./apple-touch-icon.png",
-  ...(VITE_BUILD_ASSETS.length ? [] : ["./images/poster.webp", "./images/setlist-bg.jpg"]),
+  ...(VITE_BUILD_ASSETS.length ? [] : ["./images/poster.webp"]),
   ...VITE_BUILD_ASSETS
 ];
 

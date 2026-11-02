@@ -1,9 +1,11 @@
 /*
  * 應援版本資料
  *
- * data.js 裡的 jp/tag 標記是歌詞與應援資料的共用來源。
+ * src/song-lyrics.js 裡的 jp/tag 標記是歌詞與應援資料的共用來源。
  * 日本版則依照 Canva 的「VAUNDY 應援教學」逐曲整理；只存需要
- * 切換的應援行，歌詞本身仍共用 data.js，避免同步時間與翻譯被改動。
+ * 切換的應援行，歌詞本身仍共用 src/song-lyrics.js，避免同步時間與翻譯被改動。
+ * 這裡的時間點會在 build 時由 src/catalogue/assemble.ts 對到歌詞行；
+ * 對不到任何一行的時間點會讓 build 失敗。
  */
 
 export const CHANT_VERSIONS = {

@@ -1,10 +1,13 @@
 /*
- * Keep the generated furigana.js untouched. Corrections use exact data.js
- * line keys, including chant markers and whitespace, so readings remain
- * contextual and split lyric lines receive their own ruby/romaji entries.
+ * Keep the generated furigana.js untouched. Corrections use the exact
+ * src/song-lyrics.js line text as keys, including chant markers and
+ * whitespace, so readings remain contextual and split lyric lines receive
+ * their own ruby/romaji entries. src/catalogue/assemble.ts joins these
+ * tables onto each song at build time; a key that matches no lyric line
+ * fails the build.
  *
  * UtaTen audit (2026-09-22): 34 songs with published lyrics; source URLs are
- * recorded with the added entries below. Preserve data.js base text even
+ * recorded with the added entries below. Preserve song-lyrics.js base text even
  * when its spelling or line breaks differ from the reference.
  *
  * Reference limitations / reviewed exceptions:

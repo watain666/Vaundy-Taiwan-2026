@@ -246,16 +246,24 @@ describe("dead reading keys", () => {
   });
 });
 
-describe("warnings", () => {
-
-  test("ids with whitespace or punctuation are listed and kept verbatim", () => {
+describe("song ids", () => {
+  test("an id with whitespace or punctuation is a build error", () => {
     const sources = makeSources();
     sources.metadata = sources.metadata.map(entry => entry.id === "Beta" ? { ...entry, id: " Beta'" } : entry);
     sources.lyrics = sources.lyrics.map(entry => entry.id === "Beta" ? { ...entry, id: " Beta'" } : entry);
     sources.bpm = { Alpha: 120, " Beta'": 90 };
     sources.setlist = { items: [] };
-    const catalogue = assembleCatalogue(sources);
-    expect(catalogue.songs[1].id).toBe(" Beta'");
-    expect(catalogue.warnings).toEqual([expect.objectContaining({ rule: "id-punctuation", songId: " Beta'" })]);
+    const error = catalogueError(sources);
+    expect(error.issues).toEqual([expect.objectContaining({ rule: "id-punctuation", severity: "error", songId: " Beta'" })]);
+    expect(error.message).toContain("id must contain only ASCII letters and digits");
+  });
+
+  test("an id of ASCII letters and digits is accepted", () => {
+    const sources = makeSources();
+    sources.metadata = sources.metadata.map(entry => entry.id === "Beta" ? { ...entry, id: "Beta2" } : entry);
+    sources.lyrics = sources.lyrics.map(entry => entry.id === "Beta" ? { ...entry, id: "Beta2" } : entry);
+    sources.bpm = { Alpha: 120, Beta2: 90 };
+    sources.setlist = { items: [] };
+    expect(assembleCatalogue(sources).songs[1].id).toBe("Beta2");
   });
 });

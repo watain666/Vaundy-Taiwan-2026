@@ -176,7 +176,7 @@ export const RULE_SEVERITY = {
   "spotify-track-id": "error",
   "unknown-song": "error",
   "dead-reading-key": "error",
-  "id-punctuation": "warning",
+  "id-punctuation": "error",
 } as const;
 
 export type RuleName = keyof typeof RULE_SEVERITY;
@@ -601,7 +601,7 @@ export function assembleCatalogue(sources: CatalogueSources): AssembledCatalogue
     if (metadataIds.has(entry.id)) log.add("id-set", "appears more than once in the metadata", entry.id);
     metadataIds.add(entry.id);
     if (!PLAIN_ID_RE.test(entry.id)) {
-      log.add("id-punctuation", "id contains whitespace or punctuation; it is kept as is to preserve shared links", entry.id);
+      log.add("id-punctuation", "id must contain only ASCII letters and digits", entry.id);
     }
   });
 

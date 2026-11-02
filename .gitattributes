@@ -1,0 +1,3 @@
+# Golden markup keeps the row template whitespace exactly, including
+# indentation on otherwise empty lines.
+tests/__snapshots__/lyric-*.html -whitespace

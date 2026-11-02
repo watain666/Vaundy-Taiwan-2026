@@ -170,7 +170,10 @@ export function markLyricChantSegments(row: Element, lyric: LyricLine, readingMo
   }
 }
 
-/* ---------- Karaoke 單元 ---------- */
+/* ---------- Karaoke 單元 ----------
+   每句歌詞有人工填入的影片起始秒數。「本句起點」到「下一句起點」（或依
+   BPM 估出的收尾）是本句的時間窗，再依日文詞／假名／羅馬字的可見單位
+   分配進度；載入逐字時間後改用逐字時間。播放中只更新目前這一句。 */
 
 export type KaraokeUnit = { el: HTMLElement; weight: number; start: number | null; end: number | null };
 

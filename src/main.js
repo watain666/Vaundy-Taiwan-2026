@@ -105,8 +105,9 @@ const SYNC_INTERVAL_MS   = 100;
 
 /* 지금 폰에 깔려 있는 화면이 몇 번째 판인지 알려 주는 표시.
    새로 올렸는데 화면이 그대로일 때, 옛 판이 남아 있는지 바로 확인할 수 있다.
-   sw.js 의 CACHE_VERSION 과 같이 올려 주세요. */
-const BUILD = "v1.18.4";
+   The build version ("v" + package.json version) is injected by Vite
+   `define` (vite.config.ts); sw.js gets the same value at build time. */
+const BUILD = __BUILD_VERSION__;
 
 const CC_BY_NC_SA_URL = "https://creativecommons.org/licenses/by-nc-sa/4.0/";
 

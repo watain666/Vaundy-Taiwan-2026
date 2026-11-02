@@ -6,6 +6,18 @@ import { pathToFileURL } from "node:url";
 import { homeHtml } from "./src/ui/home.js";
 import { assembleCatalogue, CatalogueError, formatIssue, type AssembledCatalogue, type Song } from "./src/catalogue/assemble";
 import { AUTHORING_FILES, loadCatalogueSources } from "./src/catalogue/sources";
+import { injectServiceWorker, ServiceWorkerInjectionError } from "./src/build/service-worker";
+
+/* The build version ("v" + package.json version) is read here once and
+   used for the prerendered footer, the page's BUILD constant and the
+   service worker's CACHE_VERSION, so the three always agree. */
+function readBuildVersion(): string {
+  const { version } = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
+  if (typeof version !== "string" || !version) throw new Error("package.json has no version");
+  return `v${version}`;
+}
+
+const BUILD_VERSION = readBuildVersion();
 
 function prerenderHome(): Plugin {
   return {
@@ -13,8 +25,7 @@ function prerenderHome(): Plugin {
     transformIndexHtml: {
       order: "pre",
       handler(html: string){
-        const { version } = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
-        return html.replace('<main id="app"></main>', `<main id="app">${homeHtml(`v${version}`)}</main>`);
+        return html.replace('<main id="app"></main>', `<main id="app">${homeHtml(BUILD_VERSION)}</main>`);
       }
     }
   };
@@ -35,7 +46,6 @@ function copyRootStaticAssets(): Plugin {
 
       const indexPath = resolve(outputDir, "index.html");
       const indexHtml = readFileSync(indexPath, "utf8");
-      writeFileSync(indexPath, indexHtml);
       const assetUrls = [...new Set([
         ...[...indexHtml.matchAll(/(?:src|href)="(\.\/assets\/[^\"]+)"/g)].map(([, url]) => url),
         ...[...indexHtml.matchAll(/url\((\.\/assets\/[^)]+)\)/g)].map(([, url]) => url),
@@ -48,8 +58,16 @@ function copyRootStaticAssets(): Plugin {
           .map(file => `./assets/${file}`)
       ])];
       const serviceWorkerPath = resolve(outputDir, "sw.js");
-      const serviceWorker = readFileSync(serviceWorkerPath, "utf8")
-        .replace("const VITE_BUILD_ASSETS = [];", `const VITE_BUILD_ASSETS = ${JSON.stringify(assetUrls)};`);
+      let serviceWorker: string;
+      try {
+        serviceWorker = injectServiceWorker(readFileSync(serviceWorkerPath, "utf8"), {
+          version: BUILD_VERSION,
+          assets: assetUrls
+        });
+      } catch (error) {
+        if (error instanceof ServiceWorkerInjectionError) this.error(error.message);
+        throw error;
+      }
       writeFileSync(serviceWorkerPath, serviceWorker);
     }
   };
@@ -141,6 +159,9 @@ function songCatalogue(): Plugin {
 
 export default defineConfig({
   base: "./",
+  define: {
+    __BUILD_VERSION__: JSON.stringify(BUILD_VERSION)
+  },
   plugins: [songCatalogue(), prerenderHome(), copyRootStaticAssets()],
   server: {
     // A leading dot allows every device on this tailnet.

@@ -807,7 +807,7 @@ function otherOverlayOpen(){
 
 function openAnnouncement(){
   const view = document.getElementById("announcement-view");
-  if (!view || view.classList.contains("open")) return;
+  if (!ANNOUNCEMENT || !view || view.classList.contains("open")) return;
   const title = document.getElementById("announcement-title");
   const body = document.getElementById("announcement-body");
   const action = document.getElementById("announcement-action");
@@ -896,6 +896,14 @@ function setupAnnouncement(){
   }
   view.addEventListener("click", event=>{
     if (event.target === view) closeAnnouncement();
+  });
+
+  // 頁尾「公告」按鈕：已讀之後也能隨時重開
+  document.addEventListener("click", event=>{
+    const trigger = event.target.closest && event.target.closest("[data-open-announcement]");
+    if (!trigger) return;
+    event.preventDefault();
+    openAnnouncement();
   });
 
   document.addEventListener("keydown", event=>{

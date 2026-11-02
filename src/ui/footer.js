@@ -27,6 +27,9 @@ export function siteFooterHtml(build){
           Thanks to the original Korean creator, 카쿠메.
         </a>
         <span class="credits-actions">
+          <button class="credits-link announcement-trigger" type="button" data-open-announcement aria-haspopup="dialog" aria-controls="announcement-view">
+            公告
+          </button>
           <a class="credits-link" href="${FEEDBACK_URL}" target="_blank" rel="noopener" aria-label="意見回饋" title="意見回饋">
             <span>意見回饋</span>
           </a>

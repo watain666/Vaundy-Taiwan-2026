@@ -682,7 +682,8 @@
   .credits-link svg{ width:15px;height:15px;flex:none; }
   .credits-link:hover,
   .credits-link:focus-visible{ color:var(--teal); }
-  .credits-link.changelog-trigger{
+  .credits-link.changelog-trigger,
+  .credits-link.announcement-trigger{
     margin:0;
     border:0;
     background:none;

@@ -2,6 +2,12 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.18.3**
+
+- [PR #60](https://github.com/watain666/Vaundy-Taiwan-2026/pull/60)：同步字幕小窗（PiP）的歌詞改為與歌曲頁同一套程式直接產生，不再複製歌曲頁的畫面；切換日文讀音模式或應援版本後，小窗立即顯示與重新開歌相同的結果。
+- [PR #60](https://github.com/watain666/Vaundy-Taiwan-2026/pull/60)：同步字幕小窗換句時會清除上一句殘留的逐字高亮，並只對小窗內看得到的歌詞行播放應援圖示動畫。
+- [PR #60](https://github.com/watain666/Vaundy-Taiwan-2026/pull/60)：歌詞列表改由獨立模組產生，並加入全部 36 首歌、各種讀音與應援版本組合的畫面比對測試；歌曲頁的外觀與操作維持不變。
+
 ## [**v1.18.2**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/b7227e8cd0846d4091d38f71c5bdcd4d692735a7)
 
 - [PR #59](https://github.com/watain666/Vaundy-Taiwan-2026/pull/59)：首次造訪公告上方加入台北場謝幕照片（880px 寬 WebP，約 26 KB，只在公告開啟時載入）；公告資料可選填 `image`，沒填則維持純文字。

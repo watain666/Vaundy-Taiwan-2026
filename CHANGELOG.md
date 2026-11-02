@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.18.1**
+
+- [PR #58](https://github.com/watain666/Vaundy-Taiwan-2026/pull/58)：歌單頁補上共用頁尾，可直接使用「公告」、「意見回饋」與「更新日誌」，顏色依淺／深色主題調整。
+
 ## [**v1.18.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/1656499f3362275c802acd2b1eb5666b32efc8a7)
 
 - [PR #56](https://github.com/watain666/Vaundy-Taiwan-2026/pull/56)：首頁主按鈕改為「應援指南・演出順序」，直接開啟依演出順序排列的歌單；原本的歌單入口改為「全部歌曲 搜尋・排序」，仍可搜尋與排序全部曲目。Spotify 預熱歌單卡片拿掉劇透提醒。

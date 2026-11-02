@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.18.2**
+
+- [PR #59](https://github.com/watain666/Vaundy-Taiwan-2026/pull/59)：首次造訪公告上方加入台北場謝幕照片（880px 寬 WebP，約 26 KB，只在公告開啟時載入）；公告資料可選填 `image`，沒填則維持純文字。
+
 ## [**v1.18.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/9bcd55155531e2d2f45d3f7ffeaf9cb54a973752)
 
 - [PR #58](https://github.com/watain666/Vaundy-Taiwan-2026/pull/58)：歌單頁補上共用頁尾，可直接使用「公告」、「意見回饋」與「更新日誌」，顏色依淺／深色主題調整。

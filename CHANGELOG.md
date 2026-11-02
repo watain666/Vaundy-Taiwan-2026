@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.18.3**
+## [**v1.18.3**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/231e08e904d5ba8e6c342e5364db0885724acd7f)
 
 - [PR #60](https://github.com/watain666/Vaundy-Taiwan-2026/pull/60)：同步字幕小窗（PiP）的歌詞改為與歌曲頁同一套程式直接產生，不再複製歌曲頁的畫面；切換日文讀音模式或應援版本後，小窗立即顯示與重新開歌相同的結果。
 - [PR #60](https://github.com/watain666/Vaundy-Taiwan-2026/pull/60)：同步字幕小窗換句時會清除上一句殘留的逐字高亮，並只對小窗內看得到的歌詞行播放應援圖示動畫。

@@ -6,15 +6,13 @@ import {
   TRACK_NEXT_SVG,
   TRACK_PREV_SVG
 } from "./ui/icons.js";
+import { applyLyricContainerClasses, createLyricMount } from "./lyric-view/index.ts";
 
 const PIP_WIDTH = 450;
 const PIP_HEIGHT = 225;
 // The active line sits near the top of the lyrics area so the space below
 // goes to the upcoming line (PiP is often too short to show both centered).
 const ACTIVE_LINE_TOP_OFFSET = 4;
-// Song page classes that change how lyrics look; mirrored onto the PiP root.
-// Simple mode is left out on purpose: PiP sizes lyrics by its own window.
-const MIRRORED_PAGE_CLASSES = ["reading-both", "hide-japanese", "hide-chinese", "karaoke-off", "chant-only"];
 
 function isDocumentPipSupported(){
   try {
@@ -47,26 +45,6 @@ function copyIconSprite(sourceDocument, targetDocument){
   if (sprite) targetDocument.body.appendChild(sprite.cloneNode(true));
 }
 
-function syncKaraokeState(target, markup){
-  if (!target || !markup) return true;
-
-  const template = target.ownerDocument.createElement("template");
-  template.innerHTML = markup;
-  const currentUnits = [...target.querySelectorAll(".karaoke-unit")];
-  const nextUnits = [...template.content.querySelectorAll(".karaoke-unit")];
-  if (currentUnits.length !== nextUnits.length) return false;
-
-  currentUnits.forEach((unit, index)=>{
-    const next = nextUnits[index];
-    unit.classList.toggle("karaoke-lit", next.classList.contains("karaoke-lit"));
-    unit.classList.toggle("karaoke-current", next.classList.contains("karaoke-current"));
-    const progress = next.style.getPropertyValue("--karaoke-word-progress");
-    if (progress) unit.style.setProperty("--karaoke-word-progress", progress);
-    else unit.style.removeProperty("--karaoke-word-progress");
-  });
-  return true;
-}
-
 function actionButton(documentRef, className, label, icon, handler){
   const button = documentRef.createElement("button");
   button.type = "button";
@@ -95,13 +73,15 @@ export function createDocumentPip({
   let root = null;
   let openingPromise = null;
   let closeWhenReady = false;
-  let listKey = null;
-  let renderedActiveIdx = null;
+  /* The PiP window's own lyric view mount, and the inputs it last rendered. */
+  let lyricMount = null;
+  let renderedLyrics = null;
   let renderedPlaying = null;
 
   function resetRenderCache(){
-    listKey = null;
-    renderedActiveIdx = null;
+    if (lyricMount) lyricMount.destroy();
+    lyricMount = null;
+    renderedLyrics = null;
     renderedPlaying = null;
   }
 
@@ -122,38 +102,53 @@ export function createDocumentPip({
     return true;
   }
 
-  // Keep the active line pinned near the top of the lyrics area.
-  function scrollToActive(smooth){
-    if (!root) return;
-    const scroller = root.querySelector(".pip-lyrics");
-    const list = root.querySelector(".pip-lyrics-list");
-    if (!scroller || !list) return;
-    const line = list.querySelector(".lyric-line.active");
-    if (!line){
-      scroller.scrollTo({ top: 0 });
-      return;
+  // Keep the active line pinned near the top after the window or the list resizes.
+  function scrollToActive(){
+    if (lyricMount) lyricMount.scrollToActive({ smooth: false });
+  }
+
+  /* Re-renders the PiP lyrics only when an input that changes the rows changed. */
+  function renderLyrics(list, model){
+    const song = model.song || null;
+    const view = model.view || {};
+    const inputs = {
+      song,
+      readingMode: view.readingMode,
+      chantVersion: view.chantVersion,
+      karaokeTiming: view.karaokeTiming || null,
+      karaokeSources: view.karaokeSources || null
+    };
+    const changed = !renderedLyrics
+      || Object.keys(inputs).some(key => inputs[key] !== renderedLyrics[key]);
+    if (changed){
+      if (song) lyricMount.render(song, inputs);
+      else list.replaceChildren();
+      renderedLyrics = inputs;
     }
-    const lineRect = line.getBoundingClientRect();
-    const boxRect = scroller.getBoundingClientRect();
-    const top = scroller.scrollTop + (lineRect.top - boxRect.top) - ACTIVE_LINE_TOP_OFFSET;
-    const reduceMotion = root.ownerDocument.defaultView?.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    scroller.scrollTo({ top: Math.max(0, top), behavior: smooth && !reduceMotion ? "smooth" : "auto" });
+    lyricMount.setBeat(model.beat || null);
+    if (song && model.playhead) lyricMount.setPlayhead(model.playhead);
   }
 
   function render(model = {}){
     if (!root) return;
 
     const documentRef = root.ownerDocument;
-    const showJapanese = model.showJapanese !== false;
-    const showChinese = model.showChinese !== false;
-    const lyricsHidden = !showJapanese && !showChinese;
+    // Container classes come from the setting values, through the same
+    // mapping as the song page. Simple mode is not one of them on purpose:
+    // PiP has no video and sizes lyrics by its own window.
+    const settings = model.container || {};
+    const lyricsHidden = settings.showJapanese === false && settings.showChinese === false;
 
     const theme = model.theme === "light" ? "light" : "dark";
     documentRef.documentElement.dataset.theme = theme;
     root.dataset.theme = theme;
-    const pageClasses = new Set(Array.isArray(model.pageClasses) ? model.pageClasses : []);
-    MIRRORED_PAGE_CLASSES.forEach(name => root.classList.toggle(name, pageClasses.has(name)));
-    root.classList.toggle("lyrics-hidden", lyricsHidden);
+    applyLyricContainerClasses(root, {
+      readingMode: settings.readingMode,
+      showJapanese: settings.showJapanese !== false,
+      showChinese: settings.showChinese !== false,
+      karaokeEnabled: settings.karaokeEnabled === true,
+      chantOnly: settings.chantOnly === true
+    });
     const lyricScale = Number(model.lyricScale);
     if (Number.isFinite(lyricScale) && lyricScale > 0){
       root.style.setProperty("--lyric-scale", String(lyricScale));
@@ -185,32 +180,12 @@ export function createDocumentPip({
 
     const list = root.querySelector(".pip-lyrics-list");
     const empty = root.querySelector(".pip-empty");
-    if (list && empty){
-      const message = lyricsHidden ? "歌詞已隱藏" : (model.listMarkup ? "" : "等待歌詞載入…");
+    if (list && empty && lyricMount){
+      const message = lyricsHidden ? "歌詞已隱藏" : (model.song ? "" : "等待歌詞載入…");
       empty.textContent = message;
       empty.hidden = !message;
       list.hidden = Boolean(message);
-
-      let rebuilt = false;
-      if (model.listKey !== listKey){
-        list.innerHTML = String(model.listMarkup || "");
-        listKey = model.listKey;
-        renderedActiveIdx = null;
-        rebuilt = true;
-      }
-
-      const activeIdx = Number.isInteger(model.activeIdx) ? model.activeIdx : -1;
-      const lines = list.querySelectorAll(".lyric-line");
-      const activeLine = activeIdx >= 0 ? lines[activeIdx] || null : null;
-      if (activeIdx !== renderedActiveIdx){
-        list.querySelectorAll(".lyric-line.active").forEach(line => line.classList.remove("active"));
-        if (activeLine) activeLine.classList.add("active");
-        renderedActiveIdx = activeIdx;
-        scrollToActive(!rebuilt);
-      } else if (rebuilt){
-        scrollToActive(false);
-      }
-      if (activeLine && model.currentMarkup) syncKaraokeState(activeLine, model.currentMarkup);
+      renderLyrics(list, model);
     }
 
     const play = root.querySelector(".pip-play");
@@ -284,13 +259,24 @@ export function createDocumentPip({
     documentRef.body.appendChild(nextRoot);
     root = nextRoot;
     resetRenderCache();
-    nextWindow.addEventListener("resize", ()=>scrollToActive(false));
+    // PiP's own lyric view mount: rows are not clickable, the list always
+    // follows playback and the current line is pinned near the top.
+    const list = nextRoot.querySelector(".pip-lyrics-list");
+    lyricMount = createLyricMount(list, {
+      interactive: false,
+      scrollAnchor: "top",
+      autoScroll: true,
+      scroller: nextRoot.querySelector(".pip-lyrics"),
+      document: documentRef,
+      topOffset: ACTIVE_LINE_TOP_OFFSET,
+      keepLastActive: false
+    });
+    nextWindow.addEventListener("resize", scrollToActive);
     // The copied <link> stylesheets and web fonts load after the first render,
     // which changes every line's height and leaves the first scroll pointing at
     // empty space. Re-anchor whenever the list's size changes.
     const Observer = nextWindow.ResizeObserver;
-    const list = nextRoot.querySelector(".pip-lyrics-list");
-    if (Observer && list) new Observer(()=>scrollToActive(false)).observe(list);
+    if (Observer && list) new Observer(scrollToActive).observe(list);
   }
 
   async function open(model = {}){

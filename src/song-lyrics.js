@@ -596,7 +596,7 @@ export const SONGS = [
     ],
   },
   {
-    id: "HowdoIknow'",
+    id: "HowdoIknow",
     title: "我怎麼會知道呢 (僕にはどうしてわかるんだろう)",
     translationCredit: "藍色小樹熊",
     translationCreditUrl: "https://bluekokomurmur.com/lyrics/vaundy-boku-niwa-doshite-wakarundarou/",
@@ -641,7 +641,7 @@ export const SONGS = [
     ],
   },
   {
-    id: "Shiwaawase'",
+    id: "Shiwaawase",
     title: "皺褶相合 (しわあわせ)",
     translationCredit: "AI 翻譯（Claude Opus 5.5）",
     translationCreditUrl: null,
@@ -1053,7 +1053,7 @@ export const SONGS = [
     ],
   },
   {
-    id: "Iseijin'",
+    id: "Iseijin",
     title: "偉生人 (偉生人)",
     translationCredit: "巴哈姆特的月勳",
     youtubeId: "aDaWuvpB_Kw",
@@ -1156,7 +1156,7 @@ export const SONGS = [
     ],
   },
   {
-    id: "SonnaBitternaHanashi)",
+    id: "SonnaBitternaHanashi",
     title: "那樣的 bitter 故事 (そんなbitterな話)",
     translationCredit: "AI 翻譯（Claude Opus 5.5）",
     translationCreditUrl: null,
@@ -1789,7 +1789,7 @@ export const SONGS = [
     ],
   },
   {
-    id: " Kimagure",
+    id: "Kimagure",
     title: "任性 (気まぐれ)",
     translationCredit: "AI 翻譯（Claude Opus 5.5）",
     translationCreditUrl: null,

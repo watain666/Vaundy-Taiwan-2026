@@ -121,7 +121,7 @@
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
 
-#12 "HowdoIknow'"
+#12 "HowdoIknow"
   lines: 33
   linesWithReading: 33
   linesWithRomaji: 33
@@ -132,7 +132,7 @@
   backingChantLines: -
   translationCreditUrl: https://bluekokomurmur.com/lyrics/vaundy-boku-niwa-doshite-wakarundarou/
 
-#13 "Shiwaawase'"
+#13 "Shiwaawase"
   lines: 31
   linesWithReading: 29
   linesWithRomaji: 31
@@ -231,7 +231,7 @@
   backingChantLines: -
   translationCreditUrl: null (text only)
 
-#22 "Iseijin'"
+#22 "Iseijin"
   lines: 40
   linesWithReading: 32
   linesWithRomaji: 35
@@ -253,7 +253,7 @@
   backingChantLines: -
   translationCreditUrl: null (text only)
 
-#24 "SonnaBitternaHanashi)"
+#24 "SonnaBitternaHanashi"
   lines: 41
   linesWithReading: 38
   linesWithRomaji: 41
@@ -385,7 +385,7 @@
   backingChantLines: -
   translationCreditUrl: https://smiecj.com/2023/10/08/vaundy-todome/
 
-#36 " Kimagure"
+#36 "Kimagure"
   lines: 33
   linesWithReading: 33
   linesWithRomaji: 33

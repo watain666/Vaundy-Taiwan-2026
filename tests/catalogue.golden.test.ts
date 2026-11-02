@@ -40,10 +40,9 @@ test("golden snapshot of the assembled catalogue", async () => {
   await expect(golden(catalogue.songs)).toMatchFileSnapshot("./__snapshots__/song-catalogue.golden.txt");
 });
 
-test("real data has no build errors and lists its warnings", () => {
+test("real data has no build errors or warnings", () => {
   expect(catalogue.songs).toHaveLength(36);
-  expect(catalogue.warnings.filter(issue => issue.rule === "id-punctuation").map(issue => issue.songId))
-    .toEqual(["HowdoIknow'", "Shiwaawase'", "Iseijin'", "SonnaBitternaHanashi)", " Kimagure"]);
+  expect(catalogue.warnings).toEqual([]);
 });
 
 test("Reunion keeps the user-confirmed 夏=ここ reading", () => {

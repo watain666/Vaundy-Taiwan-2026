@@ -46,6 +46,24 @@ export const VAWS_PICS = [
   { src:"./images/notice/vaws-ar-camera.webp", title:"會場限定 AR 相機說明", width:842, height:1191 },
 ];
 
+/* ── 意見回饋表單與首次造訪公告 ──────────────────────────────
+   FEEDBACK_FORM_URL：頁尾「意見回饋」與公告按鈕都連到這個 Google 表單。
+   ANNOUNCEMENT：第一次開啟網站時彈出；關閉後把 id 記進 localStorage，
+   之後不再出現。要再公告一次，改 id（例如換日期）即可；body 每一項是一段。 */
+export const FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe-HtowLlIGR1t37Fh-5FNIIG1YoVYbRklhjWjFCrQPHH5ujg/viewform";
+
+export const ANNOUNCEMENT = {
+  id: "2026-11-02-feedback-form",
+  title: "台北場圓滿結束",
+  body: [
+    "《Vaundy ASIA ARENA TOUR 2026 “HORO” in TAIPEI》圓滿結束，謝謝大家一起全力應援！",
+    "網站之後會持續營運不關站，我們也會繼續更新與修正應援內容。相信這兩天大家都累積了紮實的實戰經驗，請 Vaundy 老師務必再來台灣讓我們用力重考🫵",
+    "若想許願新功能、回報問題，或修正歌詞、翻譯與應援內容，歡迎隨時點擊網站頁尾的「意見回饋」填寫表單（為支援上傳 Bug 截圖，填寫需登入 Google 帳號）。",
+  ],
+  action: { label: "填寫表單", href: FEEDBACK_FORM_URL },
+  dismiss: "知道了",
+};
+
 export const PICS = {
   /*
      video = WebM（現代瀏覽器優先使用）

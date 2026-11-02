@@ -30,6 +30,7 @@ import {
   VAWS_PICS,
   PICS,
   SETLIST_TOKYO,
+  ANNOUNCEMENT,
   SEAT_VIEW,
   SEAT_BLOCKS,
   SEAT_GRADE,
@@ -782,6 +783,149 @@ function loadChangelogSource(){
       .catch(() => "");
   }
   return changelogSourcePromise;
+}
+
+/* ── 首次造訪公告 ─────────────────────────────────────────────
+   內容在 src/data.js 的 ANNOUNCEMENT。關閉（知道了／✕／Esc／點背景／
+   按下主要連結）後把 id 記進 localStorage，之後不再彈出；改 id 才會再出現。
+   歌曲頁不彈，避免蓋住歌詞與播放控制；之後回到其他頁面時再補彈一次。 */
+const ANNOUNCEMENT_SEEN_KEY = "horo-announcement-seen";
+let announcementOwner = null;
+let announcementTrigger = null;
+// localStorage 寫不進去（隱私模式等）時，至少這次開啟期間不再重彈
+let announcementDismissed = false;
+
+function announcementSeen(){
+  if (!ANNOUNCEMENT || !ANNOUNCEMENT.id) return true;
+  if (announcementDismissed) return true;
+  return store(ANNOUNCEMENT_SEEN_KEY) === ANNOUNCEMENT.id;
+}
+
+function otherOverlayOpen(){
+  return !!document.querySelector(".notice-view.open:not(#announcement-view)");
+}
+
+function openAnnouncement(){
+  const view = document.getElementById("announcement-view");
+  if (!ANNOUNCEMENT || !view || view.classList.contains("open")) return;
+  const title = document.getElementById("announcement-title");
+  const body = document.getElementById("announcement-body");
+  const action = document.getElementById("announcement-action");
+  const dismiss = document.getElementById("announcement-dismiss");
+
+  if (title) title.textContent = ANNOUNCEMENT.title || "公告";
+  if (body){
+    body.replaceChildren(...(ANNOUNCEMENT.body || []).map(text => {
+      const p = document.createElement("p");
+      p.textContent = text;
+      return p;
+    }));
+  }
+  if (action){
+    const link = ANNOUNCEMENT.action;
+    if (link && link.href){
+      action.hidden = false;
+      action.href = link.href;
+      action.textContent = link.label || "前往";
+    } else {
+      action.hidden = true;
+    }
+  }
+  if (dismiss) dismiss.textContent = ANNOUNCEMENT.dismiss || "知道了";
+
+  announcementTrigger = document.activeElement;
+  announcementOwner = isSongViewActive() ? songView : app;
+  announcementOwner.inert = true;
+  view.inert = false;
+  view.classList.add("open");
+  view.setAttribute("aria-hidden", "false");
+  document.body.classList.add("no-scroll");
+  if (dismiss) dismiss.focus();
+}
+
+// options.remember === false：只收起來、不記成已讀（切到歌曲頁時用，之後會再補彈）
+function closeAnnouncement(options){
+  const view = document.getElementById("announcement-view");
+  if (!view || !view.classList.contains("open")) return;
+  const remember = !(options && options.remember === false);
+  if (remember){
+    announcementDismissed = true;
+    store(ANNOUNCEMENT_SEEN_KEY, ANNOUNCEMENT.id);
+  }
+  view.classList.remove("open");
+  view.setAttribute("aria-hidden", "true");
+  view.inert = true;
+  if (announcementOwner) announcementOwner.inert = false;
+  announcementOwner = null;
+  document.body.classList.remove("no-scroll");
+  if (announcementTrigger && announcementTrigger.isConnected && announcementTrigger !== document.body){
+    announcementTrigger.focus();
+  }
+  announcementTrigger = null;
+}
+
+function maybeShowAnnouncement(){
+  if (announcementSeen() || isSongViewActive() || otherOverlayOpen()) return;
+  openAnnouncement();
+}
+
+function onAnnouncementRouteChange(){
+  const view = document.getElementById("announcement-view");
+  // 開著時切到歌曲頁：先收起來（不記已讀），離開歌曲頁再補彈
+  if (view && view.classList.contains("open") && isSongViewActive()){
+    closeAnnouncement({ remember: false });
+    return;
+  }
+  maybeShowAnnouncement();
+}
+
+function setupAnnouncement(){
+  const view = document.getElementById("announcement-view");
+  if (!view || view.dataset.wired) return;
+  view.dataset.wired = "1";
+
+  const close = document.getElementById("announcement-close");
+  const dismiss = document.getElementById("announcement-dismiss");
+  const action = document.getElementById("announcement-action");
+  if (close) close.addEventListener("click", closeAnnouncement);
+  if (dismiss) dismiss.addEventListener("click", closeAnnouncement);
+  // 連結照常在新分頁開啟（含中鍵／Cmd 點擊），公告同時視為已讀；右鍵開選單不算
+  if (action){
+    action.addEventListener("click", closeAnnouncement);
+    action.addEventListener("auxclick", event=>{ if (event.button === 1) closeAnnouncement(); });
+  }
+  view.addEventListener("click", event=>{
+    if (event.target === view) closeAnnouncement();
+  });
+
+  // 頁尾「公告」按鈕：已讀之後也能隨時重開
+  document.addEventListener("click", event=>{
+    const trigger = event.target.closest && event.target.closest("[data-open-announcement]");
+    if (!trigger) return;
+    event.preventDefault();
+    openAnnouncement();
+  });
+
+  document.addEventListener("keydown", event=>{
+    if (!view.classList.contains("open")) return;
+    if (event.key === "Escape"){
+      event.preventDefault();
+      closeAnnouncement();
+      return;
+    }
+    if (event.key !== "Tab") return;
+
+    const focusable = [...view.querySelectorAll("button, a[href]")]
+      .filter(el => !el.disabled && !el.hidden && el.offsetParent !== null);
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (!first || !last) return;
+    if (!view.contains(document.activeElement)){ event.preventDefault(); first.focus(); }
+    else if (event.shiftKey && document.activeElement === first){ event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last){ event.preventDefault(); first.focus(); }
+  });
+
+  window.addEventListener("hashchange", onAnnouncementRouteChange);
 }
 
 function openChangelog(){
@@ -5063,6 +5207,8 @@ function loadYouTubeApi(){
 }
 setupDebugBadge();
 setupChangelogModal();
+setupAnnouncement();
 
 router({ resetScroll: false });
 document.documentElement.removeAttribute("data-initial-route");
+maybeShowAnnouncement();

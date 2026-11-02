@@ -1,7 +1,8 @@
 import { GITHUB_SVG } from "./icons.js";
+import { FEEDBACK_FORM_URL } from "../data.js";
 
 const REPO_URL = "https://github.com/watain666/Vaundy-Taiwan-2026";
-const FEEDBACK_URL = "https://www.threads.com/@brainginger/post/DdiLWztgen9";
+const FEEDBACK_URL = FEEDBACK_FORM_URL;
 const ORIGINAL_SITE_URL = "https://vaundy-seoul-2026.pages.dev/";
 const KOREAN_AUTHOR_URL = "https://gall.dcinside.com/mgallery/board/view/?id=vaundy0606&no=35550";
 
@@ -26,6 +27,9 @@ export function siteFooterHtml(build){
           Thanks to the original Korean creator, 카쿠메.
         </a>
         <span class="credits-actions">
+          <button class="credits-link announcement-trigger" type="button" data-open-announcement aria-haspopup="dialog" aria-controls="announcement-view">
+            公告
+          </button>
           <a class="credits-link" href="${FEEDBACK_URL}" target="_blank" rel="noopener" aria-label="意見回饋" title="意見回饋">
             <span>意見回饋</span>
           </a>

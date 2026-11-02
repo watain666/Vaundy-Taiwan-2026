@@ -50,6 +50,14 @@ import { loadJapaneseFontSubset } from "./services/japanese-font.js";
 import { syncSupportChat } from "./ui/support-chat.js";
 import { store } from "./services/storage.js";
 import { createDocumentPip } from "./document-pip.js";
+import {
+  escapeHtml,
+  ICON_TOKEN_RE,
+  iconTokensToMarkup,
+  spaceCjkLatinMarkup,
+  spaceCjkLatinText,
+  withIcons
+} from "./ui/text.ts";
 
 const appBaseUrl = import.meta.env?.BASE_URL || "./";
 
@@ -3110,84 +3118,20 @@ function updateTipPic(activeIdx){
   showTipPic(pic);
 }
 
-function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-
 /*
- * 歌詞排版原則：中文／日文與相鄰的半形英數字之間保留一個半形空白。
- * 這是顯示層的處理，原始歌詞仍維持不變，避免影響假名索引與卡拉 OK 對齊。
+ * 歌詞排版原則（中文／日文與半形英數字之間的空白）與 HTML escape 在
+ * src/ui/text.ts；這裡只留卡拉 OK 單元切分用的羅馬字字元規則。
  */
-const CJK_CHAR_RE = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u;
-const LATIN_OR_DIGIT_CHAR_RE = /[A-Za-z0-9]/;
 const ROMAJI_WORD_CHAR_RE = /[\p{Script=Latin}\p{N}]/u;
 const ROMAJI_WORD_CONTINUATION_RE = /[\p{Script=Latin}\p{N}'’_-]/u;
-const CJK_TO_LATIN_RE = /([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}])(?=[A-Za-z0-9])/gu;
-const LATIN_TO_CJK_RE = /([A-Za-z0-9])(?=[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}])/gu;
 
-function spaceCjkLatinText(value){
-  return String(value ?? "")
-    .replace(CJK_TO_LATIN_RE, "$1 ")
-    .replace(LATIN_TO_CJK_RE, "$1 ");
-}
-
-function edgeNonSpaceChar(value, fromEnd){
-  const chars = Array.from(String(value || ""));
-  while (chars.length && /\s/u.test(fromEnd ? chars.at(-1) : chars[0])){
-    if (fromEnd) chars.pop();
-    else chars.shift();
-  }
-  return fromEnd ? chars.at(-1) || "" : chars[0] || "";
-}
-
-/* furigana 會產生帶有 <ruby>/<rt> 的 HTML；只處理文字片段，保留標記本身。 */
-function spaceCjkLatinMarkup(markup){
-  const parts = String(markup || "").split(/(<[^>]*>)/g);
-  const textIndexes = [];
-
-  parts.forEach((part, index) => {
-    if (/^<[^>]*>$/.test(part)) return;
-    parts[index] = spaceCjkLatinText(part);
-    textIndexes.push(index);
-  });
-
-  for (let i = 1; i < textIndexes.length; i++){
-    const previousIndex = textIndexes[i - 1];
-    const currentIndex = textIndexes[i];
-    const previous = parts[previousIndex];
-    const current = parts[currentIndex];
-    const previousChar = edgeNonSpaceChar(previous, true);
-    const currentChar = edgeNonSpaceChar(current, false);
-    const hasTrailingSpace = /\s$/u.test(previous);
-    const hasLeadingSpace = /^\s/u.test(current);
-
-    if (!hasTrailingSpace && !hasLeadingSpace
-      && CJK_CHAR_RE.test(previousChar) && LATIN_OR_DIGIT_CHAR_RE.test(currentChar)){
-      parts[currentIndex] = " " + current;
-    } else if (!hasTrailingSpace && !hasLeadingSpace
-      && LATIN_OR_DIGIT_CHAR_RE.test(previousChar) && CJK_CHAR_RE.test(currentChar)){
-      parts[previousIndex] = previous + " ";
-    }
-  }
-
-  return parts.join("");
-}
-
-/* 가사 글자를 안전하게 처리하면서, [wave] [clap] [mic] 같은 표시를
-   그 자리에서 움직이는 아이콘으로 바꿔 준다. 가사 어느 위치에나 넣을 수 있다. */
-/* [wave] 처럼 대괄호로도, (wave) 처럼 소괄호로도 쓸 수 있게 둘 다 인식 */
-const ICON_TOKEN_RE = /[\[(](wave|clap|mic|chant|jump|spin|turn)[\])]/gi;
-function withIcons(str){
-  if (str === undefined || str === null) return "";
-  return escapeHtml(spaceCjkLatinText(str)).replace(ICON_TOKEN_RE, (m, key)=> INLINE_ICONS[key.toLowerCase()] || m);
-}
 /* entry is the catalogue line (or backing chant) whose text is str; it
    carries the kana reading and romaji resolved at build time. */
 function renderKanaLine(str, entry){
   const source = String(str ?? "");
   const ruby = entry && entry.reading;
   if (!ruby) return withIcons(source);
-  return spaceCjkLatinMarkup(ruby).replace(ICON_TOKEN_RE, (m, key)=> INLINE_ICONS[key.toLowerCase()] || m);
+  return iconTokensToMarkup(spaceCjkLatinMarkup(ruby));
 }
 
 function renderRomajiLine(str, entry, includeIcons = true){

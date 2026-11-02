@@ -54,10 +54,11 @@ export const FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe-Ht
 
 export const ANNOUNCEMENT = {
   id: "2026-11-02-feedback-form",
-  title: "意見回饋表單上線",
+  title: "台北場圓滿結束",
   body: [
-    "台北兩場結束了，謝謝大家一起應援！想許願新功能、回報問題，或歌詞、翻譯、應援內容想修正，都歡迎用表單告訴我們。",
-    "表單之後也能從頁尾的「意見回饋」找到。因為可以附上截圖，填寫時需要登入 Google 帳號。",
+    "《Vaundy ASIA ARENA TOUR 2026 “HORO” in TAIPEI》圓滿結束，謝謝大家一起全力應援！",
+    "網站之後會持續營運不關站，我們也會繼續更新與修正應援內容。相信這兩天大家都累積了紮實的實戰經驗，請 Vaundy 老師務必再來台灣讓我們用力重考🫵",
+    "若想許願新功能、回報問題，或修正歌詞、翻譯與應援內容，歡迎隨時點擊網站頁尾的「意見回饋」填寫表單（為支援上傳 Bug 截圖，填寫需登入 Google 帳號）。",
   ],
   action: { label: "填寫表單", href: FEEDBACK_FORM_URL },
   dismiss: "知道了",

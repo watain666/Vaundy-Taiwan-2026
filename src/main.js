@@ -1394,6 +1394,8 @@ function renderSetlist(){
 
         <p class="setlist-note" id="setlist-note"></p>
       </section>
+
+      ${siteFooterHtml(BUILD)}
     </div>
   `;
 

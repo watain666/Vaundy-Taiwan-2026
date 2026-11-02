@@ -156,6 +156,7 @@ button{touch-action:manipulation;}
 .guide-page .song-legend-note,
 .guide-page .song-search-meta,
 .guide-page .credits{color:var(--page-muted);text-shadow:none;}
+.setlist-page .credits{color:var(--ui-muted);text-shadow:none;}
 .guide-page .song-legend{border:0;background:none;padding:0;}
 .guide-page .legend-item{color:var(--page-muted);}
 .guide-page .song-search::before{background:var(--page-light);}

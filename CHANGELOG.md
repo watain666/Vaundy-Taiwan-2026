@@ -2,6 +2,15 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.18.0**
+
+- [PR #56](https://github.com/watain666/Vaundy-Taiwan-2026/pull/56)：首頁主按鈕改為「應援指南・演出順序」，直接開啟依演出順序排列的歌單；原本的歌單入口改為「全部歌曲 搜尋・排序」，仍可搜尋與排序全部曲目。Spotify 預熱歌單卡片拿掉劇透提醒。
+- [PR #56](https://github.com/watain666/Vaundy-Taiwan-2026/pull/56)：歌單頁移除劇透警告、隨機順序與切換確認，進頁直接顯示 22 首演出順序；標籤改為「台北/東京/首爾」，註明台北 10/31、11/01 與東京、首爾場順序相同（粉絲紀錄整理，非官方），六・日不同的曲目分開標示，並提供「全部歌曲」連結。
+- [PR #56](https://github.com/watain666/Vaundy-Taiwan-2026/pull/56)：從歌單進入歌曲頁時，選曲按鈕、選曲清單與 PiP 視窗改顯示歌單場次序號（例如〈泣き地蔵〉為 01，〈再会〉與〈逆光〉共用 04）；從「全部歌曲」進入維持原本的目錄序號。
+- [PR #56](https://github.com/watain666/Vaundy-Taiwan-2026/pull/56)：〈怪獣の花唄〉中文歌名改為「怪獸的花之歌」。
+- [PR #55](https://github.com/watain666/Vaundy-Taiwan-2026/pull/55)：頁尾「意見回饋」改連到 Google 意見回饋表單，可許願新功能、回報問題並附上截圖；因支援上傳截圖，填寫需登入 Google 帳號。
+- [PR #55](https://github.com/watain666/Vaundy-Taiwan-2026/pull/55)：新增首次造訪公告（台北場圓滿結束、網站持續營運、意見回饋表單說明），關閉後不再自動出現；頁尾新增「公告」按鈕可隨時重開。
+
 ## [**v1.17.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/04dbd657c8387c8f389c262ef455b1e600113079)
 
 - [PR #53](https://github.com/watain666/Vaundy-Taiwan-2026/pull/53)：開啟一首歌時只下載該首的歌詞、翻譯、讀音與應援資料（每首約 5 到 21 KB），不再先載入全部 36 首合計約 490 KB 的整包資料；離線快取仍涵蓋所有歌曲。

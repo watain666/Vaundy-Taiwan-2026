@@ -813,6 +813,19 @@ function openAnnouncement(){
   const dismiss = document.getElementById("announcement-dismiss");
 
   if (title) title.textContent = ANNOUNCEMENT.title || "公告";
+  const image = document.getElementById("announcement-image");
+  if (image){
+    const pic = ANNOUNCEMENT.image;
+    if (pic && pic.src){
+      if (image.getAttribute("src") !== pic.src) image.src = pic.src;
+      image.alt = pic.alt || "";
+      if (pic.width && pic.height){ image.width = pic.width; image.height = pic.height; }
+      image.hidden = false;
+    } else {
+      image.hidden = true;
+      image.removeAttribute("src");
+    }
+  }
   if (body){
     body.replaceChildren(...(ANNOUNCEMENT.body || []).map(text => {
       const p = document.createElement("p");

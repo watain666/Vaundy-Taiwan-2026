@@ -68,7 +68,7 @@ npm run preview
 
 首頁與應援指南列表右下角有「VAWS 交流區」聊天泡泡，使用自架的 Waline 留言服務，點開泡泡時才載入留言程式；可以傳圖片，照片會先在瀏覽器縮小並去掉拍攝地點資訊，再存到 Cloudflare R2；聊天視窗開著時每 30 秒檢查一次留言數，有新留言才重新載入。歌曲頁與歌單頁不顯示泡泡，避免遮住播放控制。`src/services/support-board.js` 的 `SUPPORT_BOARD_SERVER_URL` 留空時，視窗只顯示「準備中」；後端部署步驟見 [`docs/support-board.md`](docs/support-board.md)。
 
-頁尾的「意見回饋」連到 Google 表單（網址在 `src/data.js` 的 `FEEDBACK_FORM_URL`），可以許願功能、回報問題或附上截圖；表單含檔案上傳題，所以填寫需要登入 Google 帳號。第一次開啟網站會彈出一則公告（內容在 `src/data.js` 的 `ANNOUNCEMENT`），按「知道了」、✕、Esc、點背景或按下主要連結關閉後，會把公告的 `id` 記在 localStorage 的 `horo-announcement-seen`，之後不再自動出現；要再公告一次就改 `id`（localStorage 寫不進去時，至少這次開啟期間不會重彈）。頁尾的「公告」按鈕可以隨時再打開。歌曲頁不會彈出，避免遮住歌詞；開著時切到歌曲頁會先收起、離開歌曲頁後再補彈。更新日誌或公告圖片開著時也不會疊上去。
+頁尾的「意見回饋」連到 Google 表單（網址在 `src/data.js` 的 `FEEDBACK_FORM_URL`），可以許願功能、回報問題或附上截圖；表單含檔案上傳題，所以填寫需要登入 Google 帳號。第一次開啟網站會彈出一則公告（內容在 `src/data.js` 的 `ANNOUNCEMENT`，可選的 `image` 放在 `images/notice/`，建議寬度 880px 以內的 WebP），按「知道了」、✕、Esc、點背景或按下主要連結關閉後，會把公告的 `id` 記在 localStorage 的 `horo-announcement-seen`，之後不再自動出現；要再公告一次就改 `id`（localStorage 寫不進去時，至少這次開啟期間不會重彈）。頁尾的「公告」按鈕可以隨時再打開。歌曲頁不會彈出，避免遮住歌詞；開著時切到歌曲頁會先收起、離開歌曲頁後再補彈。更新日誌或公告圖片開著時也不會疊上去。
 
 ## 2. 開啟 GitHub Pages
 

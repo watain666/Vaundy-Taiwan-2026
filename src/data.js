@@ -66,8 +66,6 @@ export const PICS = {
   */
 };
 
-export { SONGS } from "./song-metadata.js";
-
 /*
  * 歌曲 BPM（公開資料整理，單位：每分鐘拍數）。
  * 這裡集中管理，之後若要校正現場聽感，只需調整對應數值。
@@ -113,7 +111,7 @@ export const SONG_BPM = Object.freeze({
 /* ── 東京/首爾歌單 ─────────────────────────────────────────
    東京 2026.09.05（六）・09.06（日）、首爾 2026.09.19（六）・09.20（日）。
    首爾場順序與東京場相同，仍僅供台北場演出前參考；實際順序以官方公告為準。
-   id 必須對應上方 SONGS，才能連到歌曲頁。 */
+   id 必須對應 src/song-metadata.js 的 SONGS，才能連到歌曲頁。 */
 export const SETLIST_TOKYO = {
   label: "東京/首爾",
   dates: "東京 09.05・09.06｜首爾 09.19・09.20",

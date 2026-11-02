@@ -29,8 +29,6 @@ import {
   NOTICES,
   VAWS_PICS,
   PICS,
-  SONGS,
-  SONG_BPM,
   SETLIST_TOKYO,
   SEAT_VIEW,
   SEAT_BLOCKS,
@@ -46,8 +44,8 @@ import {
   JP_CHANT_GUIDES,
   CHANT_REFERENCE_URL
 } from "./chant-guide.js";
-import { SONG_MARKS } from "./song-mark-metadata.js";
-import { loadFurigana, loadKaraokeSources, loadSongLyrics } from "./services/lazy-modules.js";
+import { get as getSong, list as listSongs, load as loadSong, UnknownSongError } from "./catalogue/index.ts";
+import { loadKaraokeSources } from "./services/lazy-modules.js";
 import { loadJapaneseFontSubset } from "./services/japanese-font.js";
 import { syncSupportChat } from "./ui/support-chat.js";
 import { store } from "./services/storage.js";
@@ -103,7 +101,6 @@ const SYNC_INTERVAL_MS   = 100;
    sw.js 의 CACHE_VERSION 과 같이 올려 주세요. */
 const BUILD = "v1.17.0";
 
-const TRANSLATION_CREDIT_URL = "https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319";
 const CC_BY_NC_SA_URL = "https://creativecommons.org/licenses/by-nc-sa/4.0/";
 
 
@@ -414,7 +411,7 @@ function router({ resetScroll = true } = {}){
     // 곡 id에 따옴표 등이 들어가면 브라우저가 %27 처럼 인코딩할 수 있으므로 되돌려서 비교
     let id = raw;
     try { id = decodeURIComponent(raw); } catch(e) { /* 잘못된 인코딩이면 원문 그대로 */ }
-    song = SONGS.find(s => s.id === id) || SONGS.find(s => s.id === raw) || null;
+    song = getSong(id) || getSong(raw) || null;
   }
 
   if (song) {
@@ -563,7 +560,7 @@ function scheduleJapaneseFontAfterInteraction(text, weights, routeHash){
 }
 
 function guideJapaneseFontText(){
-  return SONGS.map(song => japaneseTitleText(song.title)).join("");
+  return listSongs().map(song => japaneseTitleText(song.title)).join("");
 }
 
 function japaneseTitleText(title){
@@ -1056,7 +1053,7 @@ function renderGuide(){
           <button class="song-sort" type="button" data-sort="title" id="sort-title">名稱</button>
           <button class="song-sort" type="button" data-sort="chant" id="sort-chant">大合唱</button>
         </div>
-        <div class="song-search-meta"><span id="song-count">共 ${SONGS.length} 首</span></div>
+        <div class="song-search-meta"><span id="song-count">共 ${listSongs().length} 首</span></div>
         <p class="song-empty" id="song-empty" hidden><b>找不到歌曲</b>請輸入部分歌曲名稱或歌曲編號</p>
         <ul class="song-list" id="song-list"></ul>
       </section>
@@ -1124,7 +1121,7 @@ function teardownSetlistReveal(){
 }
 
 function setlistTitle(entry){
-  const s = SONGS.find(x => x.id === entry.id);
+  const s = getSong(entry.id);
   return s ? s.title : (entry.title || entry.id);
 }
 
@@ -1219,14 +1216,14 @@ function setlistRandomSongs(){
    가이드가 없는 곡은 눌러도 안 열리므로 빼 둔다. */
 function setlistNavList(){
   const list = (setlistMode === "random") ? setlistRandomSongs() : setlistFlat();
-  return list.filter(x => SONGS.some(s => s.id === x.id));
+  return list.filter(x => Boolean(getSong(x.id)));
 }
 
 /* 공연 순서 한 줄 — 번호 + 제목. 토·일로 갈린 자리는 둘을 묶어서 보여 준다. */
 function setlistRowHtml(item){
   if (item.songs.length === 1){
     const e = item.songs[0];
-    const exists = SONGS.some(s => s.id === e.id);
+    const exists = Boolean(getSong(e.id));
     return `
       <li class="set-item">
         <button class="set-row" data-id="${escapeHtml(e.id)}" ${exists ? "" : "disabled"}>
@@ -1244,7 +1241,7 @@ function setlistRowHtml(item){
           <span class="set-split-note">日期不同的歌曲</span>
         </div>
         ${item.songs.map(e=>{
-          const exists = SONGS.some(s => s.id === e.id);
+          const exists = Boolean(getSong(e.id));
           return `
           <button class="set-row sub" data-id="${escapeHtml(e.id)}" ${exists ? "" : "disabled"}>
             <span class="day-chip ${e.day === "日" ? "sun" : ""}">${e.day}</span>
@@ -1258,7 +1255,7 @@ function setlistRowHtml(item){
 
 /* 랜덤 한 줄 — 번호도 날짜 표시도 없이 곡 제목만 */
 function setlistRandomRowHtml(x){
-  const exists = SONGS.some(s => s.id === x.id);
+  const exists = Boolean(getSong(x.id));
   return `
     <li class="set-item">
       <button class="set-row" data-id="${escapeHtml(x.id)}" ${exists ? "" : "disabled"}>
@@ -1315,7 +1312,7 @@ function paintSetlist(){
     if (btn.disabled) return;          // 가이드 없는 곡은 순서에서 뺀다
     const myPos = pos++;
     btn.addEventListener("click", ()=>{
-      const target = SONGS.find(s => s.id === btn.dataset.id);
+      const target = getSong(btn.dataset.id);
       if (!target) return;
       setlistScrollY = window.scrollY;   // 돌아왔을 때 보던 자리로
       setSongFrom("setlist");
@@ -1628,7 +1625,7 @@ function paintSongList({ eager = false } = {}){
     ul.addEventListener("click", event=>{
       const btn = event.target.closest(".song-row");
       if (!btn || !ul.contains(btn)) return;
-      const target = SONGS.find(x => x.id === btn.dataset.id);
+      const target = getSong(btn.dataset.id);
       if (!target) return;
       setSongFrom("guide");     // 여기서 들어왔으니 '뒤로'는 곡 목록으로
       gotoSong(target);
@@ -1930,7 +1927,7 @@ function sheetSongs(){
   if (songFrom === "setlist"){
     const list = setlistNavList();
     if (list.length){
-      const out = list.map(x => SONGS.find(s => s.id === x.id)).filter(Boolean);
+      const out = list.map(x => getSong(x.id)).filter(Boolean);
       if (out.length) return out;
     }
   }
@@ -1952,7 +1949,7 @@ function songNeighbors(song){
       if (pos >= 0){
         const pi = (pos - 1 + list.length) % list.length;
         const ni = (pos + 1) % list.length;
-        const at = (i)=> SONGS.find(s => s.id === list[i].id) || song;
+        const at = (i)=> getSong(list[i].id) || song;
         return { idx: pos, prev: at(pi), next: at(ni), pos, prevPos: pi, nextPos: ni };
       }
     }
@@ -2158,7 +2155,7 @@ function buildSongShell(){
           <span class="song-sheet-grip"></span>
           <div class="song-sheet-head">
             <span class="song-sheet-title" id="song-sheet-title">選擇歌曲</span>
-            <span class="song-sheet-count">${SONGS.length} 首</span>
+            <span class="song-sheet-count">${listSongs().length} 首</span>
             <button class="song-sheet-close" data-close-sheet aria-label="關閉">${CLOSE_SVG}</button>
           </div>
           <div class="sheet-search">
@@ -2225,7 +2222,7 @@ function buildSongShell(){
   document.getElementById("song-sheet-list").addEventListener("click", (e)=>{
     const item = e.target.closest(".song-sheet-item");
     if (!item) return;
-    const target = SONGS.find(s => s.id === item.dataset.id);
+    const target = getSong(item.dataset.id);
     closeSongSheet();
     if (!target || (currentSong && target.id === currentSong.id)) return;
     // 셋리스트에서 들어온 경우, 목록 순서가 곧 셋리스트 순서이므로
@@ -2605,7 +2602,7 @@ function applySongTempo(song){
   const page = document.getElementById("song-page");
   if (!page) return;
 
-  const bpm = Number(SONG_BPM[song?.id]);
+  const bpm = Number(song?.bpm);
   if (!Number.isFinite(bpm) || bpm <= 0) return;
 
   const beatSeconds = 60 / bpm / Math.max(0.01, playbackRate);
@@ -2673,20 +2670,23 @@ function renderSong(song){
       );
     }, 15000);
 
-    loadSongLyrics().then(songMap => {
+    loadSong(song.id).then(fullSong => {
       window.clearTimeout(lyricsLoadTimer);
       if (renderToken !== songRenderToken || !location.hash.startsWith("#/song/")) return;
-      const fullSong = songMap.get(song.id);
-      if (fullSong) renderSong({ ...song, ...fullSong });
-      else showSongLyricsLoadIssue(renderToken, "找不到這首歌的歌詞資料，請重新載入頁面。");
-    }).catch(() => {
+      renderSong(fullSong);
+    }).catch((error) => {
       window.clearTimeout(lyricsLoadTimer);
-      showSongLyricsLoadIssue(renderToken, "歌詞載入失敗，請檢查網路連線後重新載入。");
+      showSongLyricsLoadIssue(renderToken, error instanceof UnknownSongError
+        ? "找不到這首歌的歌詞資料，請重新載入頁面。"
+        : "歌詞載入失敗，請檢查網路連線後重新載入。");
     });
     return;
   }
 
-  loadFurigana().then(()=>{
+  /* Readings arrive with the song, but per-unit karaoke timings need the
+     karaoke adapter's allocator; repaint once it is available, as the
+     page did after its separate reading tables loaded. */
+  loadKaraokeSources().then(()=>{
     if (currentSong === song) repaintJapaneseReadings();
   });
 
@@ -2714,8 +2714,8 @@ function renderSong(song){
   if (lyricsCredit) {
     const hasCredit = Boolean(song.translationCredit);
     if (hasCredit) {
-      // A null URL means the credit has no page to link to (e.g. AI translation).
-      const creditUrl = song.translationCreditUrl === undefined ? TRANSLATION_CREDIT_URL : song.translationCreditUrl;
+      // The catalogue resolves the URL; null means a text-only credit (e.g. AI translation).
+      const creditUrl = song.translationCreditUrl;
       const creditLink = creditUrl
         ? `<a href="${creditUrl}" target="_blank" rel="noopener">${escapeHtml(song.translationCredit)}</a>`
         : escapeHtml(song.translationCredit);
@@ -3208,16 +3208,18 @@ function withIcons(str){
   if (str === undefined || str === null) return "";
   return escapeHtml(spaceCjkLatinText(str)).replace(ICON_TOKEN_RE, (m, key)=> INLINE_ICONS[key.toLowerCase()] || m);
 }
-function renderKanaLine(str){
+/* entry is the catalogue line (or backing chant) whose text is str; it
+   carries the kana reading and romaji resolved at build time. */
+function renderKanaLine(str, entry){
   const source = String(str ?? "");
-  const ruby = window.JP_FURIGANA && window.JP_FURIGANA[source];
+  const ruby = entry && entry.reading;
   if (!ruby) return withIcons(source);
   return spaceCjkLatinMarkup(ruby).replace(ICON_TOKEN_RE, (m, key)=> INLINE_ICONS[key.toLowerCase()] || m);
 }
 
-function renderRomajiLine(str, includeIcons = true){
+function renderRomajiLine(str, entry, includeIcons = true){
   const source = String(str ?? "");
-  const romaji = window.JP_ROMAJI && window.JP_ROMAJI[source];
+  const romaji = entry && entry.romaji;
   const value = typeof romaji === "string" ? romaji : source;
   return includeIcons
     ? withIcons(value)
@@ -3230,8 +3232,8 @@ function readingModeLabel(mode = readingMode){
   return "假名";
 }
 
-function renderJapaneseLine(str){
-  return readingMode === "romaji" ? renderRomajiLine(str) : renderKanaLine(str);
+function renderJapaneseLine(str, entry){
+  return readingMode === "romaji" ? renderRomajiLine(str, entry) : renderKanaLine(str, entry);
 }
 
 /* 日本版有些應援只落在一句歌詞中的幾個字（例如「愛して」），不能
@@ -3334,12 +3336,12 @@ function renderChantAwareLine(str, line, song, render, mode){
 function renderJapaneseLyricLine(line, song = currentSong){
   const source = line && line.jp || "";
   const mode = readingMode === "romaji" ? "romaji" : "jp";
-  return renderChantAwareLine(source, line, song, text => renderJapaneseLine(text), mode);
+  return renderChantAwareLine(source, line, song, text => renderJapaneseLine(text, line), mode);
 }
 
 function renderRomajiLyricLine(line, song = currentSong){
   const source = line && line.jp || "";
-  return renderChantAwareLine(source, line, song, text => renderRomajiLine(text, false), "romaji");
+  return renderChantAwareLine(source, line, song, text => renderRomajiLine(text, line, false), "romaji");
 }
 
 /*
@@ -3384,7 +3386,7 @@ function romajiChantMask(compactText, segments){
   segments.forEach(seg => {
     if (!seg || seg.tag !== "chant") return;
     const source = String(seg.text || "");
-    const mapped = window.JP_ROMAJI && window.JP_ROMAJI[source];
+    const mapped = seg.romaji;
     const romaji = typeof mapped === "string" ? mapped : source;
     if (typeof mapped !== "string" && /[ぁ-ゖ゠-ヿ一-鿿]/u.test(source.replace(ICON_TOKEN_RE, ""))) return;
     const needle = Array.from(romaji.replace(ICON_TOKEN_RE, ""))
@@ -3827,7 +3829,7 @@ function karaokeRange(song, index){
   // 仍以現有人工錨點為準。這只決定句內高亮的收尾，不會改動原始 time。
   const source = String(line.jp || "").replace(ICON_TOKEN_RE, "");
   const weight = karaokeUnitWeight(source) || 1;
-  const bpm = Number(SONG_BPM[song.id]) || 120;
+  const bpm = Number(song.bpm) || 120;
   const estimatedDuration = Math.max(0.8, Math.min(12, weight * (60 / bpm) * KARAOKE_UNIT_BEATS));
 
   const next = nextDisplayedLyricTime(song, index);
@@ -3952,7 +3954,7 @@ function kanaReferenceForLine(line){
     lyric.jp || "",
     lyric,
     currentSong,
-    text => renderKanaLine(text),
+    text => renderKanaLine(text, lyric),
     "jp"
   );
   decorateKaraokeLine(target);
@@ -4263,11 +4265,13 @@ function backingChantsForLine(line, song = currentSong){
 }
 
 function backingChantHtml(line, song = currentSong){
+  const readings = (line && line.chant && line.chant.backing) || [];
   return backingChantsForLine(line, song).map(item => {
+    const entry = readings.find(backing => backing.text === item.text);
     const romaji = readingMode === "both"
-      ? `<span class="lyric-bg-romaji" lang="ja-Latn">${renderRomajiLine(item.text, false)}</span>`
+      ? `<span class="lyric-bg-romaji" lang="ja-Latn">${renderRomajiLine(item.text, entry, false)}</span>`
       : "";
-    return `<span class="lyric-bg" lang="ja"><span class="lyric-bg-label">背景合唱</span>${renderJapaneseLine(item.text)}${romaji}</span>`;
+    return `<span class="lyric-bg" lang="ja"><span class="lyric-bg-label">背景合唱</span>${renderJapaneseLine(item.text, entry)}${romaji}</span>`;
   }).join("");
 }
 
@@ -4333,7 +4337,7 @@ function songMarks(song){
   const cacheKey = `${chantVersion}:${song.id}`;
   if (songMarksCache.has(cacheKey)) return songMarksCache.get(cacheKey);
 
-  const guideMarks = SONG_MARKS[song.id];
+  const guideMarks = getSong(song.id)?.marks;
   if (!song.lyrics && guideMarks){
     const mark = {
       chant: guideMarks.chant?.[chantVersion] || 0,
@@ -4384,8 +4388,7 @@ let songSort = (()=>{
 })();
 
 /* 곡의 원래 번호(1부터). 정렬을 바꿔도 이 번호는 그대로라 번호 검색이 계속 통한다. */
-const songNumberById = new Map(SONGS.map((song, index) => [song.id, index + 1]));
-function songNo(song){ return songNumberById.get(song.id) || 0; }
+function songNo(song){ return getSong(song.id)?.number || 0; }
 
 const startsHangul = (t)=> /^[\u3131-\u318E\uAC00-\uD7A3]/.test(String(t).trim());
 function byTitle(a, b){
@@ -4396,7 +4399,7 @@ function byTitle(a, b){
 }
 
 function sortedSongs(){
-  const list = SONGS.slice();
+  const list = listSongs().slice();
   if (songSort === "title")      return list.sort(byTitle);
   if (songSort === "title-desc") return list.sort((a,b)=> byTitle(b,a));
   if (songSort === "chant-desc") return list.sort((a,b)=> songMarks(b).chant - songMarks(a).chant || byTitle(a,b));
@@ -4542,7 +4545,7 @@ function ensurePlayer(){
   if (player || !window.YT || !window.YT.Player) return;
   buildSongShell();                       // #yt-player 자리 확보
   if (!document.getElementById("yt-player")) return;
-  currentVideoId = (currentSong || SONGS[0]).youtubeId;
+  currentVideoId = (currentSong || listSongs()[0]).youtubeId;
   player = new YT.Player('yt-player', {
     videoId: currentVideoId,
     playerVars: {
@@ -4588,7 +4591,7 @@ function onPlayerError(){
 /* 影片嵌入失敗時，在影片框內提供直接開啟 YouTube 的連結。 */
 function showVideoFallback(status, message){
   const link = document.createElement("a");
-  link.href = `https://www.youtube.com/watch?v=${encodeURIComponent((currentSong || SONGS[0]).youtubeId)}`;
+  link.href = `https://www.youtube.com/watch?v=${encodeURIComponent((currentSong || listSongs()[0]).youtubeId)}`;
   link.target = "_blank";
   link.rel = "noopener";
   link.textContent = "在 YouTube 開啟 ↗";

@@ -9,7 +9,14 @@
 ```text
 index.html                  ← HTML 外殼與 PWA meta；Vite 建置時填入首頁
 src/main.js                 ← 頁面路由、互動與渲染邏輯
-src/data.js                 ← 歌詞、歌單、座位與演出資料
+src/data.js                 ← 歌單、BPM、座位與演出資料
+src/song-metadata.js        ← 歌曲清單：id、標題、YouTube、Spotify 與譯者署名（以此為準）
+src/song-lyrics.js          ← 每首歌的日文歌詞、繁中翻譯與時間點
+src/chant-guide.js          ← 日本版應援指南（應援時間點、分段與背景合唱）
+furigana.js                 ← 以整行日文為 key 的假名讀音與羅馬字基底表
+src/furigana-corrections.js ← 假名讀音與羅馬字修正（覆蓋基底表）
+src/catalogue/              ← 歌曲目錄：建置時把上面這些檔案組成每首歌並檢查資料規則
+tests/                      ← vitest 測試與歌曲目錄 golden snapshot
 src/base.css                ← 基礎元件樣式
 src/theme.css               ← 主題與頁面外觀樣式
 src/app.css                 ← CSS 統一入口
@@ -17,13 +24,14 @@ src/ui/icons.js             ← 共用 SVG 圖示與歌詞圖示模板
 src/ui/home.js              ← 建置與頁面切換共用的首頁 HTML
 src/ui/footer.js            ← 共用頁尾與版本資訊
 src/services/storage.js     ← localStorage 安全封裝
-src/services/lazy-modules.js ← 注音與卡拉 OK 延後載入
+src/services/lazy-modules.js ← 卡拉 OK 時間碼模組延後載入
 src/services/support-board.js ← VAWS 交流區（Waline）設定與載入
 src/ui/support-chat.js       ← 右下角 VAWS 交流區聊天泡泡
 src/support-chat.css        ← 聊天泡泡與 Waline 聊天外觀（不放 layer，才能覆寫 Waline）
 package.json                ← Vite 指令與相依套件
 package-lock.json           ← 鎖定建置版本
-vite.config.js              ← 相對路徑、靜態資產與 Service Worker 建置設定
+vite.config.ts              ← 相對路徑、靜態資產、Service Worker 與歌曲目錄的建置設定
+tsconfig.json               ← TypeScript 型別檢查設定（只檢查 .ts 檔）
 .github/workflows/pages.yml  ← GitHub Pages production 部署
 DESIGN.md                   ← 畫面設計原則
 sw.js                       ← 管理離線快取
@@ -36,13 +44,17 @@ images/                     ← 現有圖片資源（海報、台北場舞台／
 ```
 
 原始碼仍使用相對路徑（`./`），因此本地直接以靜態伺服器開啟也能運作。正式部署時使用 Vite 產生
-`dist/`，會壓縮 CSS／JavaScript、分割延後載入的注音與卡拉 OK 模組，並保留 GitHub Pages 與自訂網域的相對路徑。
+`dist/`，會壓縮 CSS／JavaScript、把每首歌（含讀音）與卡拉 OK 模組各自分檔延後載入，並保留 GitHub Pages 與自訂網域的相對路徑。
 
 ```bash
 npm ci
+npm run typecheck
+npm test
 npm run build
 npm run preview
 ```
+
+歌曲資料在建置時由 `src/catalogue/` 組裝：`npm run build` 與 `npm test` 會檢查每行日文都有羅馬字、含漢字的行都有假名讀音、羅馬字能對上讀音（卡拉 OK 對齊）、應援時間點對得到歌詞行、歌詞時間遞增、各檔的歌曲 id 一致、讀音表沒有對不到歌詞的舊 key 等規則，違反時會指出歌曲 id、行號與規則名稱。改動歌詞後若 `tests/__snapshots__/song-catalogue.golden.txt` 的行數或讀音行數有預期中的變化，用 `npx vitest run -u` 更新並一起提交。
 
 正式建置會直接輸出首頁 HTML，並讓獨立的完整 CSS 與 HTML 平行載入；互動程式正常啟動，不需要等第一次點擊或捲動才載入。直接開啟 `#/guide`、`#/setlist` 或歌曲連結時，會先隱藏首頁，再顯示指定頁面，避免閃爍與版面跳動。首頁與頁面切換共用 `src/ui/home.js`，請不要另外手寫一份首頁快照。
 

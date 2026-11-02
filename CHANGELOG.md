@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.18.4**
+
+- [PR #61](https://github.com/watain666/Vaundy-Taiwan-2026/pull/61)：〈僕にはどうしてわかるんだろう〉〈しわあわせ〉〈偉生人〉〈そんなbitterな話〉〈気まぐれ〉五首歌的網址識別字改為純英數（例如 `#/song/Kimagure`），不再帶有空白或標點；之前分享的這五首舊連結開啟後會回到首頁，請從歌曲清單重新開啟後再分享。
+
 ## [**v1.18.3**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/231e08e904d5ba8e6c342e5364db0885724acd7f)
 
 - [PR #60](https://github.com/watain666/Vaundy-Taiwan-2026/pull/60)：同步字幕小窗（PiP）的歌詞改為與歌曲頁同一套程式直接產生，不再複製歌曲頁的畫面；切換日文讀音模式或應援版本後，小窗立即顯示與重新開歌相同的結果。

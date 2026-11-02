@@ -1,4 +1,4 @@
-36 songs, 1467 lyric lines
+38 songs, 1548 lyric lines
 
 #01 "Tokimeki"
   lines: 50
@@ -389,6 +389,28 @@
   lines: 33
   linesWithReading: 33
   linesWithRomaji: 33
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#37 "KokyuNoYouni"
+  lines: 35
+  linesWithReading: 29
+  linesWithRomaji: 35
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#38 "pained"
+  lines: 46
+  linesWithReading: 40
+  linesWithRomaji: 46
   marks: chant jp=0 kr=0; -
   chantLines.jp: -
   chantLines.jpSegments: -

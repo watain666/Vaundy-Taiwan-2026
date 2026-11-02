@@ -286,5 +286,21 @@ export const SONGS = [
     "translationCreditUrl": null,
     "youtubeId": "uYyfD5A-w8Q",
     "spotifyTrackId": "1X1D6ZPjreIX7iBfm2i3HC"
+  },
+  {
+    "id": "KokyuNoYouni",
+    "title": "如同呼吸 (呼吸のように)",
+    "translationCredit": "AI 翻譯（Claude Opus 5.5）",
+    "translationCreditUrl": null,
+    "youtubeId": "68dmvGPR8JE",
+    "spotifyTrackId": "419L5Vb2jXSEm19LH9IbmV"
+  },
+  {
+    "id": "pained",
+    "title": "pained",
+    "translationCredit": "AI 翻譯（Claude Opus 5.5）",
+    "translationCreditUrl": null,
+    "youtubeId": "beIC4qyuCo8",
+    "spotifyTrackId": "4fLu1o9tL4Fg7Zh7y4P7mK"
   }
 ];

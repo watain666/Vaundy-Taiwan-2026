@@ -2437,6 +2437,55 @@
     .changelog-content h2{ font-size:14px; }
   }
 
+  /* ── 首次造訪公告 ──────────────────────────────────────────
+     沿用更新日誌 modal 的外框與面板，只縮成一張短卡；色票在 theme.css。 */
+  .announcement-panel{
+    width:min(100%,440px);
+    max-height:min(84vh,600px);
+  }
+  .announcement-scroll{
+    min-height:0;
+    padding:18px 18px 6px;
+  }
+  .announcement-body{
+    font-size:14px;
+    line-height:1.75;
+    overflow-wrap:anywhere;
+  }
+  .announcement-body p{ margin:0 0 12px; }
+  .announcement-actions{
+    flex:none;
+    display:flex;flex-direction:column;gap:8px;
+    padding:12px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+  .announcement-primary{
+    display:flex;align-items:center;justify-content:center;
+    min-height:var(--touch-height, 44px);
+    padding:10px 16px;
+    border-radius:10px;
+    font-family:inherit;font-size:14px;font-weight:700;
+    text-decoration:none;
+    transition:filter .18s ease;
+  }
+  .announcement-primary[hidden]{ display:none; }
+  .announcement-primary:hover,
+  .announcement-primary:focus-visible{ filter:brightness(1.06); }
+  .announcement-actions .nv-btn{
+    flex:none;
+    min-height:var(--touch-height, 44px);
+    font-size:13.5px;
+  }
+  .announcement-view .nv-btn:focus-visible,
+  .announcement-primary:focus-visible{
+    outline:2px solid currentColor;
+    outline-offset:2px;
+  }
+  @media (max-width:600px){
+    .announcement-panel{ max-height:88vh; }
+    .announcement-scroll{ padding:16px 16px 4px; }
+    .announcement-actions{ padding:10px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
+  }
+
   /* ── 座位配置圖 ──────────────────────────────────────────────
      台北場官方舞台／座位配置圖使用圖片顯示，點擊圖片可開啟原尺寸。 */
   .seat-wrap{

@@ -766,6 +766,13 @@ button{touch-action:manipulation;}
   background:rgba(29,29,31,.26);
 }
 
+/* 首次造訪公告沿用更新日誌 modal 的主題色；主要動作用首頁選單按鈕的色票。
+   淺色面板上淡金底色與白色太接近，補一條細邊讓它看得出是按鈕。 */
+.announcement-body{color:var(--ui-muted);}
+.announcement-actions{border-top:1px solid var(--ui-line);}
+.announcement-primary{background:var(--action);color:var(--ink);}
+:root[data-theme="light"] .announcement-primary{border:1px solid rgba(23,5,4,.18);}
+
 
 /* ── 곡 화면 위쪽 여백 줄이기 ─────────────────────────────────────
    영상 위·아래로 낭비되던 공간을 좁혀서 가사가 한 줄이라도 더 보이게 한다.

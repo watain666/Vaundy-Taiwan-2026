@@ -1,7 +1,8 @@
 import { GITHUB_SVG } from "./icons.js";
+import { FEEDBACK_FORM_URL } from "../data.js";
 
 const REPO_URL = "https://github.com/watain666/Vaundy-Taiwan-2026";
-const FEEDBACK_URL = "https://www.threads.com/@brainginger/post/DdiLWztgen9";
+const FEEDBACK_URL = FEEDBACK_FORM_URL;
 const ORIGINAL_SITE_URL = "https://vaundy-seoul-2026.pages.dev/";
 const KOREAN_AUTHOR_URL = "https://gall.dcinside.com/mgallery/board/view/?id=vaundy0606&no=35550";
 

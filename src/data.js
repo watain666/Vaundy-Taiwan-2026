@@ -46,6 +46,23 @@ export const VAWS_PICS = [
   { src:"./images/notice/vaws-ar-camera.webp", title:"會場限定 AR 相機說明", width:842, height:1191 },
 ];
 
+/* ── 意見回饋表單與首次造訪公告 ──────────────────────────────
+   FEEDBACK_FORM_URL：頁尾「意見回饋」與公告按鈕都連到這個 Google 表單。
+   ANNOUNCEMENT：第一次開啟網站時彈出；關閉後把 id 記進 localStorage，
+   之後不再出現。要再公告一次，改 id（例如換日期）即可；body 每一項是一段。 */
+export const FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe-HtowLlIGR1t37Fh-5FNIIG1YoVYbRklhjWjFCrQPHH5ujg/viewform";
+
+export const ANNOUNCEMENT = {
+  id: "2026-11-02-feedback-form",
+  title: "意見回饋表單上線",
+  body: [
+    "台北兩場結束了，謝謝大家一起應援！想許願新功能、回報問題，或歌詞、翻譯、應援內容想修正，都歡迎用表單告訴我們。",
+    "表單之後也能從頁尾的「意見回饋」找到。因為可以附上截圖，填寫時需要登入 Google 帳號。",
+  ],
+  action: { label: "填寫表單", href: FEEDBACK_FORM_URL },
+  dismiss: "知道了",
+};
+
 export const PICS = {
   /*
      video = WebM（現代瀏覽器優先使用）

@@ -127,6 +127,8 @@ export const SONG_BPM = Object.freeze({
   Timeparadox: 82,
   TodomenoIchigeki: 100,
   "Kimagure": 178,
+  KokyuNoYouni: 120,
+  pained: 160,
 });
 /* ── 台北/東京/首爾歌單 ───────────────────────────────────
    台北 2026.10.31（六）・11.01（日）與東京、首爾場順序相同；粉絲紀錄整理，非官方。

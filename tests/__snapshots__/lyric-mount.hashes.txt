@@ -214,3 +214,15 @@
 "Kimagure" romaji kr sources-present c0a586da0dc969ae
 "Kimagure" both jp sources-present a2cad6170db5af27
 "Kimagure" both kr sources-present a2cad6170db5af27
+"KokyuNoYouni" kana jp sources-present 373c01e2045dce03
+"KokyuNoYouni" kana kr sources-present 373c01e2045dce03
+"KokyuNoYouni" romaji jp sources-present 96ab806e55357bc6
+"KokyuNoYouni" romaji kr sources-present 96ab806e55357bc6
+"KokyuNoYouni" both jp sources-present 345479510e9261e0
+"KokyuNoYouni" both kr sources-present 345479510e9261e0
+"pained" kana jp sources-present df3f8c2e76d52bd1
+"pained" kana kr sources-present df3f8c2e76d52bd1
+"pained" romaji jp sources-present d0cea6538b58b673
+"pained" romaji kr sources-present d0cea6538b58b673
+"pained" both jp sources-present 2b59541327ac133a
+"pained" both kr sources-present 2b59541327ac133a

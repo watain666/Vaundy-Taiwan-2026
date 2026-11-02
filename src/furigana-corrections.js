@@ -92,7 +92,7 @@ export const FURIGANA_CORRECTIONS = Object.freeze({
   "震え出す その線のせいで 動き出してしまうの (しまうの)": "<ruby>震<rt>ふる</rt></ruby>え<ruby>出<rt>だ</rt></ruby>す その<ruby>線<rt>せん</rt></ruby>のせいで <ruby>動<rt>うご</rt></ruby>き<ruby>出<rt>だ</rt></ruby>してしまうの (しまうの)",
   "[wave]止まれないのは": "[wave]<ruby>止<rt>と</rt></ruby>まれないのは",
 
-  // 怪獸之花歌 (怪獣の花唄) — https://utaten.com/lyric/nm20051304/
+  // 怪獸的花之歌 (怪獣の花唄) — https://utaten.com/lyric/nm20051304/
   "[wave]君がいつも": "[wave]<ruby>君<rt>きみ</rt></ruby>がいつも",
   "歌う怪獣の歌": "<ruby>歌<rt>うた</rt></ruby>う<ruby>怪獣<rt>かいじゅう</rt></ruby>の<ruby>歌<rt>うた</rt></ruby>",
   "ねぇ 僕ら": "ねぇ <ruby>僕<rt>ぼく</rt></ruby>ら",

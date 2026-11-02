@@ -107,3 +107,11 @@ _Avoid_: 原始資料、data 檔
 **產物**:
 建置時由歌曲目錄產生、不提交進 repo 的模組：歌曲摘要清單與每首歌一個分檔；golden snapshot 是唯一提交的產物。
 _Avoid_: generated 檔、輸出
+
+**建置版本**（build version）:
+`v` 加上 `package.json` 的 `version`，例如 `v1.18.4`；建置時寫進頁面的 `BUILD`、Service Worker 的 `CACHE_VERSION` 與預先輸出的首頁頁尾，三處一定相同。版本號只寫在 `package.json`。
+_Avoid_: BUILD 號、快取版本（指版本號時）
+
+**precache 清單**:
+Service Worker 安裝時預先下載的檔案：`sw.js` 內固定的基底（首頁、manifest、圖示）加上本次建置由首頁可達的產物（首頁引用的程式與 CSS、它們以靜態或動態 import 載入的所有分檔、CSS 引用的圖片）。由建置輸出推導，不掃目錄。
+_Avoid_: 離線清單、VITE_BUILD_ASSETS（指整份清單時）

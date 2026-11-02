@@ -1,11 +1,23 @@
 /// <reference types="vitest/config" />
-import { defineConfig, type Plugin } from "vite";
-import { cpSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { defineConfig, type Plugin, type Rollup } from "vite";
+import { cpSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { homeHtml } from "./src/ui/home.js";
 import { assembleCatalogue, CatalogueError, formatIssue, type AssembledCatalogue, type Song } from "./src/catalogue/assemble";
 import { AUTHORING_FILES, loadCatalogueSources } from "./src/catalogue/sources";
+import { injectServiceWorker, precacheAssets, ServiceWorkerInjectionError, type BuildGraph } from "./src/build/service-worker";
+
+/* The build version ("v" + package.json version) is read here once and
+   used for the prerendered footer, the page's BUILD constant and the
+   service worker's CACHE_VERSION, so the three always agree. */
+function readBuildVersion(): string {
+  const { version } = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
+  if (typeof version !== "string" || !version) throw new Error("package.json has no version");
+  return `v${version}`;
+}
+
+const BUILD_VERSION = readBuildVersion();
 
 function prerenderHome(): Plugin {
   return {
@@ -13,43 +25,62 @@ function prerenderHome(): Plugin {
     transformIndexHtml: {
       order: "pre",
       handler(html: string){
-        const { version } = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
-        return html.replace('<main id="app"></main>', `<main id="app">${homeHtml(`v${version}`)}</main>`);
+        return html.replace('<main id="app"></main>', `<main id="app">${homeHtml(BUILD_VERSION)}</main>`);
       }
     }
   };
 }
 
+/* Describes the parts of the output bundle that decide the precache list. */
+function buildGraph(bundle: Rollup.OutputBundle): BuildGraph {
+  const graph: BuildGraph = { html: "", chunks: {}, css: {}, assets: [] };
+  const assets: string[] = [];
+  for (const [fileName, output] of Object.entries(bundle)) {
+    if (output.type === "chunk") {
+      graph.chunks[fileName] = { imports: output.imports, dynamicImports: output.dynamicImports };
+    } else if (fileName === "index.html") {
+      graph.html = String(output.source);
+    } else if (fileName.endsWith(".css")) {
+      graph.css[fileName] = typeof output.source === "string" ? output.source : new TextDecoder().decode(output.source);
+    } else {
+      assets.push(fileName);
+    }
+  }
+  graph.assets = assets;
+  return graph;
+}
+
 function copyRootStaticAssets(): Plugin {
+  let graph: BuildGraph | null = null;
   return {
     name: "copy-root-static-assets",
     apply: "build",
+    writeBundle(_options, bundle){
+      graph = buildGraph(bundle);
+    },
     closeBundle(error){
       // Rollup still calls closeBundle after a failed build; copying then
       // would throw ENOENT and hide the original error.
       if (error) return;
+      if (!graph) this.error("copy-root-static-assets: no output bundle was written");
       const outputDir = resolve("dist");
       ["CNAME", "sw.js", "manifest.json", "robots.txt", "sitemap.xml", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png"]
         .forEach(file => cpSync(resolve(file), resolve(outputDir, file)));
       cpSync(resolve("images"), resolve(outputDir, "images"), { recursive: true });
 
-      const indexPath = resolve(outputDir, "index.html");
-      const indexHtml = readFileSync(indexPath, "utf8");
-      writeFileSync(indexPath, indexHtml);
-      const assetUrls = [...new Set([
-        ...[...indexHtml.matchAll(/(?:src|href)="(\.\/assets\/[^\"]+)"/g)].map(([, url]) => url),
-        ...[...indexHtml.matchAll(/url\((\.\/assets\/[^)]+)\)/g)].map(([, url]) => url),
-        // The homepage poster lives in the external CSS, not the HTML.
-        ...readdirSync(resolve(outputDir, "assets"))
-          .filter(file => /^poster-.*\.webp$/.test(file))
-          .map(file => `./assets/${file}`),
-        // Split lyrics and readings must also work on a first offline visit.
-        ...readdirSync(resolve(outputDir, "assets")).filter(file => file.endsWith(".js"))
-          .map(file => `./assets/${file}`)
-      ])];
+      // Precache only what this build emitted and the page can reach: the
+      // entry, every chunk it imports (each song included) and CSS images.
       const serviceWorkerPath = resolve(outputDir, "sw.js");
-      const serviceWorker = readFileSync(serviceWorkerPath, "utf8")
-        .replace("const VITE_BUILD_ASSETS = [];", `const VITE_BUILD_ASSETS = ${JSON.stringify(assetUrls)};`);
+      let serviceWorker: string;
+      try {
+        serviceWorker = injectServiceWorker(readFileSync(serviceWorkerPath, "utf8"), {
+          version: BUILD_VERSION,
+          assets: precacheAssets(graph)
+        });
+      } catch (error) {
+        if (error instanceof ServiceWorkerInjectionError) this.error(error.message);
+        throw error;
+      }
       writeFileSync(serviceWorkerPath, serviceWorker);
     }
   };
@@ -141,6 +172,9 @@ function songCatalogue(): Plugin {
 
 export default defineConfig({
   base: "./",
+  define: {
+    __BUILD_VERSION__: JSON.stringify(BUILD_VERSION)
+  },
   plugins: [songCatalogue(), prerenderHome(), copyRootStaticAssets()],
   server: {
     // A leading dot allows every device on this tailnet.

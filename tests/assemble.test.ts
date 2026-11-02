@@ -93,9 +93,9 @@ describe("assembleCatalogue on valid sources", () => {
     expect(b.marks).toEqual({ chant: { jp: 1, kr: 1 }, clap: false, wave: false, jump: true, spin: false });
   });
 
-  test("chant notes and reference URL come from the guide", () => {
-    expect(a.chant).toEqual({ notes: ["note"], referenceUrl: "https://example.test/chant" });
-    expect(b.chant).toEqual({ notes: [], referenceUrl: null });
+  test("chant notes, reference URL and the guide flag come from the guide", () => {
+    expect(a.chant).toEqual({ notes: ["note"], referenceUrl: "https://example.test/chant", hasGuide: true });
+    expect(b.chant).toEqual({ notes: [], referenceUrl: null, hasGuide: false });
   });
 
   test("assembleSong returns the same song as the catalogue", () => {

@@ -44,7 +44,13 @@ export type LyricSegment = {
   romaji?: string;
 };
 
-export type ChantSegment = { time: number; text: string; romaji?: string };
+export type ChantSegment = {
+  time: number;
+  text: string;
+  romaji?: string;
+  /** Starts the segment on a new line when the lyric view marks it. */
+  breakBefore?: boolean;
+};
 
 export type BackingChant = {
   start: number;
@@ -81,7 +87,13 @@ export type LyricLine = {
 export type Song = SongSummary & {
   /** Named `lyrics` because the karaoke adapter reads `song.lyrics`. */
   lyrics: LyricLine[];
-  chant: { notes: string[]; referenceUrl: string | null };
+  chant: {
+    notes: string[];
+    referenceUrl: string | null;
+    /** True when the song has a chant guide; the Japanese version then follows
+        the guide's cues, otherwise it falls back to the Korean-version markers. */
+    hasGuide: boolean;
+  };
 };
 
 /* ---------- authoring input shapes ---------- */
@@ -515,6 +527,7 @@ function buildSong(
     chant: {
       notes: guide ? [...(guide.notes || [])] : [],
       referenceUrl: guide ? sources.chantReferenceUrl : null,
+      hasGuide: Boolean(guide),
     },
   };
 }

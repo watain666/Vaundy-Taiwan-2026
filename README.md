@@ -58,7 +58,7 @@ npm run preview
 
 正式建置會直接輸出首頁 HTML，並讓獨立的完整 CSS 與 HTML 平行載入；互動程式正常啟動，不需要等第一次點擊或捲動才載入。直接開啟 `#/guide`、`#/setlist` 或歌曲連結時，會先隱藏首頁，再顯示指定頁面，避免閃爍與版面跳動。首頁與頁面切換共用 `src/ui/home.js`，請不要另外手寫一份首頁快照。
 
-`public/assets/` 暫存近期首頁 HTML 引用的舊雜湊 JavaScript；GitHub Pages 與 CDN 更新 HTML 的時間可能不同，發佈新版時不能立刻移除這些舊檔，否則仍在快取中的首頁會載入失敗。
+過去 `public/assets/` 曾手動保留幾版舊首頁引用的雜湊 JavaScript，以免 GitHub Pages 與 CDN 更新 HTML 的時間差內，仍拿到舊首頁的人載入失敗。這些檔案自 v1.10.5 起就沒有再更新，已保護不到任何版本，卻因為 Service Worker 會預先下載 `dist/assets/` 裡的所有 JavaScript 而占了第一次安裝一半的下載量，所以已經移除。現在 Service Worker 的預先下載清單只收本次建置由首頁可達的檔案（首頁引用的程式與 CSS、它們載入的所有分檔、CSS 引用的圖片）；已安裝 Service Worker 的人開啟頁面時先連網、失敗才用快取，CDN 的更新時間差也只有幾分鐘，因此不需要再保留舊檔。
 
 首頁背景使用同尺寸的 `images/poster.webp`；座位配置預覽只在展開卡片後下載。Service Worker 會在頁面載入後準備離線所需的程式、歌詞與讀音分檔，因此只開過首頁也能在快取完成後離線進入歌曲。
 

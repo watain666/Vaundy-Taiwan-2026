@@ -2,8 +2,10 @@ import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import {
   injectServiceWorker,
+  precacheAssets,
   SERVICE_WORKER_PLACEHOLDERS,
   ServiceWorkerInjectionError,
+  type BuildGraph,
 } from "../src/build/service-worker";
 
 const SOURCE = [
@@ -45,5 +47,82 @@ describe("injectServiceWorker", () => {
     const source = readFileSync("sw.js", "utf8");
     expect(() => injectServiceWorker(source, { version: "v0.0.0", assets: [] })).not.toThrow();
     expect(source).not.toMatch(/^const CACHE_VERSION = "v\d/m);
+  });
+});
+
+function graph(overrides: Partial<BuildGraph> = {}): BuildGraph {
+  return {
+    html: [
+      '<link rel="apple-touch-icon" href="./assets/touch-1.png">',
+      '<meta property="og:image" content="./assets/og-1.png">',
+      '<script type="module" crossorigin src="./assets/index-1.js"></script>',
+      '<link rel="stylesheet" crossorigin href="./assets/index-1.css">',
+    ].join("\n"),
+    chunks: {
+      "assets/index-1.js": { imports: ["assets/shared-1.js"], dynamicImports: ["assets/song-B-1.js", "assets/song-A-1.js", "assets/lazy-1.js"] },
+      "assets/shared-1.js": { imports: [], dynamicImports: [] },
+      "assets/song-A-1.js": { imports: ["assets/shared-1.js"], dynamicImports: [] },
+      "assets/song-B-1.js": { imports: [], dynamicImports: [] },
+      "assets/lazy-1.js": { imports: [], dynamicImports: ["assets/deep-1.js", "assets/index-1.js"] },
+      "assets/deep-1.js": { imports: [], dynamicImports: [] },
+      "assets/orphan-1.js": { imports: [], dynamicImports: [] },
+    },
+    css: {
+      "assets/index-1.css": '.a{background:url(./poster-1.webp)} .b{background:url("data:image/svg+xml,%3Csvg%3E")} .c{background:url(https://example.com/x.png)}',
+      "assets/widget-1.css": ".w{background:url(./widget-1.png)}",
+    },
+    assets: ["assets/touch-1.png", "assets/og-1.png", "assets/poster-1.webp", "assets/widget-1.png", "assets/unused-1.png"],
+    ...overrides,
+  };
+}
+
+describe("precacheAssets", () => {
+  test("lists the HTML references in order, then everything reachable, sorted", () => {
+    expect(precacheAssets(graph())).toEqual([
+      "./assets/touch-1.png",
+      "./assets/index-1.js",
+      "./assets/index-1.css",
+      "./assets/deep-1.js",
+      "./assets/lazy-1.js",
+      "./assets/poster-1.webp",
+      "./assets/shared-1.js",
+      "./assets/song-A-1.js",
+      "./assets/song-B-1.js",
+    ]);
+  });
+
+  test("includes every dynamically imported song chunk", () => {
+    const songs = Array.from({ length: 36 }, (_, index) => `assets/song-${index}-1.js`);
+    const base = graph();
+    const result = precacheAssets({
+      ...base,
+      chunks: {
+        ...base.chunks,
+        "assets/index-1.js": { imports: [], dynamicImports: songs },
+        ...Object.fromEntries(songs.map(song => [song, { imports: [], dynamicImports: [] }])),
+      },
+    });
+    expect(result).toEqual(expect.arrayContaining(songs.map(song => `./${song}`)));
+  });
+
+  test("leaves out unreferenced chunks, CSS, images, non-src attributes and files outside the bundle", () => {
+    const result = precacheAssets(graph({
+      html: `${graph().html}\n<script src="./assets/from-public-1.js"></script>`,
+    }));
+    for (const file of ["orphan-1.js", "widget-1.css", "widget-1.png", "unused-1.png", "og-1.png", "from-public-1.js"]) {
+      expect(result).not.toContain(`./assets/${file}`);
+    }
+    expect(result.some(path => path.includes("data:") || path.includes("example.com"))).toBe(false);
+  });
+
+  test("gives the same list whatever order the bundle lists its files in", () => {
+    const base = graph();
+    const reversed: BuildGraph = {
+      ...base,
+      chunks: Object.fromEntries(Object.entries(base.chunks).reverse()),
+      css: Object.fromEntries(Object.entries(base.css).reverse()),
+      assets: [...base.assets].reverse(),
+    };
+    expect(precacheAssets(reversed)).toEqual(precacheAssets(base));
   });
 });

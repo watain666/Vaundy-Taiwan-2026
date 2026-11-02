@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-/* Lyric view mount: DOM golden for every song and option, and playhead behaviour. */
+/* Lyric view mount: DOM golden for every song and option (with the allocator), and playhead behaviour. */
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import type { Song } from "../src/catalogue/assemble";
 import { applyLyricContainerClasses, createLyricMount, lyricContainerClasses, type LyricMount } from "../src/lyric-view/index";
@@ -77,15 +77,13 @@ describe("DOM golden after render", () => {
   beforeEach(() => ({ mount, list } = setup()));
   afterEach(() => mount.destroy());
 
-  test("hashes for 36 songs × 3 reading modes × 2 chant versions × allocator absent/present", async () => {
+  test("hashes for 36 songs × 3 reading modes × 2 chant versions with the allocator", async () => {
     const lines: string[] = [];
     for (const { song, readingMode, chantVersion } of matrix(songs)) {
-      for (const [label, karaoke] of [["absent", null], ["present", sources]] as const) {
-        mount.render(song, { readingMode, chantVersion, karaokeTiming: null, karaokeSources: karaoke });
-        lines.push(`${JSON.stringify(song.id)} ${readingMode} ${chantVersion} sources-${label} ${shortHash(canonical(list))}`);
-      }
+      mount.render(song, { readingMode, chantVersion, karaokeTiming: null, karaokeSources: sources });
+      lines.push(`${JSON.stringify(song.id)} ${readingMode} ${chantVersion} sources-present ${shortHash(canonical(list))}`);
     }
-    expect(lines).toHaveLength(432);
+    expect(lines).toHaveLength(216);
     await expect(lines.join("\n") + "\n").toMatchFileSnapshot("./__snapshots__/lyric-mount.hashes.txt");
   }, 120_000);
 

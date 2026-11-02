@@ -9,7 +9,7 @@ export const SONGS = [
   },
   {
     "id": "KaijuNoHanauta",
-    "title": "怪獸之花歌 (怪獣の花唄)",
+    "title": "怪獸的花之歌 (怪獣の花唄)",
     "translationCredit": "巴哈姆特的月勳",
     "youtubeId": "UM9XNpgrqVk",
     "spotifyTrackId": "7dTW21YAJxnAOiUh7Rtu9S"

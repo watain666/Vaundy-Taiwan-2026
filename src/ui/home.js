@@ -1,4 +1,4 @@
-import { INFO_SVG, CHEVRON_SVG, EXT_LINK_SVG, SEAT_SVG, MAP_SVG, MANNER_SVG, GIFT_SVG, MUSIC_SVG, WARN_SVG, FLASH_OFF_SVG, SHARE_SVG, MOON_SVG } from "./icons.js";
+import { INFO_SVG, CHEVRON_SVG, EXT_LINK_SVG, SEAT_SVG, MAP_SVG, MANNER_SVG, GIFT_SVG, MUSIC_SVG, FLASH_OFF_SVG, SHARE_SVG, MOON_SVG } from "./icons.js";
 import { siteFooterHtml } from "./footer.js";
 
 // Shared by Vite prerendering and client-side navigation.
@@ -38,8 +38,8 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
         </div>
 
         <nav class="main-menu">
-          <button class="menu-btn" id="guide-btn">
-            <span class="menu-btn-label">應援指南 無劇透</span>
+          <button class="menu-btn" id="setlist-btn">
+            <span class="menu-btn-label">應援指南・演出順序</span>
           </button>
         </nav>
 
@@ -495,13 +495,12 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
         <button class="menu-row info-toggle" aria-expanded="false">
           <span class="info-toggle-icon">${MUSIC_SVG}</span>
           <span class="info-toggle-label">Spotify 官方預熱歌單</span>
-          <span class="chip-note">可能含劇透</span>
           <span class="info-toggle-chevron">${CHEVRON_SVG}</span>
         </button>
         <div class="info-panel" inert aria-hidden="true">
           <template class="info-panel-template">
           <div class="info-panel-inner">
-            <p class="way-note"><b>曲目可能與實際歌單相近，介意劇透者請勿播放。</b>這是 Spotify 的「On Tour Taiwan: Vaundy」歌單，並非本指南整理的台北場歌單。</p>
+            <p class="way-note">這是 Spotify 的「On Tour Taiwan: Vaundy」歌單，並非本指南整理的台北場歌單。</p>
             <iframe class="home-playlist-embed" title="Spotify 歌單：On Tour Taiwan: Vaundy" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXarlFLUSkBwQ?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
             <a class="info-book-link" href="https://open.spotify.com/playlist/37i9dQZF1DXarlFLUSkBwQ" target="_blank" rel="noopener">
               ${EXT_LINK_SVG} 在 Spotify 開啟歌單
@@ -516,10 +515,10 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
           <span class="chip-ico">${EXT_LINK_SVG}</span>
           <span class="chip-label">官方網站</span>
         </a>
-        <button class="menu-chip spoiler" type="button" id="setlist-btn">
-          <span class="chip-ico warn">${WARN_SVG}</span>
-          <span class="chip-label">東京/首爾歌單</span>
-          <span class="chip-note">含劇透</span>
+        <button class="menu-chip" type="button" id="guide-btn">
+          <span class="chip-ico">${MUSIC_SVG}</span>
+          <span class="chip-label">全部歌曲</span>
+          <span class="chip-note">搜尋・排序</span>
         </button>
       </div>
       </div>

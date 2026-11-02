@@ -6,7 +6,7 @@ A compact concert program for use on a phone, including in a dark arena. Officia
 
 ## 2. Color
 
-The home hero keeps the existing deep wine background (`--bg-deep`), cream text (`--cream`), and gold (`--gold`). The guide, playback, and spoiler gate share semantic reading colors (`--ui-bg`, `--ui-surface`, `--ui-raised`, `--ui-text`, `--ui-muted`, `--ui-line`). Light mode uses pale neutral surfaces; dark mode uses charcoal. Follow the device preference until a visitor chooses a mode, then remember that choice. The home poster remains dark in both modes. The chant, clap, wave, jump, and spin colors identify audience actions where the cue itself needs recognition. Avoid red page fills, decorative gradients, and color on every badge.
+The home hero keeps the existing deep wine background (`--bg-deep`), cream text (`--cream`), and gold (`--gold`). The guide, playback, and setlist share semantic reading colors (`--ui-bg`, `--ui-surface`, `--ui-raised`, `--ui-text`, `--ui-muted`, `--ui-line`). Light mode uses pale neutral surfaces; dark mode uses charcoal. Follow the device preference until a visitor chooses a mode, then remember that choice. The home poster remains dark in both modes. The chant, clap, wave, jump, and spin colors identify audience actions where the cue itself needs recognition. Avoid red page fills, decorative gradients, and color on every badge.
 
 ## 3. Typography
 
@@ -30,7 +30,7 @@ The control layer uses `--space-1` through `--space-4` (4, 8, 12, 16px), `--cont
 - **Search field:** the compound field owns one visible focus boundary. Its inner input adds no second ring.
 - **Install notice:** one softly raised, rounded surface without an outline. Keep update and offline notices actionable.
 - **System status:** do not show a persistent success badge for offline lyric caching. Show a message only when connectivity or an update requires action.
-- **Spoiler gate:** keep the setlist absent from the rendered page until the visitor explicitly chooses a viewing mode. Put the safe return action first and require confirmation before switching from shuffled songs to concert order.
+- **Setlist:** opens directly in concert order; 六/日 variants are labelled in place, and the all-songs list remains the search and sort surface.
 
 ## 6. Motion & interaction
 
@@ -38,7 +38,7 @@ Use short color and opacity transitions for feedback. Keep existing motion that 
 
 ## 7. Depth & surface
 
-Use tonal shifts and spacing for ordinary content. Reserve a hairline for neighboring list rows and a shadow for overlays. Poster images are the one expressive material; no blur or atmospheric gradient stacks over utility pages. The setlist warning photo is desaturated and dimmed to keep the warning legible without turning the whole page red.
+Use tonal shifts and spacing for ordinary content. Reserve a hairline for neighboring list rows and a shadow for overlays. Poster images are the one expressive material; no blur or atmospheric gradient stacks over utility pages.
 
 ## 8. Accessibility constraints & accepted debt
 

@@ -808,8 +808,6 @@
   }
   .chip-ico{ flex:none;display:flex;align-items:center; }
   .chip-ico svg{ width:14px;height:14px; }
-  .chip-ico.warn{ color:#d9705a; }
-  .menu-chip:hover .chip-ico.warn{ color:var(--teal); }
   .chip-label{
     font-size:12.5px;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -2898,39 +2896,11 @@
     .song-fixed-top .video-wrap{padding:0 36px;}
   }
 
-  /* ---------- 東京/首爾歌單（劇透頁） ----------
-     첫 화면에는 경고만 보이고, 스크롤을 내려야 곡 목록이 드러난다. */
-  .menu-row.spoiler .info-toggle-icon{
-    background:none;
-    border:0;
-    color:var(--gold);
-  }
-  .menu-row.spoiler .info-toggle-label{ color:#fff; font-size:13.5px; }
-  .menu-row.spoiler .go{ flex:none;font-size:13px;color:var(--gold-soft);margin-left:2px; }
-  .menu-row.spoiler:hover .go{ color:var(--teal); }
-
+  /* ---------- 台北/東京/首爾歌單 ---------- */
   .setlist-page{
     position:relative;
     min-height:100svh;
     background:var(--bg-deep);
-  }
-  /* 첫 화면(경고 화면) 뒤에 깔리는 사진 — 아래로 갈수록 어둠에 녹아든다.
-     사진을 바꾸려면 아래 url() 파일명만 갈아 끼우면 된다. */
-  .setlist-page::before{
-    content:"";
-    position:absolute;
-    top:0;left:0;right:0;
-    height:100svh;
-    background:
-      linear-gradient(180deg,
-        rgba(20,7,6,0.62) 0%,
-        rgba(20,7,6,0.58) 38%,
-        rgba(19,6,5,0.88) 76%,
-        #150605 94%,
-        #130504 100%),
-      url('../images/setlist-bg.jpg') center 34%/cover no-repeat;
-    z-index:0;
-    pointer-events:none;
   }
   .setlist-page > *{ position:relative; z-index:1; }
   /* 목록이 길어서 '홈으로'가 화면 밖으로 밀려나므로 상단 바를 위에 붙여 둔다 */
@@ -2941,23 +2911,6 @@
     background:rgba(24,7,5,0.97);
     backdrop-filter:none;
   }
-  /* 고정된 상단 바에 목록 첫 줄이 가리지 않도록 */
-  .setlist-body{ scroll-margin-top:calc(68px + var(--safe-top, 0px)); }
-  /* 좁은 화면에서는 cover 로 깔면 얼굴 부분만 크게 잘리므로,
-     사진 전체가 보이도록 위쪽에 띠처럼 앉히고 아래로 어둠에 녹인다. */
-  @media (max-width:600px){
-    .setlist-page::before{
-      /* 사진 높이(≈ 화면 폭)에 맞춰 vw 단위로 어둠을 입혀 경계선이 보이지 않게 한다 */
-      background:
-        linear-gradient(180deg,
-          rgba(20,7,6,0.44) 0,
-          rgba(20,7,6,0.40) 34vw,
-          rgba(19,6,5,0.74) 74vw,
-          #150605 101vw,
-          #130504 100%),
-        url('../images/setlist-bg.jpg') center top/152% auto no-repeat;
-    }
-  }
   /* 사진 위에 얹히는 상단바 */
   .setlist-page .song-topbar{
     background:var(--surface);
@@ -2965,111 +2918,8 @@
     -webkit-backdrop-filter:none;
     border-bottom-color:rgba(233,217,163,0.14);
   }
-  /* 첫 화면을 꽉 채우는 경고 — 여기까지만 보이고 목록은 아래에 있다 */
-  .spoiler-hero{
-    min-height:calc(100svh - 70px - var(--safe-top, 0px));
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:12px;
-    padding:36px 22px 26px;
-    text-align:center;
-  }
-  .spoiler-mark{
-    width:66px;height:66px;border-radius:8px;
-    display:flex;align-items:center;justify-content:center;
-    border:1px solid rgba(255,140,116,0.34);
-    background:var(--surface-raised);
-    color:var(--gold);
-  }
-  .spoiler-mark svg{width:30px;height:30px;}
-  .spoiler-title{
-    margin:2px 0 0;
-    font-family:var(--font-tw-sans);
-    font-size:clamp(23px,6.6vw,31px);
-    letter-spacing:.02em;
-    color:#fff;
-    text-shadow:0 2px 12px rgba(0,0,0,0.85);
-  }
-  .spoiler-desc{
-    margin:0;
-    max-width:430px;
-    font-size:13.5px;line-height:1.9;
-    color:#c3b294;
-  }
-  .spoiler-desc b{ color:var(--cream); }
-  .spoiler-open{
-    margin-top:10px;
-    display:inline-flex;align-items:center;gap:8px;
-    padding:13px 24px;
-    border-radius:8px;
-    border:0;
-    background:var(--action);
-    color:var(--ink);
-    font-family:var(--font-tw-sans);
-    font-size:15px;letter-spacing:.02em;
-    cursor:pointer;
-    transition:background .2s ease, border-color .2s ease, transform .2s ease;
-  }
-  .spoiler-open:hover, .spoiler-open:focus-visible{
-    background:var(--cream);
-    transform:none;
-    outline:none;
-  }
-  .spoiler-cue{
-    margin-top:6px;
-    font-size:11.5px;letter-spacing:.10em;
-    color:#8d7d62;
-    display:flex;flex-direction:column;align-items:center;gap:4px;
-  }
-  .spoiler-cue .arrow{ font-size:15px;color:var(--gold-soft);animation:spoilerBob 1.7s ease-in-out infinite; }
-  @keyframes spoilerBob{ 0%,100%{transform:translateY(0);opacity:.65;} 50%{transform:translateY(5px);opacity:1;} }
-
-  /* ── 보기 방식 고르기 (가림막을 걷기 전에 먼저 고른다) ────────── */
-  .spoiler-choice{
-    margin-top:14px;
-    width:100%;max-width:330px;
-    display:flex;flex-direction:column;gap:9px;
-  }
-  .spoiler-choice .spoiler-open{
-    margin-top:0;
-    width:100%;
-    flex-direction:column;
-    align-items:center;
-    gap:2px;
-    padding:12px 16px;
-  }
-  .spoiler-choice .spoiler-open b{
-    display:inline-flex;align-items:center;gap:7px;
-    font-weight:400;font-size:15px;
-  }
-  /* 누르는 즉시 순서가 드러나는 쪽에는 경고를 붙여 둔다 */
-  .spoiler-choice .spoiler-open .tag{
-    flex:none;
-    margin-left:5px;
-    color:#d9705a;
-    font-family:var(--font-tw-sans);
-    font-weight:700;
-    font-size:10px;letter-spacing:.02em;
-  }
-  .spoiler-choice .spoiler-open span{
-    font-family:var(--font-tw-sans);
-    font-weight:500;
-    font-size:11.5px;letter-spacing:0;
-    color:#b9a98a;
-  }
-  /* 순서를 감추는 쪽을 먼저, 조금 더 눈에 띄게 */
-  .spoiler-choice .spoiler-open.soft{
-    border:1px solid var(--gold-soft);
-    background:var(--surface-raised);
-  }
-  .spoiler-choice .spoiler-open.soft span{ color:var(--gold-soft); }
-
-  /* 보기 방식을 고르기 전에는 목록을 표시하지 않는다. */
   .setlist-body{
     padding:4px 20px 30px;
-  }
-  .setlist-body[hidden]{ display:none; }
-  @media (prefers-reduced-motion: reduce){
-    .spoiler-cue .arrow{ animation:none; }
   }
 
   .setlist-head{ max-width:640px;margin:0 auto 18px;text-align:center; }
@@ -3079,73 +2929,13 @@
     margin:0 0 6px;letter-spacing:.02em;
   }
   .setlist-head p{ margin:0;font-size:12.5px;line-height:1.8;color:#b9a98a; }
+  .setlist-head p a{ color:var(--gold-soft);text-decoration:underline;text-underline-offset:2px; }
   .setlist-meta{
     display:flex;align-items:center;justify-content:space-between;
     max-width:640px;margin:0 auto 6px;padding:0 2px;
     font-family:var(--font-tw-sans);
     font-size:11.5px;letter-spacing:.08em;color:#a5947a;
   }
-  /* ── 셋리스트 보기 방식 (공연 순서 / 랜덤 순서) ────────────────
-     랜덤에서는 번호를 감춘다 — 번호가 곧 공연 순서이기 때문. */
-  .set-modes{
-    display:flex;gap:5px;
-    max-width:640px;margin:0 auto 12px;
-    padding:4px;
-    border:1px solid var(--line);
-    border-radius:12px;
-    background:rgba(0,0,0,0.3);
-  }
-  .set-mode{
-    flex:1;
-    display:inline-flex;align-items:center;justify-content:center;gap:6px;
-    padding:9px 6px;
-    border:none;border-radius:9px;
-    background:none;
-    color:#b9a98a;
-    font-family:inherit;font-size:12.5px;font-weight:700;
-    cursor:pointer;
-    transition:background .2s ease, color .2s ease;
-  }
-  /* '공연 순서'는 누르는 즉시 순서가 드러나므로 미리 알려 준다 */
-  .set-mode-badge{
-    flex:none;
-    margin-left:3px;
-    color:#d9705a;
-    font-size:10px;
-    letter-spacing:.02em;
-  }
-  .set-mode.active .set-mode-badge{ color:#e8846c; }
-  .set-mode:hover{ color:var(--cream); }
-  .set-mode.active{
-    background:var(--surface-raised);
-    color:var(--cream);
-  }
-  .set-shuffle{
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
-    max-width:640px;margin:0 auto 12px;
-    padding:10px 12px;
-    border:1px solid var(--line);
-    border-radius:11px;
-    background:rgba(0,0,0,0.24);
-    font-size:11.5px;line-height:1.65;color:#b9a98a;
-  }
-  .set-shuffle b{ color:var(--cream); }
-  .set-shuffle button{
-    flex:none;
-    padding:7px 11px;
-    border:1px solid var(--line);border-radius:999px;
-    background:none;color:var(--gold-soft);
-    font-family:inherit;font-size:11.5px;cursor:pointer;
-    transition:border-color .2s ease,color .2s ease;
-  }
-  .set-shuffle button:hover{ border-color:var(--teal);color:var(--teal); }
-  /* 랜덤일 때 번호 자리 — 순서가 드러나지 않도록 음표로 대신한다 */
-  .set-num.rand{
-    font-family:inherit;
-    font-size:13px;
-    color:#7a6a52;
-  }
-
   .set-list{
     max-width:640px;margin:0 auto;
     list-style:none;padding:0;

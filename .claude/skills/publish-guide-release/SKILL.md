@@ -46,12 +46,13 @@ not survive between tool calls, so do not carry them across steps.
    Only user-visible PRs get CHANGELOG bullets.
 
 2. Pick the SemVer bump from the whole scope (content, timing, style fixes,
-   refactors and docs are a patch; a new capability is a minor). Set the same
-   version in all of these:
-   - `package.json` `"version"`
-   - `package-lock.json` root `"version"` (line 3) and `packages[""].version` (line 9)
-   - `src/main.js` `const BUILD = "vX.Y.Z"`
-   - `sw.js` `CACHE_VERSION`
+   refactors and docs are a patch; a new capability is a minor), then set it:
+   ```sh
+   npm version <patch|minor|major> --no-git-tag-version
+   ```
+   This updates `package.json` and both root versions in `package-lock.json`.
+   Do not edit `src/main.js` or `sw.js`: the build injects the version into
+   `BUILD`, `CACHE_VERSION` and the prerendered footer.
 
 3. Add the newest section at the top of `CHANGELOG.md`, following AGENTS.md
    "Explicit release requests" item 2:
@@ -80,7 +81,7 @@ not survive between tool calls, so do not carry them across steps.
 5. Make the release commit (no Co-Authored-By trailer) and record its SHA; the
    later steps call it `RELEASE_SHA`.
    ```sh
-   git add CHANGELOG.md package.json package-lock.json src/main.js sw.js
+   git add CHANGELOG.md package.json package-lock.json
    git commit -m "chore(release): publish guide vX.Y.Z"
    git rev-parse HEAD   # RELEASE_SHA
    ```

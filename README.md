@@ -16,6 +16,7 @@ src/chant-guide.js          ← 日本版應援指南（應援時間點、分段
 furigana.js                 ← 以整行日文為 key 的假名讀音與羅馬字基底表
 src/furigana-corrections.js ← 假名讀音與羅馬字修正（覆蓋基底表）
 src/catalogue/              ← 歌曲目錄：建置時把上面這些檔案組成每首歌並檢查資料規則
+src/build/                  ← 建置時寫進 Service Worker 的版本與預先下載清單
 tests/                      ← vitest 測試與歌曲目錄 golden snapshot
 src/base.css                ← 基礎元件樣式
 src/theme.css               ← 主題與頁面外觀樣式
@@ -33,6 +34,7 @@ package-lock.json           ← 鎖定建置版本
 vite.config.ts              ← 相對路徑、靜態資產、Service Worker 與歌曲目錄的建置設定
 tsconfig.json               ← TypeScript 型別檢查設定（只檢查 .ts 檔）
 .github/workflows/pages.yml  ← GitHub Pages production 部署
+.github/workflows/ci.yml     ← Pull request 檢查（型別、測試、建置、空白）
 DESIGN.md                   ← 畫面設計原則
 sw.js                       ← 管理離線快取
 manifest.json               ← App 名稱、圖示與色彩
@@ -75,6 +77,7 @@ npm run preview
 1. 將儲存庫的 **Settings** → **Pages** → **Build and deployment / Source** 設為 **GitHub Actions**。
 2. 推送到 `main` 後，`.github/workflows/pages.yml` 會執行 `npm ci`、`npm run build`，再發布 `dist/`。
 3. 等待 Actions 完成後，就會產生 `https://帳號.github.io/儲存庫名稱/` 網址。
+4. 開啟或更新 pull request 時，`.github/workflows/ci.yml` 會執行 `npm run typecheck`、`npm test`、`npm run build` 與 `git diff --check`，只檢查、不部署。
 
 GitHub Pages 使用 HTTPS 提供網站，因此離線快取功能可以直接運作。
 
@@ -109,13 +112,15 @@ GitHub Pages 使用 HTTPS 提供網站，因此離線快取功能可以直接運
 
 ## 4. 修改內容後重新上傳
 
-修改歌詞或畫面並重新上傳時，請務必增加 **`sw.js` 頂端的 `CACHE_VERSION` 數字**，並讓 `src/main.js` 的 `BUILD` 同步更新。
+修改歌詞或畫面並重新上傳時，請務必提高版本號。版本號只寫在 `package.json`，用 `npm version` 更新（會一併更新 `package-lock.json` 的兩處版本），再在 `CHANGELOG.md` 最上面寫同一個版本的段落：
 
-```js
-const CACHE_VERSION = "v1.8.1";   // → 改成下一個版本號
+```sh
+npm version patch --no-git-tag-version   # 新功能用 minor
 ```
 
-如果數字沒有變更，曾經造訪過網站的使用者仍可能看到舊內容。提高版本號後，下一次連線時會下載新檔案，畫面下方也會出現「新版本已準備好・重新整理」的提示，方便立即更新。
+`npm run build` 會把 `v` 加上這個版本號寫進三個地方：頁尾與除錯面板顯示的 `BUILD`、`dist/sw.js` 的 `CACHE_VERSION`，以及預先輸出的首頁頁尾，所以 `src/main.js` 與根目錄 `sw.js` 不再寫版本號（`sw.js` 裡只是佔位字串，建置找不到佔位時會直接失敗）。`npm test` 會確認 `CHANGELOG.md` 最新標題、`package.json` 與 `package-lock.json` 的版本一致。
+
+如果版本號沒有變更，Service Worker 會沿用同一個快取名稱，曾經造訪過網站的使用者仍可能看到舊內容。提高版本號後，下一次連線時會下載新檔案，畫面下方也會出現「新版本已準備完成」的提示，方便立即更新。
 
 ## 5. 公告文字範例
 

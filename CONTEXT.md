@@ -17,7 +17,7 @@ _Avoid_: metadata、歌曲 meta
 _Avoid_: fullSong、合併後的歌
 
 **歌曲 id**（`SongId`）:
-一首歌在網址、本機快取與所有 authoring 檔中的識別字串，原樣保留其中的空白與標點。
+一首歌在網址、本機快取與所有 authoring 檔中的識別字串，只含 ASCII 英文字母與數字；含空白或標點的 id 會讓 build 失敗。
 _Avoid_: slug、key
 
 **序號**（`number`）:

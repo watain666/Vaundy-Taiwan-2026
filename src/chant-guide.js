@@ -179,7 +179,7 @@ export const JP_CHANT_GUIDES = {
       { time: 152,  text: "愛して", romaji: "aishi te" }
     ]
   },
-  "Iseijin'": {
+  "Iseijin": {
     notes: [
       "第二次 Whoa, whoa, whoa, yeah, yeah 是三次，接著唱 True, true, true。",
       "副歌以「先生」與「全然」交互喊為主。"

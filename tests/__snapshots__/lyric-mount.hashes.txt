@@ -64,18 +64,18 @@
 "Tomoshibi" romaji kr sources-present 2536593e66ce7074
 "Tomoshibi" both jp sources-present 0aa53f8a49c9bd94
 "Tomoshibi" both kr sources-present 741df423a8481418
-"HowdoIknow'" kana jp sources-present 07818cb0c930239f
-"HowdoIknow'" kana kr sources-present 86fb9c9eb85f49f4
-"HowdoIknow'" romaji jp sources-present 3f3edc0307528579
-"HowdoIknow'" romaji kr sources-present 5f340dbcb3a5defc
-"HowdoIknow'" both jp sources-present 1685a6d1764c1ff0
-"HowdoIknow'" both kr sources-present d597b1216b273d51
-"Shiwaawase'" kana jp sources-present 8dadc21e1c092ea9
-"Shiwaawase'" kana kr sources-present 5138d9996fdb8cd0
-"Shiwaawase'" romaji jp sources-present 282de83823d8106c
-"Shiwaawase'" romaji kr sources-present 1dc968574fc63863
-"Shiwaawase'" both jp sources-present 914b73b71efefa3c
-"Shiwaawase'" both kr sources-present 4ec9908ce59ceeac
+"HowdoIknow" kana jp sources-present 07818cb0c930239f
+"HowdoIknow" kana kr sources-present 86fb9c9eb85f49f4
+"HowdoIknow" romaji jp sources-present 3f3edc0307528579
+"HowdoIknow" romaji kr sources-present 5f340dbcb3a5defc
+"HowdoIknow" both jp sources-present 1685a6d1764c1ff0
+"HowdoIknow" both kr sources-present d597b1216b273d51
+"Shiwaawase" kana jp sources-present 8dadc21e1c092ea9
+"Shiwaawase" kana kr sources-present 5138d9996fdb8cd0
+"Shiwaawase" romaji jp sources-present 282de83823d8106c
+"Shiwaawase" romaji kr sources-present 1dc968574fc63863
+"Shiwaawase" both jp sources-present 914b73b71efefa3c
+"Shiwaawase" both kr sources-present 4ec9908ce59ceeac
 "Homunculus" kana jp sources-present e291e8bd77102c1c
 "Homunculus" kana kr sources-present 978e5cb63edea94d
 "Homunculus" romaji jp sources-present d8db0a8d700a09c4
@@ -124,24 +124,24 @@
 "ZuttoLoveSong" romaji kr sources-present 16ad7ebe72b08e2c
 "ZuttoLoveSong" both jp sources-present 8c975ec4f3e75a7f
 "ZuttoLoveSong" both kr sources-present 038310cc1a185723
-"Iseijin'" kana jp sources-present 31216a4f568bdbff
-"Iseijin'" kana kr sources-present 50cef4260647ad70
-"Iseijin'" romaji jp sources-present 43508da4e962b4f0
-"Iseijin'" romaji kr sources-present 995c641fac936010
-"Iseijin'" both jp sources-present 47900769045aee58
-"Iseijin'" both kr sources-present 52aa705d79447f25
+"Iseijin" kana jp sources-present 31216a4f568bdbff
+"Iseijin" kana kr sources-present 50cef4260647ad70
+"Iseijin" romaji jp sources-present 43508da4e962b4f0
+"Iseijin" romaji kr sources-present 995c641fac936010
+"Iseijin" both jp sources-present 47900769045aee58
+"Iseijin" both kr sources-present 52aa705d79447f25
 "ZERO" kana jp sources-present 9a4ef61e62898adb
 "ZERO" kana kr sources-present 5bddb61368dc4dfd
 "ZERO" romaji jp sources-present 9a4ef61e62898adb
 "ZERO" romaji kr sources-present 5bddb61368dc4dfd
 "ZERO" both jp sources-present 27ee28c8f8acb29e
 "ZERO" both kr sources-present 62c33f87efff213a
-"SonnaBitternaHanashi)" kana jp sources-present 4564728b106d97f8
-"SonnaBitternaHanashi)" kana kr sources-present 29ec02838c7601f7
-"SonnaBitternaHanashi)" romaji jp sources-present 491b9b59fcadb2c7
-"SonnaBitternaHanashi)" romaji kr sources-present 69a6fb66bc2efa98
-"SonnaBitternaHanashi)" both jp sources-present a306901f1748e6a5
-"SonnaBitternaHanashi)" both kr sources-present 687ac883c575ed5f
+"SonnaBitternaHanashi" kana jp sources-present 4564728b106d97f8
+"SonnaBitternaHanashi" kana kr sources-present 29ec02838c7601f7
+"SonnaBitternaHanashi" romaji jp sources-present 491b9b59fcadb2c7
+"SonnaBitternaHanashi" romaji kr sources-present 69a6fb66bc2efa98
+"SonnaBitternaHanashi" both jp sources-present a306901f1748e6a5
+"SonnaBitternaHanashi" both kr sources-present 687ac883c575ed5f
 "Fujin" kana jp sources-present 035c87270368f771
 "Fujin" kana kr sources-present 19c42bd0631fd251
 "Fujin" romaji jp sources-present 13024440fa7f143f
@@ -208,9 +208,9 @@
 "TodomenoIchigeki" romaji kr sources-present 5f0e0639f69e1793
 "TodomenoIchigeki" both jp sources-present 5988ea46b447380e
 "TodomenoIchigeki" both kr sources-present 9d3069a76a02468b
-" Kimagure" kana jp sources-present d4b078a9f45e6d7c
-" Kimagure" kana kr sources-present d4b078a9f45e6d7c
-" Kimagure" romaji jp sources-present c0a586da0dc969ae
-" Kimagure" romaji kr sources-present c0a586da0dc969ae
-" Kimagure" both jp sources-present a2cad6170db5af27
-" Kimagure" both kr sources-present a2cad6170db5af27
+"Kimagure" kana jp sources-present d4b078a9f45e6d7c
+"Kimagure" kana kr sources-present d4b078a9f45e6d7c
+"Kimagure" romaji jp sources-present c0a586da0dc969ae
+"Kimagure" romaji kr sources-present c0a586da0dc969ae
+"Kimagure" both jp sources-present a2cad6170db5af27
+"Kimagure" both kr sources-present a2cad6170db5af27

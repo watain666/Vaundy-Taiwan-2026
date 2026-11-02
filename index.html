@@ -112,6 +112,7 @@ if (location.hash && location.hash !== "#" && location.hash !== "#/") {
 <!-- 首次造訪公告；內容在 src/data.js 的 ANNOUNCEMENT，關閉後記在 localStorage 不再彈出 -->
 <div class="notice-view changelog-view announcement-view" id="announcement-view" role="dialog" aria-modal="true" aria-labelledby="announcement-title" aria-describedby="announcement-body" aria-hidden="true" inert>
   <div class="changelog-panel announcement-panel">
+    <img class="announcement-hero" id="announcement-image" alt="" hidden decoding="async">
     <div class="nv-head">
       <h2 class="nv-title" id="announcement-title">公告</h2>
       <button class="nv-btn close" id="announcement-close" type="button" aria-label="關閉公告">✕</button>

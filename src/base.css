@@ -2440,8 +2440,17 @@
      沿用更新日誌 modal 的外框與面板，只縮成一張短卡；色票在 theme.css。 */
   .announcement-panel{
     width:min(100%,440px);
-    max-height:min(84vh,600px);
+    max-height:min(84vh,760px);
   }
+  .announcement-hero{
+    display:block;
+    flex:none;
+    width:100%;
+    height:auto;
+    max-height:38vh;
+    object-fit:cover;
+  }
+  .announcement-hero[hidden]{ display:none; }
   .announcement-scroll{
     min-height:0;
     padding:18px 18px 6px;

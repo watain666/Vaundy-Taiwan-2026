@@ -695,6 +695,7 @@ button{touch-action:manipulation;}
 
 /* 首次造訪公告沿用更新日誌 modal 的主題色；主要動作用首頁選單按鈕的色票。
    淺色面板上淡金底色與白色太接近，補一條細邊讓它看得出是按鈕。 */
+.announcement-hero{background:var(--ui-raised);}
 .announcement-body{color:var(--ui-muted);}
 .announcement-actions{border-top:1px solid var(--ui-line);}
 .announcement-primary{background:var(--action);color:var(--ink);}

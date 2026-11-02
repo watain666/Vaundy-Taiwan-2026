@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.18.1**
+## [**v1.18.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/9bcd55155531e2d2f45d3f7ffeaf9cb54a973752)
 
 - [PR #58](https://github.com/watain666/Vaundy-Taiwan-2026/pull/58)：歌單頁補上共用頁尾，可直接使用「公告」、「意見回饋」與「更新日誌」，顏色依淺／深色主題調整。
 

@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.23.2**
+## [**v1.23.2**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/968df12ac5e8905d158e59c182a56038b2f13057)
 
 - [PR #75](https://github.com/watain666/Vaundy-Taiwan-2026/pull/75)：歌名改成日文原題在前、中文譯名放在括號內，例如「気まぐれ (任性)」「東京フラッシュ (東京 Flash)」；只有日文原題的歌名不變，〈融解sink〉改寫成〈融解 sink〉。
 

@@ -588,7 +588,7 @@ function guideJapaneseFontText(){
 
 function japaneseTitleText(title){
   const value = String(title ?? "");
-  const match = value.match(/\(([^()]*)\)/);
+  const match = value.match(/^(.*?) \([^()]*\)$/);
   return match ? match[1] : value;
 }
 
@@ -1296,14 +1296,14 @@ function setlistTitle(entry){
   return s ? s.title : (entry.title || entry.id);
 }
 
-/* 歌名通常是「中文譯名 (日文原題)」；只把括號內原題標成日文，
-   日文與中文歌詞都沿用台灣系統字體堆疊顯示。 */
+/* 歌名是「日文原題 (中文譯名)」或只有日文原題；只把日文原題標成日文，
+   括號內的中文譯名沿用台灣系統字體堆疊顯示。 */
 function renderSongTitle(title){
   const text = escapeHtml(String(title ?? ""));
-  /* A title without a parenthesised original is the Japanese title itself. */
-  if (!/\(/.test(text) && /[\u3040-\u30ff\u3400-\u9fff]/.test(text)) return `<span lang="ja">${text}</span>`;
-  return text.replace(/\(([^()]*)\)/g,
-    (_, original) => `(<span lang="ja">${original}</span>)`);
+  const match = text.match(/^(.*?) (\([^()]*\))$/);
+  const original = match ? match[1] : text;
+  if (!/[\u3040-\u30ff\u3400-\u9fff]/.test(original)) return text;
+  return `<span lang="ja">${original}</span>${match ? ` ${match[2]}` : ""}`;
 }
 
 /* ── 셋리스트 보기 상태 ──────────────────────────────────────

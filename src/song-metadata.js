@@ -2,7 +2,7 @@
 export const SONGS = [
   {
     "id": "Tokimeki",
-    "title": "心動 (Tokimeki)",
+    "title": "Tokimeki (心動)",
     "translationCredit": "巴哈姆特的月勳",
     "youtubeId": "-_PKhPMXMDY",
     "spotifyTrackId": "3ZnVB8pDHr1I1OMvVdJkjR"
@@ -24,14 +24,14 @@ export const SONGS = [
   },
   {
     "id": "KoikazeniNosete",
-    "title": "乘著戀愛感冒 (恋風邪にのせて)",
+    "title": "恋風邪にのせて (乘著戀愛感冒)",
     "translationCredit": "巴哈姆特的月勳",
     "youtubeId": "1FIhcdocT-k",
     "spotifyTrackId": "76CIRxX21LDv3vN02EH7Qw"
   },
   {
     "id": "Odoriko",
-    "title": "舞者 (踊り子)",
+    "title": "踊り子 (舞者)",
     "translationCredit": "巴哈姆特的月勳",
     "youtubeId": "7HgJIAUtICU",
     "spotifyTrackId": "7loLSr7JUn78pLHitHr89Z"
@@ -60,7 +60,7 @@ export const SONGS = [
   },
   {
     "id": "hanaurana",
-    "title": "花占卜 (花占い)",
+    "title": "花占い (花占卜)",
     "translationCredit": "Smiecj",
     "translationCreditUrl": "https://smiecj.com/2022/12/30/vaundy-hanauranai/",
     "translationSourceUrl": "https://smiecj.com/2022/12/30/vaundy-hanauranai/",
@@ -71,7 +71,7 @@ export const SONGS = [
   },
   {
     "id": "Yobigoe",
-    "title": "呼喚聲 (呼び声)",
+    "title": "呼び声 (呼喚聲)",
     "translationCredit": "藍色小樹熊",
     "translationCreditUrl": "https://bluekokomurmur.com/lyrics/vaundy-yobigoe/",
     "translationSourceUrl": "https://bluekokomurmur.com/lyrics/vaundy-yobigoe/",
@@ -87,7 +87,7 @@ export const SONGS = [
   },
   {
     "id": "HowdoIknow",
-    "title": "我怎麼會知道呢 (僕にはどうしてわかるんだろう)",
+    "title": "僕にはどうしてわかるんだろう (我怎麼會知道呢)",
     "translationCredit": "藍色小樹熊",
     "translationCreditUrl": "https://bluekokomurmur.com/lyrics/vaundy-boku-niwa-doshite-wakarundarou/",
     "translationSourceUrl": "https://bluekokomurmur.com/lyrics/vaundy-boku-niwa-doshite-wakarundarou/",
@@ -96,7 +96,7 @@ export const SONGS = [
   },
   {
     "id": "Shiwaawase",
-    "title": "皺褶相合 (しわあわせ)",
+    "title": "しわあわせ (皺褶相合)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "JwmGruvGt_I",
@@ -104,7 +104,7 @@ export const SONGS = [
   },
   {
     "id": "Homunculus",
-    "title": "人造小人 (ホムンクルス)",
+    "title": "ホムンクルス (人造小人)",
     "translationCredit": "巴哈姆特的月勳",
     "youtubeId": "ZhUa0CumyxQ",
     "spotifyTrackId": "3CmVQtVx9KlzOuPhRJRShH"
@@ -119,7 +119,7 @@ export const SONGS = [
   },
   {
     "id": "TokyoFlash",
-    "title": "東京 Flash (東京フラッシュ)",
+    "title": "東京フラッシュ (東京 Flash)",
     "translationCredit": "雨音子",
     "translationCreditUrl": "https://ameotoko1997.blog.fc2.com/blog-entry-375.html",
     "translationSourceUrl": "https://ameotoko1997.blog.fc2.com/blog-entry-375.html",
@@ -128,7 +128,7 @@ export const SONGS = [
   },
   {
     "id": "NakiJizo",
-    "title": "哭泣地藏 (泣き地蔵)",
+    "title": "泣き地蔵 (哭泣地藏)",
     "translationCredit": "巴哈姆特的月勳",
     "youtubeId": "XQTM2M5iD_I",
     "spotifyTrackId": "1Wb5MV3aqqFRnaGDjpRTeW"
@@ -159,7 +159,7 @@ export const SONGS = [
   },
   {
     "id": "ZuttoLoveSong",
-    "title": "一直都是情歌 (ずっとラブソング)",
+    "title": "ずっとラブソング (一直都是情歌)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "wriTi0J_-1A",
@@ -182,7 +182,7 @@ export const SONGS = [
   },
   {
     "id": "SonnaBitternaHanashi",
-    "title": "那樣的 bitter 故事 (そんなbitterな話)",
+    "title": "そんなbitterな話 (那樣的 bitter 故事)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "V-gxqhWEbxI",
@@ -207,14 +207,14 @@ export const SONGS = [
   },
   {
     "id": "Kagero",
-    "title": "陽炎 (かげろう)",
+    "title": "かげろう (陽炎)",
     "translationCredit": "巴哈姆特的月勳",
     "youtubeId": "gY-7i-T76o0",
     "spotifyTrackId": "5BKwzntuwwe6V5oapO6eJ4"
   },
   {
     "id": "IdeagaAfureteNemurenai",
-    "title": "理念滿溢而無法入睡 (イデアが溢れて眠れない)",
+    "title": "イデアが溢れて眠れない (理念滿溢而無法入睡)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "0u_zA8BJG6A",
@@ -222,7 +222,7 @@ export const SONGS = [
   },
   {
     "id": "flyaway",
-    "title": "飛翔之時 (飛ぶ時)",
+    "title": "飛ぶ時 (飛翔之時)",
     "translationCredit": "Vaundy 官方 YouTube 字幕",
     "translationCreditUrl": "https://www.youtube.com/watch?v=ARj1adoUoEU",
     "youtubeId": "ARj1adoUoEU",
@@ -230,14 +230,14 @@ export const SONGS = [
   },
   {
     "id": "mabuta",
-    "title": "眼瞼 (まぶた)",
+    "title": "まぶた (眼瞼)",
     "translationCredit": "巴哈姆特的月勳",
     "youtubeId": "fjx_uy5eD8g",
     "spotifyTrackId": "2TUKLEXyjtKOmTjJupAexh"
   },
   {
     "id": "Hitomibore",
-    "title": "為瞳孔著迷 (瞳惚れ)",
+    "title": "瞳惚れ (為瞳孔著迷)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "XEEXE8Ei5SA",
@@ -256,7 +256,7 @@ export const SONGS = [
   },
   {
     "id": "Wasuremono",
-    "title": "遺忘之物 (忘れ物)",
+    "title": "忘れ物 (遺忘之物)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "tQq8C7irREk",
@@ -264,7 +264,7 @@ export const SONGS = [
   },
   {
     "id": "Timeparadox",
-    "title": "時間悖論 (タイムパラドックス)",
+    "title": "タイムパラドックス (時間悖論)",
     "translationCredit": "Vaundy 官方 YouTube 字幕",
     "translationCreditUrl": "https://www.youtube.com/watch?v=ewhRE-BvJCg",
     "youtubeId": "ewhRE-BvJCg",
@@ -272,7 +272,7 @@ export const SONGS = [
   },
   {
     "id": "TodomenoIchigeki",
-    "title": "最後一擊 (トドメの一撃)",
+    "title": "トドメの一撃 (最後一擊)",
     "translationCredit": "Smiecj",
     "translationCreditUrl": "https://smiecj.com/2023/10/08/vaundy-todome/",
     "translationSourceUrl": "https://smiecj.com/2023/10/08/vaundy-todome/",
@@ -283,7 +283,7 @@ export const SONGS = [
   },
   {
     "id": "Kimagure",
-    "title": "任性 (気まぐれ)",
+    "title": "気まぐれ (任性)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "uYyfD5A-w8Q",
@@ -291,7 +291,7 @@ export const SONGS = [
   },
   {
     "id": "KokyuNoYouni",
-    "title": "如同呼吸 (呼吸のように)",
+    "title": "呼吸のように (如同呼吸)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "68dmvGPR8JE",
@@ -315,7 +315,7 @@ export const SONGS = [
   },
   {
     "id": "Tobouyo",
-    "title": "一起飛吧 (飛ぼうよ)",
+    "title": "飛ぼうよ (一起飛吧)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "E0GTLXTcIYs",
@@ -331,7 +331,7 @@ export const SONGS = [
   },
   {
     "id": "Singularity",
-    "title": "奇點 (シンギュラリティ)",
+    "title": "シンギュラリティ (奇點)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "stss6w2io68",
@@ -339,7 +339,7 @@ export const SONGS = [
   },
   {
     "id": "WasureruMaeni",
-    "title": "在遺忘之前 (忘れる前に)",
+    "title": "忘れる前に (在遺忘之前)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "Hy7GWPkrZv0",
@@ -347,7 +347,7 @@ export const SONGS = [
   },
   {
     "id": "MajideSayonaraBaby",
-    "title": "真的再見了寶貝 (まじで、サヨナラべぃべぃ)",
+    "title": "まじで、サヨナラべぃべぃ (真的再見了寶貝)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "o3pcyW0RD8Q",
@@ -355,7 +355,7 @@ export const SONGS = [
   },
   {
     "id": "MixedNuts",
-    "title": "人生是綜合堅果的組合 (人生はミックスナッツの組み合わせ)",
+    "title": "人生はミックスナッツの組み合わせ (人生是綜合堅果的組合)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "UvA9sq8vflI",
@@ -363,7 +363,7 @@ export const SONGS = [
   },
   {
     "id": "HashireSAKAMOTO",
-    "title": "奔跑吧 SAKAMOTO (走れSAKAMOTO)",
+    "title": "走れSAKAMOTO (奔跑吧 SAKAMOTO)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "jbgG5tzgP9k",
@@ -379,7 +379,7 @@ export const SONGS = [
   },
   {
     "id": "GORILLAShibai",
-    "title": "GORILLA 戲碼 (GORILLA芝居)",
+    "title": "GORILLA芝居 (GORILLA 戲碼)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "QTYjA7QV7tY",
@@ -395,7 +395,7 @@ export const SONGS = [
   },
   {
     "id": "KokoroArigatou",
-    "title": "打從心底謝謝你 (ココロありがとう)",
+    "title": "ココロありがとう (打從心底謝謝你)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "jkbgzx195v4",
@@ -411,7 +411,7 @@ export const SONGS = [
   },
   {
     "id": "Carnival",
-    "title": "嘉年華 (カーニバル)",
+    "title": "カーニバル (嘉年華)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "WEINueQJxbE",
@@ -419,7 +419,7 @@ export const SONGS = [
   },
   {
     "id": "OneLiter",
-    "title": "飽含1公升的愛 (1リッター分の愛をこめて)",
+    "title": "1リッター分の愛をこめて (飽含1公升的愛)",
     "translationCredit": "Oblivionis",
     "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5834591",
     "translationSourceUrl": "https://home.gamer.com.tw/artwork.php?sn=5834591",
@@ -453,7 +453,7 @@ export const SONGS = [
   },
   {
     "id": "YukaiSink",
-    "title": "融解sink",
+    "title": "融解 sink",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "B383PElQMHo",
@@ -478,7 +478,7 @@ export const SONGS = [
   },
   {
     "id": "Okitegami",
-    "title": "留下的字條 (置き手紙)",
+    "title": "置き手紙 (留下的字條)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "B50A9Nf5FCE",
@@ -503,7 +503,7 @@ export const SONGS = [
   },
   {
     "id": "Omokage",
-    "title": "面影 (おもかげ)",
+    "title": "おもかげ (面影)",
     "translationCredit": "巴哈姆特的大棕熊（翻唱新增段落：AI 翻譯）",
     "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5550299",
     "translationSourceUrl": "https://home.gamer.com.tw/artwork.php?sn=5550299",
@@ -529,7 +529,7 @@ export const SONGS = [
   },
   {
     "id": "BokuwaKyomo",
-    "title": "我今天也 (僕は今日も)",
+    "title": "僕は今日も (我今天也)",
     "translationCredit": "巴哈姆特的月勳",
     "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5479200",
     "translationSourceUrl": "https://home.gamer.com.tw/artwork.php?sn=5479200",
@@ -549,7 +549,7 @@ export const SONGS = [
   },
   {
     "id": "KonnaToki",
-    "title": "這種時候 (こんな時)",
+    "title": "こんな時 (這種時候)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "rrQEos6pYCQ",

@@ -22,7 +22,7 @@ export type SongSummary = {
   /** 1-based position in the metadata file. */
   number: number;
   title: string;
-  /** The Japanese original title: the last parenthesised part of `title`. */
+  /** The Japanese original title: `title` before its parenthesised Chinese title, or all of it. */
   titleJa: string;
   youtubeId: string;
   /** null for a song that is not on Spotify (no word-level karaoke timing). */
@@ -291,8 +291,8 @@ export function timeBucket(seconds: number): number {
 }
 
 function japaneseTitle(title: string): string {
-  const matches = [...String(title).matchAll(/\(([^()]*)\)/g)];
-  return matches.length ? matches[matches.length - 1][1] : String(title);
+  const match = String(title).match(/^(.*?) \([^()]*\)$/);
+  return match ? match[1] : String(title);
 }
 
 function stripMarkup(value: string): string {

@@ -58,9 +58,9 @@ not survive between tool calls, so do not carry them across steps.
    "Explicit release requests" item 2:
    - Traditional Chinese; every bullet starts with the linked PR and a full-width
      colon, `- [PR #N](https://github.com/watain666/Vaundy-Taiwan-2026/pull/N)：`, then the change.
-   - Song names use the Japanese original title: the parenthesised part of the
-     song `title` in `src/song-metadata.js` (for example `東京 Flash (東京フラッシュ)`
-     becomes `〈東京フラッシュ〉`).
+   - Song names use the Japanese original title: the song `title` in
+     `src/song-metadata.js` without its parenthesised Chinese title (for example
+     `東京フラッシュ (東京 Flash)` becomes `〈東京フラッシュ〉`).
    - An external contributor gets one extra thank-you bullet with a linked handle
      and PR. The owner's own PRs (`@watain666`) need only the change and PR link.
    - A PR already covered by an older version gets its link added to that older

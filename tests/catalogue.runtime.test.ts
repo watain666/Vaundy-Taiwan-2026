@@ -11,7 +11,7 @@ test("list returns every summary in metadata order without lyrics", () => {
 });
 
 test("get finds clean ids", () => {
-  expect(get("Kimagure")?.title).toBe("任性 (気まぐれ)");
+  expect(get("Kimagure")?.title).toBe("気まぐれ (任性)");
   expect(get("SonnaBitternaHanashi")?.bpm).toBe(178);
   expect(get("Kimagure ")).toBeUndefined();
 });

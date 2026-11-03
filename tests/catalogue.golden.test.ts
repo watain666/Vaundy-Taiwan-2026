@@ -1,6 +1,6 @@
 /* Runs the catalogue core on the real authoring files. */
 import { beforeAll, describe, expect, test } from "vitest";
-import { assembleCatalogue, timeBucket, wordTimingText, type AssembledCatalogue, type Song } from "../src/catalogue/assemble";
+import { assembleCatalogue, wordTimingText, type AssembledCatalogue, type Song } from "../src/catalogue/assemble";
 import { JP_CHANT_GUIDES } from "../src/chant-guide.js";
 import { loadRealSources } from "./real-sources";
 
@@ -59,21 +59,17 @@ test("Reunion keeps the user-confirmed 夏=ここ reading", () => {
   expect(line?.reading).toMatch(/<ruby>夏<rt>ここ<\/rt><\/ruby>/u);
 });
 
-/* The page's chant functions still read JP_CHANT_GUIDES directly with their
-   own matching (±1 hundredth for whole lines, |Δ| < 0.01 for segments).
-   line.chant must agree with them until those functions move onto it. */
-describe("line.chant agrees with the page's legacy chant matching", () => {
+/* The golden snapshot lists which lines have chant segments; this checks
+   their text and romaji against the real chant guide, which the rows render
+   as-is. Segments attach to the line whose time is within |Δ| < 0.01. */
+describe("line.chant.jp.segments carry the chant guide's segments", () => {
   test.each(Object.keys(JP_CHANT_GUIDES))("%s", id => {
     const song = catalogue.songs.find(item => item.id === id)!;
-    const guide = (JP_CHANT_GUIDES as Record<string, { chantTimes?: number[]; chantSegments?: { time: number; text: string }[] }>)[id];
-    const any = new Set([...(guide.chantTimes || []), ...(guide.chantSegments || []).map(segment => segment.time)].map(timeBucket));
+    const guide = (JP_CHANT_GUIDES as Record<string, { chantSegments?: { time: number; text: string }[] }>)[id];
     song.lyrics.forEach(line => {
-      const bucket = timeBucket(line.time);
-      const legacyCue = any.has(bucket - 1) || any.has(bucket) || any.has(bucket + 1);
-      expect(Boolean(line.chant?.jp), `${id}#${line.index}`).toBe(legacyCue);
-      const legacySegments = (guide.chantSegments || []).filter(segment =>
+      const expected = (guide.chantSegments || []).filter(segment =>
         segment && Math.abs(Number(segment.time) - line.time) < 0.01 && segment.text);
-      expect(line.chant?.jp?.segments ?? [], `${id}#${line.index}`).toEqual(legacySegments);
+      expect(line.chant?.jp?.segments ?? [], `${id}#${line.index}`).toEqual(expected);
     });
   });
 });

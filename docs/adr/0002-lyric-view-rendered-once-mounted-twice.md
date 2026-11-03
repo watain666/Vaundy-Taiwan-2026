@@ -10,7 +10,7 @@ The Document PiP window used to show lyrics by cloning the song page's `#lyrics-
 ## Consequences
 
 - The rows can be rendered and golden-tested in node for every song, reading mode and chant version (`tests/lyric-view.render.test.ts`), and the mounted DOM and playhead behaviour are tested under jsdom (`tests/lyric-view.mount.test.ts`).
-- The view reads chant cues only from `line.chant` and the line's segments; `Song.chant.hasGuide` tells it whether the Japanese version follows the chant guide. The chant guide, the reading tables and the page script are never imported by the view.
+- The view reads chant cues only from `line.chant` and the line's segments, through the shared chant rules in `src/chant/` that the page also uses; `Song.chant.hasGuide` tells it whether the Japanese version follows the chant guide. The chant guide, the reading tables and the page script are never imported by the view.
 - The differences between the two windows are mount options: song page rows are buttons (click to seek stays a delegated listener in `src/main.js`), the current line is centred and auto-scroll can be turned off; PiP rows are divs, the current line is pinned near the top and the list always follows playback.
 - The only intended behaviour changes: a switched reading mode or chant version now equals a fresh render on both windows, PiP clears the previous line's karaoke highlight, PiP plays icon animations by its own visible range, and PiP no longer opens with the song page's transient row classes.
 - Removing the post-load re-patch of backing-chant rows moves two whitespace-only text nodes around `.lyric-bg` for one song (`IdeagaAfureteNemurenai`) in the Japanese chant version; this was verified to have no visual effect.

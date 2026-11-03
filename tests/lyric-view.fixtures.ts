@@ -2,7 +2,8 @@
 import "../karaoke-sources.js";
 import { createHash } from "node:crypto";
 import { assembleCatalogue, type Song } from "../src/catalogue/assemble";
-import type { ChantVersion, ReadingMode } from "../src/lyric-view/rows";
+import type { ChantVersion } from "../src/chant/index";
+import type { ReadingMode } from "../src/lyric-view/rows";
 import { loadRealSources } from "./real-sources";
 
 export const READING_MODES: ReadingMode[] = ["kana", "romaji", "both"];

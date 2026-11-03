@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.22.3**
+
+- [PR #72](https://github.com/watain666/Vaundy-Taiwan-2026/pull/72)：〈裸の勇者〉〈再会〉〈世界の秘密〉〈黒子〉的歌名改成只顯示日文原題；只顯示日文原題的歌名（包含 v1.22.1 調整的十二首）現在用日文字型顯示，和括號內的原題一致。
+
 ## [**v1.22.2**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/9e76eda486ded499d73300498671c79fa5383cbf)
 
 - [PR #71](https://github.com/watain666/Vaundy-Taiwan-2026/pull/71)：〈不可幸力〉日本版應援補上第一次「その理由は同じ」的大合唱標色，應援提示也一併註明。

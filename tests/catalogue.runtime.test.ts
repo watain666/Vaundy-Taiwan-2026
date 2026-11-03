@@ -4,7 +4,7 @@ import { get, list, load, UnknownSongError } from "../src/catalogue/index";
 
 test("list returns every summary in metadata order without lyrics", () => {
   const songs = list();
-  expect(songs).toHaveLength(38);
+  expect(songs).toHaveLength(39);
   expect(songs.map(song => song.number)).toEqual(songs.map((_, index) => index + 1));
   expect(songs[0]).not.toHaveProperty("lyrics");
   expect(songs[0].id).toBe("Tokimeki");

@@ -17,7 +17,8 @@ export const SONGS = [
   {
     "id": "CHAINSAWBLOOD",
     "title": "CHAINSAW BLOOD",
-    "translationCredit": "巴哈姆特的月勳",
+    "translationCredit": "巴哈姆特的大棕熊",
+    "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5578911",
     "youtubeId": "FL1QjjkZVm4",
     "spotifyTrackId": "3lUOzabhWYyRImRszpJGOU"
   },
@@ -38,8 +39,8 @@ export const SONGS = [
   {
     "id": "HadakaNoYusha",
     "title": "裸身勇者 (裸の勇者)",
-    "translationCredit": "Vaundy 官方 YouTube 字幕",
-    "translationCreditUrl": "https://www.youtube.com/watch?v=FT0GKCuSaW0",
+    "translationCredit": "巴哈姆特的大棕熊",
+    "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5360572",
     "youtubeId": "FT0GKCuSaW0",
     "spotifyTrackId": "3k64vNcgYPkETG7TNgpW4o"
   },
@@ -143,7 +144,8 @@ export const SONGS = [
   {
     "id": "Backlight",
     "title": "逆光 (逆光)",
-    "translationCredit": "巴哈姆特的月勳",
+    "translationCredit": "巴哈姆特的大棕熊",
+    "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5539051",
     "youtubeId": "RhDxXvn6YaQ",
     "spotifyTrackId": "3LZwKI90sFbwjJMMSfyPp7"
   },
@@ -302,5 +304,13 @@ export const SONGS = [
     "translationCreditUrl": null,
     "youtubeId": "beIC4qyuCo8",
     "spotifyTrackId": "4fLu1o9tL4Fg7Zh7y4P7mK"
+  },
+  {
+    "id": "mabataki",
+    "title": "mabataki",
+    "translationCredit": "巴哈姆特的大棕熊",
+    "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5554817",
+    "youtubeId": "6h6AQbdTkaE",
+    "spotifyTrackId": "3UoHEqo5gOZRyLAR4IMp4c"
   }
 ];

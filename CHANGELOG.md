@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.22.1**
+
+- [PR #70](https://github.com/watain666/Vaundy-Taiwan-2026/pull/70)：中文歌名只是重複日文原題的歌曲，改成只顯示日文原題，不再出現「前前前世 (前前前世)」這類重複：〈不可幸力〉〈逆光〉〈偉生人〉〈風神〉〈常熱〉〈宮〉〈地球儀〉〈前前前世〉〈融解sink〉〈走馬灯〉〈美電球〉〈灯火〉。
+
 ## [**v1.22.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/12e81c5ac2b4749cf3861aaa371ee5f58a9df622)
 
 - [PR #69](https://github.com/watain666/Vaundy-Taiwan-2026/pull/69)：新增 32 首歌，「全部歌曲」清單共 71 首：〈飛ぼうよ〉〈The SILENCE〉〈シンギュラリティ〉〈忘れる前に〉〈まじで、サヨナラべぃべぃ〉〈人生はミックスナッツの組み合わせ〉〈走れSAKAMOTO〉〈Somebody help us〉〈GORILLA芝居〉〈Gift〉〈ココロありがとう〉〈美電球〉〈カーニバル〉〈1リッター分の愛をこめて〉〈宮〉〈黒子〉〈replica〉〈融解sink〉〈benefits〉〈走馬灯〉〈置き手紙〉〈二人話〉〈HERO〉〈おもかげ〉〈地球儀〉〈life hack〉〈僕は今日も〉〈Bye by me〉〈こんな時〉〈pain〉〈Missing〉〈前前前世〉。每首都有日文歌詞、假名與羅馬字讀音、繁體中文翻譯，歌詞時間跟著影片走；歌詞與時間取自韓國歌迷站 VAUNDY BALL 的整理，並與 UtaTen 等歌詞網站核對。這些歌不在歌單內。

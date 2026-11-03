@@ -231,16 +231,16 @@ export const JP_CHANT_GUIDES = {
       "主歌每行開頭的英文字「STAY」「FAKE」「STAGE」「AGE」一起喊。",
       "中段需要安靜的地方不要拍手。"
     ],
-    chantTimes: [26, 37.5, 69, 79, 107, 118, 150, 159.5, 201.5, 211, 221, 230.5],
+    chantTimes: [27.5, 37.4, 69.1, 79, 108.3, 118.1, 149.9, 159.7, 201.3, 211.2, 220.9, 230.7],
     chantSegments: [
-      { time: 42,    text: "STAY",   romaji: "STAY" },
-      { time: 47,    text: "FAKE",   romaji: "FAKE" },
-      { time: 52,    text: "STAGE",  romaji: "STAGE" },
+      { time: 42.2,    text: "STAY",   romaji: "STAY" },
+      { time: 47.2,    text: "FAKE",   romaji: "FAKE" },
+      { time: 52.1,    text: "STAGE",  romaji: "STAGE" },
       { time: 57,    text: "AGE",    romaji: "AGE" },
-      { time: 123,   text: "STAY",   romaji: "STAY" },
+      { time: 122.9,   text: "STAY",   romaji: "STAY" },
       { time: 128,   text: "FAKE",   romaji: "FAKE" },
-      { time: 133,   text: "STAGE",  romaji: "STAGE" },
-      { time: 137.5, text: "AGE",    romaji: "AGE" }
+      { time: 132.8,   text: "STAGE",  romaji: "STAGE" },
+      { time: 137.9, text: "AGE",    romaji: "AGE" }
     ]
   },
   TodomenoIchigeki: {

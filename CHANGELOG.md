@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.22.2**
+
+- [PR #71](https://github.com/watain666/Vaundy-Taiwan-2026/pull/71)：〈不可幸力〉日本版應援補上第一次「その理由は同じ」的大合唱標色，應援提示也一併註明。
+
 ## [**v1.22.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/5a6310da8723be07cf78c08b0e07480027babca7)
 
 - [PR #70](https://github.com/watain666/Vaundy-Taiwan-2026/pull/70)：中文歌名只是重複日文原題的歌曲，改成只顯示日文原題，不再出現「前前前世 (前前前世)」這類重複：〈不可幸力〉〈逆光〉〈偉生人〉〈風神〉〈常熱〉〈宮〉〈地球儀〉〈前前前世〉〈融解sink〉〈走馬灯〉〈美電球〉〈灯火〉。

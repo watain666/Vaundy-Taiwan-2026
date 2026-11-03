@@ -63,7 +63,7 @@ export const SONGS = [
   },
   {
     id: "KaijuNoHanauta",
-    title: "怪獸的花之歌 (怪獣の花唄)",
+    title: "怪獣の花唄",
     translationCredit: "巴哈姆特的月勳",
     youtubeId: "UM9XNpgrqVk",
     lyrics: [
@@ -3255,7 +3255,7 @@ export const SONGS = [
   },
   {
     id: "Futaribanashi",
-    title: "兩人的對話 (二人話)",
+    title: "二人話",
     translationCredit: "AI 翻譯（Claude Opus 5.5）",
     translationCreditUrl: null,
     youtubeId: "o7aOhAYyTTU",

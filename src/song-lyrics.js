@@ -278,7 +278,7 @@ export const SONGS = [
   },
   {
     id: "HadakaNoYusha",
-    title: "裸身勇者 (裸の勇者)",
+    title: "裸の勇者",
     translationCredit: "巴哈姆特的大棕熊",
     translationCreditUrl: "https://home.gamer.com.tw/artwork.php?sn=5360572",
     youtubeId: "FT0GKCuSaW0",
@@ -373,7 +373,7 @@ export const SONGS = [
   },
   {
     id: "Reunion",
-    title: "重逢 (再会)",
+    title: "再会",
     translationCredit: "巴哈姆特的月勳",
     youtubeId: "WcaSSvtHFeM",
     lyrics: [
@@ -1584,7 +1584,7 @@ export const SONGS = [
   },
   {
     id: "SekainoHimitsu",
-    title: "世界的秘密 (世界の秘密)",
+    title: "世界の秘密",
     translationCredit: "Smiecj",
     translationCreditUrl: "https://smiecj.com/2023/05/07/vaundy-sekainohimitu/",
     translationSourceUrl: "https://smiecj.com/2023/05/07/vaundy-sekainohimitu/",
@@ -2901,7 +2901,7 @@ export const SONGS = [
   },
   {
     id: "Hokuro",
-    title: "黑痣 (黒子)",
+    title: "黒子",
     translationCredit: "AI 翻譯（Claude Opus 5.5）",
     translationCreditUrl: null,
     youtubeId: "CBN6EmuCb14",

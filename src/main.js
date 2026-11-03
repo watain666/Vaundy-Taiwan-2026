@@ -1298,7 +1298,10 @@ function setlistTitle(entry){
 /* 歌名通常是「中文譯名 (日文原題)」；只把括號內原題標成日文，
    日文與中文歌詞都沿用台灣系統字體堆疊顯示。 */
 function renderSongTitle(title){
-  return escapeHtml(String(title ?? "")).replace(/\(([^()]*)\)/g,
+  const text = escapeHtml(String(title ?? ""));
+  /* A title without a parenthesised original is the Japanese title itself. */
+  if (!/\(/.test(text) && /[\u3040-\u30ff\u3400-\u9fff]/.test(text)) return `<span lang="ja">${text}</span>`;
+  return text.replace(/\(([^()]*)\)/g,
     (_, original) => `(<span lang="ja">${original}</span>)`);
 }
 

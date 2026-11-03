@@ -2303,7 +2303,10 @@ function buildSongShell(){
         updateDocumentPipButton();
         return;
       }
-      videoPip.open(buildDocumentPipViewModel()).then(updateDocumentPipButton);
+      videoPip.open(buildDocumentPipViewModel()).then(result => {
+        updateDocumentPipButton();
+        if (result && !result.opened) showPipUnavailable(result.reason);
+      });
     });
     updateDocumentPipButton();
   }
@@ -3149,6 +3152,29 @@ function updateDocumentPipButton(){
   button.setAttribute("aria-pressed", open ? "true" : "false");
   button.setAttribute("aria-label", open ? "關閉同步字幕小窗" : "開啟同步字幕小窗");
   button.setAttribute("title", open ? "關閉同步字幕小窗" : "開啟同步字幕小窗");
+}
+
+/* The phone subtitle window could not open: tell the visitor instead of
+   leaving the press without an answer. The reason code helps a report. */
+let pipNoticeTimer = null;
+function showPipUnavailable(reason){
+  let notice = document.getElementById("pip-unavailable");
+  if (!notice){
+    notice = document.createElement("p");
+    notice.id = "pip-unavailable";
+    notice.className = "pip-unavailable";
+    notice.setAttribute("role", "status");
+    notice.setAttribute("aria-live", "polite");
+    document.body.appendChild(notice);
+  }
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  notice.textContent = (standalone
+    ? "加到主畫面的 App 模式開不了字幕小窗，請改用 Safari 開啟本站再按 PiP。"
+    : "這個瀏覽器開不了字幕小窗。")
+    + (reason ? `（${reason}）` : "");
+  notice.hidden = false;
+  clearTimeout(pipNoticeTimer);
+  pipNoticeTimer = setTimeout(()=>{ notice.hidden = true; }, 8000);
 }
 
 /* While the phone subtitle window is open, the video can be paused by the

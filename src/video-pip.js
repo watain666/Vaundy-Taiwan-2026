@@ -323,26 +323,73 @@ export function createVideoPip({
     return open && inPip();
   }
 
-  /* Must be called from the click itself: it requests PiP before returning. */
+  /* The window was not opened: undo the preparation for it and say why
+     (the reason is shown to the visitor, so a failure on a device can be
+     reported). */
+  function failOpen(reason){
+    if (!open) destroySource();
+    return { opened: false, reason };
+  }
+
+  function waitFor(target, eventName, timeoutMs){
+    return new Promise(resolve => {
+      let timer = null;
+      const done = value => {
+        clearTimeout(timer);
+        target.removeEventListener(eventName, onEvent);
+        resolve(value);
+      };
+      const onEvent = ()=>done(true);
+      target.addEventListener(eventName, onEvent);
+      timer = setTimeout(()=>done(false), timeoutMs);
+    });
+  }
+
+  /* webkitSetPresentationMode returns nothing and may be ignored (for
+     example in a home-screen web app), so success is the mode changing. */
+  function requestWebkitPip(){
+    if (typeof video.webkitSetPresentationMode !== "function") return Promise.resolve("no-pip-api");
+    if (typeof video.webkitSupportsPresentationMode === "function"
+      && !video.webkitSupportsPresentationMode("picture-in-picture")) return Promise.resolve("webkit-unsupported");
+    try { video.webkitSetPresentationMode("picture-in-picture"); }
+    catch(e){ return Promise.resolve(`webkit-${e && e.name || "error"}`); }
+    if (inPip()) return Promise.resolve(null);
+    return waitFor(video, "webkitpresentationmodechanged", 1500)
+      .then(()=> inPip() ? null : "webkit-ignored");
+  }
+
+  function requestPip(){
+    const standard = typeof video.requestPictureInPicture === "function" && document.pictureInPictureEnabled !== false;
+    if (!standard) return requestWebkitPip();
+    return video.requestPictureInPicture().then(()=>null, error => {
+      const name = (error && error.name) || "error";
+      // Safari also has the older API; try it before giving up.
+      return requestWebkitPip().then(webkitReason => webkitReason ? `${name}/${webkitReason}` : null);
+    });
+  }
+
+  /* Must be called from the click itself: it requests PiP before returning.
+     Resolves to { opened, reason }. */
   function openWindow(model = {}){
-    if (!supported) return Promise.resolve(false);
+    if (!supported) return Promise.resolve({ opened: false, reason: "unsupported" });
     prepare();
     lastModel = model;
     ensureSource();
     paint(model);
     playVideoElement();
+    const attempt = ()=> requestPip().then(reason => {
+      if (reason) return failOpen(`${reason} · readyState ${video.readyState}`);
+      handleEnter();
+      return { opened: true, reason: null };
+    }, error => failOpen(`${(error && error.name) || "error"} · readyState ${video.readyState}`));
     try {
-      if (typeof video.requestPictureInPicture === "function" && document.pictureInPictureEnabled !== false){
-        return video.requestPictureInPicture().then(()=>{ handleEnter(); return true; }, ()=>{
-          if (!open) destroySource();
-          return false;
-        });
-      }
-      video.webkitSetPresentationMode("picture-in-picture");
-      return Promise.resolve(true);
+      // A video without frames cannot enter PiP. Request at once when it has
+      // them; otherwise wait briefly for the first frame (the click's user
+      // activation usually still holds).
+      if (video.readyState >= 1) return attempt();
+      return waitFor(video, "loadedmetadata", 1000).then(attempt);
     } catch(e){
-      if (!open) destroySource();
-      return Promise.resolve(false);
+      return Promise.resolve(failOpen(`${(e && e.name) || "error"} · readyState ${video ? video.readyState : -1}`));
     }
   }
 

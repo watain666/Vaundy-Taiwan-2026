@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.23.1**
+
+- [PR #74](https://github.com/watain666/Vaundy-Taiwan-2026/pull/74)：〈怪獣の花唄〉〈二人話〉的歌名改成只顯示日文原題。
+
 ## [**v1.23.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/e13d36c78470f44a04c197c0b1dc59fec6321c21)
 
 - [PR #73](https://github.com/watain666/Vaundy-Taiwan-2026/pull/73)：71 首中有 64 首的逐字高亮改用內建的逐字時間（來自酷狗與網易雲，已換算到歌曲頁的影片時間並以人聲核對），打開歌曲就能逐字亮起，離線也能用，不再依賴已無法連線的外部時間碼服務；其餘歌曲照舊即時查詢。

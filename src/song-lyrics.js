@@ -559,7 +559,7 @@ export const SONGS = [
   },
   {
     id: "Tomoshibi",
-    title: "燈火 (灯火)",
+    title: "灯火",
     translationCredit: "巴哈姆特的月勳",
     youtubeId: "nrLZ-vTiQa4",
     lyrics: [

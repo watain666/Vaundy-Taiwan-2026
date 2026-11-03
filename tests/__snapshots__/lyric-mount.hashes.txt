@@ -34,11 +34,11 @@
 "HadakaNoYusha" romaji kr sources-present fc6b18c860a04230
 "HadakaNoYusha" both jp sources-present fe0c953b3a2228c5
 "HadakaNoYusha" both kr sources-present ee7ebe8bc4bb3e69
-"Fukakouryoku" kana jp sources-present 72f7a67e34ae91d4
+"Fukakouryoku" kana jp sources-present f48262b31bd880f4
 "Fukakouryoku" kana kr sources-present 7bf0312e907810ea
-"Fukakouryoku" romaji jp sources-present bfb9a81536b6f2a7
+"Fukakouryoku" romaji jp sources-present 34f2601aa6416dbf
 "Fukakouryoku" romaji kr sources-present 4ff51063afa6db57
-"Fukakouryoku" both jp sources-present 5aa79351a1d9106f
+"Fukakouryoku" both jp sources-present 712f8545bd1d36e7
 "Fukakouryoku" both kr sources-present df7dc14f42d26158
 "Reunion" kana jp sources-present 743e937ee210a02e
 "Reunion" kana kr sources-present 91c37b244c0acadb

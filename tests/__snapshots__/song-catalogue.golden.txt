@@ -70,8 +70,8 @@
   lines: 54
   linesWithReading: 41
   linesWithRomaji: 41
-  marks: chant jp=17 kr=24; clap wave
-  chantLines.jp: 10,11,13,15,17,19,21,22,24,26,28,30,41,46,48,50,52
+  marks: chant jp=18 kr=24; clap wave
+  chantLines.jp: 5,10,11,13,15,17,19,21,22,24,26,28,30,41,46,48,50,52
   chantLines.jpSegments: 10,11,21,22,41
   chantLines.kr: 4,5,7,8,10,11,13,15,17,19,21,22,24,26,28,30,41,42,44,45,46,48,50,52
   backingChantLines: -

@@ -150,10 +150,10 @@ export const JP_CHANT_GUIDES = {
   },
   Fukakouryoku: {
     notes: [
-      "副歌一起唱「Welcome to the dirty night」。",
+      "副歌一起唱「Welcome to the dirty night」；第一次「その理由は同じ」也要全場大合唱。",
       "「あれ なに」「それ なに」「愛で」是熟悉 VAWS 應援的人會喊的回應。"
     ],
-    chantTimes: [54, 59, 64, 69.5, 97.5, 102.5, 108, 113, 176.5, 181.5, 187, 192],
+    chantTimes: [28.5, 54, 59, 64, 69.5, 97.5, 102.5, 108, 113, 176.5, 181.5, 187, 192],
     chantSegments: [
       { time: 41.5,  text: "あれ、なに", romaji: "are, nani" },
       { time: 46.5,  text: "それ、なに", romaji: "sore, nani" },

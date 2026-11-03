@@ -18,18 +18,6 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
           </div>
         </div>
 
-        <div class="show-meta">
-          <div class="show-row">
-            <span class="show-day">10.31<span class="dow">六</span></span>
-            <span class="show-time">19:00</span>
-          </div>
-          <div class="show-row">
-            <span class="show-day">11.01<span class="dow">日</span></span>
-            <span class="show-time">19:00</span>
-          </div>
-          <div class="show-venue">TAIPEI ARENA, TAIPEI</div>
-        </div>
-
         <!-- 공연 당일에만 나타나는 오늘의 일정 -->
         <div class="today-card" id="today-card" hidden>
           <div class="today-head"><span class="dot"></span><span id="today-title">今日</span></div>
@@ -37,10 +25,18 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
           <ul class="today-list" id="today-list"></ul>
         </div>
 
-        <nav class="main-menu">
-          <button class="menu-btn" id="setlist-btn">
-            <span class="menu-btn-label">應援指南・演出順序</span>
-          </button>
+        <nav class="main-menu" aria-labelledby="main-menu-title">
+          <h2 class="main-menu-title" id="main-menu-title">應援指南</h2>
+          <div class="main-menu-actions">
+            <button class="menu-btn" type="button" id="songs-btn">
+              <span class="menu-btn-label">全部歌曲</span>
+              <span class="menu-btn-note">搜尋歌名・排序</span>
+            </button>
+            <button class="menu-btn" type="button" id="setlist-btn">
+              <span class="menu-btn-label">亞巡歌單</span>
+              <span class="menu-btn-note">依演出順序</span>
+            </button>
+          </div>
         </nav>
 
         <section class="info-section">
@@ -511,15 +507,10 @@ export function homeHtml(build, themeToggle = `<button class="theme-toggle home-
       </div>
 
       <div class="menu-links">
-        <a class="menu-chip" href="https://vaundy.jp/?lang=en" target="_blank" rel="noopener">
+        <a class="menu-chip" href="https://vaundy.jp/" target="_blank" rel="noopener">
           <span class="chip-ico">${EXT_LINK_SVG}</span>
           <span class="chip-label">官方網站</span>
         </a>
-        <button class="menu-chip" type="button" id="guide-btn">
-          <span class="chip-ico">${MUSIC_SVG}</span>
-          <span class="chip-label">全部歌曲</span>
-          <span class="chip-note">搜尋・排序</span>
-        </button>
       </div>
       </div>
 

@@ -83,7 +83,7 @@
 
   /* ── 카운트다운 (D-DAY 알약 + 공연 일정 목록) ───────────────── */
   .countdown{
-    margin-top:30px;
+    margin-top:32px;
     display:flex;
     justify-content:center;
     width:100%;
@@ -91,8 +91,8 @@
   .cd-pill{
     display:inline-flex;
     align-items:center;
-    gap:clamp(12px,3.4vw,18px);
-    padding:clamp(11px,3vw,15px) clamp(20px,5.6vw,30px);
+    gap:clamp(12px,3.4vw,16px);
+    padding:clamp(12px,3vw,16px) clamp(20px,5.6vw,32px);
     border:0;
     border-radius:8px;
     background:rgba(23,5,4,.8);
@@ -127,17 +127,8 @@
   }
   .cd-pill.is-live .cd-dday{ color:var(--chant); }
   .cd-pill.is-live .cd-clock{ color:#fff; }
-  .cd-pill.is-end{
-    border-color:rgba(246,239,217,0.22);
-    background:rgba(20,6,4,0.4);
-  }
   .cd-pill.is-end .cd-sep,
   .cd-pill.is-end .cd-clock{ display:none; }
-  .cd-pill.is-end .cd-dday{
-    color:#b9b3a6;
-    letter-spacing:.16em;
-    text-shadow:0 2px 10px rgba(0,0,0,0.8);
-  }
   /* 이미 끝난 공연은 흐리게 / 진행 중인 공연은 주황으로 */
   .show-row.past{ opacity:.38; }
   .show-row.live .show-day{ color:var(--chant); }
@@ -200,13 +191,34 @@
     width:100%;
     max-width:560px;
   }
+  .main-menu-title{
+    display:flex;align-items:center;gap:12px;
+    margin:0 0 12px;
+    font-family:var(--font-tw-sans);
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.08em;
+    color:var(--gold-soft);
+  }
+  .main-menu-title::before,
+  .main-menu-title::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:rgba(246,239,217,0.16);
+  }
+  .main-menu-actions{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
   .menu-btn{
     width:100%;
     display:flex;flex-direction:column;align-items:center;
     background:var(--action);
     border:0;
     border-radius:8px;
-    padding:20px 24px;
+    padding:16px 12px;
     cursor:pointer;
     transition:background .2s ease, border-color .2s ease, transform .2s ease;
   }
@@ -222,6 +234,13 @@
     color:var(--ink);
     text-shadow:none;
   }
+  .menu-btn-note{
+    margin-top:2px;
+    font-family:var(--font-tw-sans);
+    font-size:12px;
+    letter-spacing:.04em;
+    color:rgba(23,5,4,.66);
+  }
 
   /* ---------- SONG LIST / GUIDE ---------- */
   .guide-page{
@@ -234,7 +253,7 @@
     padding:36px 20px 80px;
   }
   .songs-head{
-    max-width:640px;margin:0 auto 26px;
+    max-width:640px;margin:0 auto 24px;
     text-align:center;
   }
   .songs-head h2{
@@ -273,8 +292,8 @@
   .song-search-sentinel{ height:1px; margin:0; }
   .song-search-box{
     position:relative;
-    display:flex;align-items:center;gap:9px;
-    padding:11px 14px;
+    display:flex;align-items:center;gap:8px;
+    padding:12px 16px;
     border:1px solid rgba(246,239,217,0.20);
     border-radius:8px;
     background:var(--surface);
@@ -306,10 +325,10 @@
   .song-search-clear.show{ display:block; }
   .song-search-meta{
     display:flex;align-items:center;justify-content:space-between;
-    max-width:640px;margin:0 auto 6px;
+    max-width:640px;margin:0 auto 8px;
     padding:0 2px;
     font-family:var(--font-tw-sans);
-    font-size:11.5px;letter-spacing:.08em;
+    font-size:12px;letter-spacing:.02em;
     color:#a5947a;
     text-shadow:0 1px 6px rgba(0,0,0,0.85);
   }
@@ -325,7 +344,7 @@
   /* ── 곡 목록 정렬 ─────────────────────────────────────────
      여기서 고른 순서대로 곡 화면의 '이전/다음 곡'도 따라갑니다. */
   .song-sorts{
-    display:flex;gap:5px;
+    display:flex;gap:4px;
     max-width:640px;margin:0 auto 12px;
     padding:4px;
     border:1px solid var(--line);
@@ -334,12 +353,12 @@
   }
   .song-sort{
     flex:1;
-    display:inline-flex;align-items:center;justify-content:center;gap:5px;
-    padding:9px 6px;
-    border:none;border-radius:9px;
+    display:inline-flex;align-items:center;justify-content:center;gap:4px;
+    padding:8px;
+    border:none;border-radius:8px;
     background:none;
     color:#b9a98a;
-    font-family:inherit;font-size:12.5px;font-weight:700;
+    font-family:inherit;font-size:12.5px;font-weight:600;
     cursor:pointer;white-space:nowrap;
     transition:background .2s ease, color .2s ease;
   }
@@ -350,7 +369,7 @@
   }
   .song-sort .dir{ font-size:11px; color:var(--teal); }
   @media (max-width:400px){
-    .song-sort{ font-size:11.5px; padding:9px 3px; gap:3px; }
+    .song-sort{ font-size:11.5px; padding:8px 4px; gap:4px; }
   }
 
   .song-list{
@@ -364,7 +383,7 @@
   }
   .song-row{
     width:100%;
-    display:flex;align-items:center;gap:13px;
+    display:flex;align-items:center;gap:12px;
     background:none;border:none;border-bottom:1px solid var(--line);
     color:var(--cream);
     padding:20px 6px;
@@ -392,6 +411,7 @@
     font-family:var(--font-tw-sans);
     font-size:14px;
     letter-spacing:.04em;
+    font-variant-numeric:tabular-nums;
     color:var(--gold-soft);
     text-align:right;
   }
@@ -445,15 +465,15 @@
     .song-mark.common{ display:none; }
   }
   @media (max-width:400px){
-    .song-row{ gap:9px; }
+    .song-row{ gap:8px; }
   }
 
   /* 곡 목록 위 배지 설명 */
   .song-legend{
     display:flex;flex-wrap:wrap;justify-content:center;
-    gap:10px 14px;
-    margin:14px auto 0;
-    padding:11px 12px;
+    gap:8px 16px;
+    margin:16px auto 0;
+    padding:12px;
     max-width:520px;
     border:1px solid var(--line);
     border-radius:12px;
@@ -461,7 +481,7 @@
   }
   .song-legend .legend-item{ font-size:11.5px; }
   .song-legend-note{
-    margin:9px 0 0;
+    margin:8px 0 0;
     font-size:11.5px;
     color:#9c8b6e;
     line-height:1.6;
@@ -521,7 +541,7 @@
   }
   .chant-source-details{
     max-width:640px;
-    margin:14px auto 28px;
+    margin:16px auto 28px;
     border:1px solid var(--page-line,var(--line));
     border-radius:12px;
     background:var(--page-paper,var(--surface));
@@ -531,11 +551,11 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:10px;
-    padding:11px 14px;
+    gap:12px;
+    padding:12px 16px;
     color:var(--page-ink,var(--cream));
-    font-size:12px;
-    font-weight:700;
+    font-size:14px;
+    font-weight:600;
     cursor:pointer;
     list-style:none;
   }
@@ -549,11 +569,15 @@
   .chant-source-details[open] summary::after{ content:"－"; }
   .chant-source-details .chant-source-info{
     margin:0;
-    padding:10px 14px 12px;
+    padding:12px 16px;
     border-top:1px solid var(--page-line,var(--line));
     color:var(--page-muted,var(--muted));
     font-size:11.5px;
     line-height:1.6;
+  }
+  .chant-source-details .chant-source-info + .chant-source-info{
+    border-top:0;
+    padding-top:0;
   }
   .chant-source-details .chant-source-info a{
     color:inherit;
@@ -642,10 +666,10 @@
   .credits{
     text-align:center;
     padding:12px 16px max(12px,env(safe-area-inset-bottom,0px));
-    font-size:10.5px;
-    line-height:1.35;
+    font-size:11px;
+    line-height:1.4;
     color:#7a6a52;
-    letter-spacing:.04em;
+    letter-spacing:.02em;
   }
   .credits-copy{
     width:100%;
@@ -679,7 +703,7 @@
     text-decoration:none;
     transition:color .2s ease;
   }
-  .credits-link svg{ width:15px;height:15px;flex:none; }
+  .credits-link svg{ width:16px;height:16px;flex:none; }
   .credits-link:hover,
   .credits-link:focus-visible{ color:var(--teal); }
   .credits-link.changelog-trigger,
@@ -739,21 +763,20 @@
     .credits-links .credits-link{
       max-width:100%;
       min-height:20px;
-      padding:3px 0px;
+      padding:4px 0;
       line-height:1.25;
     }
   }
 
   @media (max-width:400px){
     .credits{
-      padding:22px 10px 40px;
-      font-size:10px;
+      padding:24px 12px 40px;
+      font-size:11px;
     }
     .credits-links{
       justify-content:center;
-      gap:6px;
+      gap:8px;
     }
-    .credits-link svg{ width:14px;height:14px; }
   }
 
   /* ---------- INFO ACCORDION (공연 정보 / 관객 입장안내) ---------- */
@@ -776,26 +799,26 @@
   .menu-card{
     width:100%;
     max-width:560px;
-    margin:14px auto 0;
+    margin:16px auto 0;
     border:1px solid var(--line);
-    border-radius:8px;
+    border-radius:16px;
     overflow:hidden;
     background:var(--surface);
     text-align:left;
   }
   .menu-card > * + *{ border-top:1px solid var(--line); }
 
-  /* ── 맨 아래 바깥 링크 — 두 개를 한 줄에 나란히 (줄 수를 아끼기 위해) ── */
+  /* ── 맨 아래 바깥 링크 ── */
   .menu-links{
     display:flex;gap:8px;
-    padding:9px 11px 11px;
+    padding:8px;
   }
   .menu-chip{
     flex:1;min-width:0;
-    display:flex;align-items:center;justify-content:center;gap:6px;
-    padding:9px 8px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:8px 12px;
     border:1px solid var(--line);
-    border-radius:10px;
+    border-radius:8px;
     background:rgba(0,0,0,0.26);
     color:var(--gold-soft);
     font-family:inherit;
@@ -811,12 +834,6 @@
   .chip-label{
     font-size:12.5px;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
-  .chip-note{
-    flex:none;
-    color:var(--gold-soft);
-    font-size:11px;
-    white-space:nowrap;
   }
 
   /* 카드 안에서는 각 항목의 테두리를 없애 한 덩어리로 보이게 */
@@ -888,11 +905,9 @@
   @media (max-width:400px){
     .menu-row{ padding:10px 12px; gap:9px; }
     .info-toggle-label{ font-size:13px; }
-    .menu-links{ padding:8px 10px 10px; gap:7px; }
-    .menu-chip{ padding:9px 6px; gap:5px; }
+    .menu-chip{ padding:8px; }
     .chip-label{ font-size:11.5px; }
     .chip-ico svg{ width:13px;height:13px; }
-    .chip-note{ font-size:10px; }
   }
 
   .info-panel{
@@ -1114,7 +1129,7 @@
     display:flex;align-items:center;gap:14px;
     /* 홈 화면에 설치해 실행하면 화면 맨 위(시계·배터리 영역)까지 앱이 그려지므로
        그만큼 안쪽으로 밀어 준다. --safe-top 은 아래 @media 에서 정해진다. */
-    padding:calc(16px + var(--safe-top, 0px)) 18px 16px;
+    padding:calc(16px + var(--safe-top, 0px)) 16px 16px;
     background:#1c0705;
     border-bottom:1px solid var(--line);
     position:relative;
@@ -1144,6 +1159,7 @@
   .song-topbar h1{
     font-family:var(--font-tw-sans);
     font-size:clamp(16px,4.6vw,20px);
+    font-weight:600;
     margin:0;
     flex:1;
     text-align:center;
@@ -1184,7 +1200,7 @@
   }
   .song-picker-btn{
     width:100%;
-    display:flex;align-items:center;justify-content:center;gap:7px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
     background:rgba(246,239,217,0.05);
     border:1px solid var(--line);
     border-radius:999px;
@@ -1337,7 +1353,7 @@
     .song-nav{ gap:4px; }
     .song-nav-btn{ width:30px;height:30px; }
     .song-nav-btn svg{ width:16px;height:16px; }
-    .song-picker-btn{ padding:6px 9px; gap:5px; }
+    .song-picker-btn{ padding:4px 8px; gap:4px; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -1459,10 +1475,10 @@
     margin:0 1px;
   }
   .chant-notes-toggle{
-    display:inline-flex;align-items:center;gap:5px;
+    display:inline-flex;align-items:center;gap:4px;
     min-height:28px;
     margin-left:auto;
-    padding:4px 9px;
+    padding:4px 12px;
     border:1px solid var(--stage-line);
     border-radius:999px;
     background:var(--stage-raised);
@@ -1564,8 +1580,8 @@
     gap:10px;
     align-items:flex-start;
     background:none;border:none;
-    padding:13px 10px;
-    border-radius:10px;
+    padding:12px;
+    border-radius:12px;
     text-align:left;
     cursor:pointer;
     transition:background-color .18s ease;
@@ -1884,7 +1900,7 @@
   .lyric-zh{
     display:block;
     font-size:calc(clamp(15px,4.2vw,17px) * var(--lyric-scale, 1));
-    font-weight:800;
+    font-weight:600;
     line-height:1.5;
     color:var(--ui-muted, #a9a9af);
   }
@@ -2599,15 +2615,14 @@
 
   /* ── 홈 — 폰 플래시 안내 한 문단 ───────────────────────────────
      접는 카드가 아니라 늘 펼쳐져 있는 짧은 글. 메뉴 카드와 같은 폭으로
-     맞춰 두고, 테두리 대신 왼쪽 선 하나로만 구분해 조용하게 둡니다. */
+     맞춰 두고, 메뉴 카드와 같은 얇은 테두리로 조용하게 둡니다. */
   .home-note{
-    display:flex;align-items:flex-start;gap:11px;
+    display:flex;align-items:flex-start;gap:12px;
     width:100%;max-width:560px;
-    margin:14px auto 0;
-    padding:13px 14px 13px 13px;
+    margin:16px auto 0;
+    padding:16px;
     border:1px solid var(--line);
-    border-left:2px solid var(--gold-soft);
-    border-radius:8px;
+    border-radius:16px;
     background:var(--surface);
     text-align:left;
   }
@@ -2619,9 +2634,9 @@
   .home-note-body{ min-width:0; }
   .home-note-body b{
     display:block;
-    margin-bottom:5px;
+    margin-bottom:4px;
     color:var(--gold);
-    font-size:13px;letter-spacing:.01em;
+    font-size:14px;font-weight:600;letter-spacing:.01em;
   }
   .home-note-body p{
     margin:0;
@@ -2630,11 +2645,11 @@
     word-break:normal;
   }
   .home-note-body p.sub{
-    margin-top:5px;
+    margin-top:4px;
     font-size:11.5px;opacity:.55;
   }
   @media (max-width:380px){
-    .home-note{ padding:12px;gap:9px; }
+    .home-note{ padding:12px;gap:8px; }
     .home-note-body p{ font-size:12px; }
   }
 
@@ -2826,7 +2841,7 @@
     margin-top:0;
     color:var(--ui-muted, #a9a9af);
   }
-  .song-page.venue .lyric-line{ padding:15px 10px; }
+  .song-page.venue .lyric-line{ padding:16px 12px; }
   .song-page.venue .lyric-icons{ width:24px; }
 
   .venue-hint{ display:none; }
@@ -2928,22 +2943,21 @@
     border-bottom-color:rgba(233,217,163,0.14);
   }
   .setlist-body{
-    padding:4px 20px 30px;
+    padding:44px 20px 32px;
   }
 
-  .setlist-head{ max-width:640px;margin:0 auto 18px;text-align:center; }
-  .setlist-head h2{
-    font-family:var(--font-tw-sans);
-    font-size:clamp(20px,5.4vw,26px);
-    margin:0 0 6px;letter-spacing:.02em;
+  .setlist-head{ max-width:640px;margin:0 auto 16px;text-align:center; }
+  .setlist-head h1{
+    font:600 clamp(24px,6vw,30px)/1.25 var(--font-tw-sans);
+    margin:0 0 8px;letter-spacing:-.01em;
   }
-  .setlist-head p{ margin:0;font-size:12.5px;line-height:1.8;color:#b9a98a; }
+  .setlist-head p{ margin:0;font-size:12.5px;line-height:1.8;color:var(--ui-muted, #a9a9af); }
   .setlist-head p a{ color:var(--gold-soft);text-decoration:underline;text-underline-offset:2px; }
   .setlist-meta{
     display:flex;align-items:center;justify-content:space-between;
-    max-width:640px;margin:0 auto 6px;padding:0 2px;
+    max-width:640px;margin:0 auto 8px;padding:0 2px;
     font-family:var(--font-tw-sans);
-    font-size:11.5px;letter-spacing:.08em;color:#a5947a;
+    font-size:12px;letter-spacing:.02em;color:var(--ui-muted, #a9a9af);
   }
   .set-list{
     max-width:640px;margin:0 auto;
@@ -2953,10 +2967,10 @@
   .set-item{ border-bottom:1px solid var(--line); }
   .set-row{
     width:100%;
-    display:flex;align-items:center;gap:13px;
+    display:flex;align-items:center;gap:12px;
     background:none;border:none;
     color:var(--cream);
-    padding:16px 6px;
+    padding:16px 20px;
     cursor:pointer;text-align:left;
     transition:background .2s ease;
   }
@@ -2965,12 +2979,13 @@
     outline:none;
   }
   .set-row[disabled]{ cursor:default; }
-  .set-row[disabled]:hover{ background:none;padding-left:6px; }
+  .set-row[disabled]:hover{ background:none;padding-left:20px; }
   .set-num{
     flex:none;width:26px;
     font-family:var(--font-tw-sans);
     font-size:14px;letter-spacing:.04em;
-    color:var(--gold-soft);text-align:right;
+    font-variant-numeric:tabular-nums;
+    color:var(--ui-muted, #a9a9af);text-align:right;
   }
   .set-title{
     flex:1;min-width:0;
@@ -2980,26 +2995,27 @@
     line-height:1.45;
     color:var(--cream);
   }
-  .set-go{ flex:none;font-size:13px;color:#7a6a52; }
+  .set-go{ flex:none;display:flex;color:var(--ui-muted, #a9a9af); }
+  .set-go svg{ width:16px;height:16px;transform:rotate(-90deg); }
   .set-row:hover .set-go{ color:var(--teal); }
 
   /* 토·일 곡이 달랐던 자리 */
   .set-split{ padding:12px 0 8px; }
   .set-split-head{
-    display:flex;align-items:center;gap:13px;
-    padding:0 6px 4px;
+    display:flex;align-items:center;gap:12px;
+    padding:0 20px 4px;
   }
   .set-split-note{
-    font-size:11px;letter-spacing:.06em;
-    color:#8d7d62;
+    font-size:12px;letter-spacing:.02em;
+    color:var(--ui-muted, #a9a9af);
   }
-  .set-row.sub{ padding:11px 6px 11px 39px; }
-  .set-row.sub:hover, .set-row.sub:focus-visible{ padding-left:46px; }
+  .set-row.sub{ padding:12px 20px 12px 58px; }
+  .set-row.sub:hover, .set-row.sub:focus-visible{ padding-left:58px; }
   .day-chip{
     flex:none;
     width:26px;height:22px;
     display:flex;align-items:center;justify-content:center;
-    border-radius:7px;
+    border-radius:6px;
     font-family:var(--font-tw-sans);
     font-size:11px;
     border:1px solid rgba(233,217,163,0.30);
@@ -3012,8 +3028,8 @@
     color:var(--teal);
   }
   .setlist-note{
-    max-width:640px;margin:18px auto 0;
-    font-size:11.5px;line-height:1.9;
+    max-width:640px;margin:16px auto 0;
+    font-size:12px;line-height:1.8;
     color:#7a6a52;
   }
   /* 가사 스크롤 영역을 감싸는 칸 — 짤방을 그 위에 겹쳐 놓기 위한 기준 */
@@ -3049,8 +3065,8 @@
   }
   .tip-pic.at-below-video .tip-pic-card{
     max-width:min(54vw, 240px);
-    padding:6px 6px 4px;
-    border-radius:14px;
+    padding:8px;
+    border-radius:16px;
     gap:4px;
   }
   .tip-pic.at-below-video .tip-pic-card img,
@@ -3067,7 +3083,7 @@
     padding:10px 12px 0;
     transform:translateY(-10px) scale(0.97);
   }
-  .tip-pic.at-lyrics-right .tip-pic-card{ max-width:min(78%, 320px); padding:8px 8px 6px; }
+  .tip-pic.at-lyrics-right .tip-pic-card{ max-width:min(78%, 320px); padding:8px; }
   .tip-pic.at-lyrics-right .tip-pic-card img,
   .tip-pic.at-lyrics-right .tip-pic-card video{ max-height:clamp(120px, 26svh, 228px); }
   .tip-pic.at-lyrics-right .tip-pic-cap{ font-size:12px; }

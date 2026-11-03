@@ -57,7 +57,7 @@ body{
   gap:8px;
   min-width:0;
   min-height:72px;
-  padding:16px 18px;
+  padding:16px;
   box-sizing:border-box;
 }
 
@@ -78,7 +78,7 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:7px;
+  gap:8px;
   padding:0 4px;
 }
 
@@ -106,7 +106,7 @@ body{
   flex:none;
   min-height:14px;
   color:var(--ui-muted, #a9a9af);
-  font-size:10px;
+  font-size:11px;
   line-height:1.4;
 }
 
@@ -126,7 +126,7 @@ body{
    底部留一整個視窗高，最後一句也能捲到最上面。 */
 .document-pip .pip-lyrics-list{
   margin:0;
-  padding:4px 18px 100vh;
+  padding:4px 16px 100vh;
 }
 .document-pip .pip-lyrics-list .lyric-line{
   cursor:default;
@@ -134,7 +134,7 @@ body{
 }
 /* 小窗通常很矮：收緊每句的上下內距與羅馬字、中文行高，讓下一句露出更多。
    日文行高維持主頁面的 1.9，否則逐字高亮時整行會上下抖動。 */
-.document-pip.song-page .pip-lyrics-list .lyric-line{padding-top:3px;padding-bottom:3px;}
+.document-pip.song-page .pip-lyrics-list .lyric-line{padding-top:4px;padding-bottom:4px;}
 .document-pip.song-page .pip-lyrics-list .lyric-romaji{line-height:1.2;}
 .document-pip.song-page .pip-lyrics-list .lyric-zh{line-height:1.25;}
 /* 字級跟著小窗自己的大小變：預設大小（內容約 450×169）時等於主頁面桌機的
@@ -222,9 +222,9 @@ body{
   .document-pip{padding:0;}
   .document-pip .pip-controls{
     grid-template-columns:40px minmax(0, 1fr) 40px;
-    gap:6px;
-    padding-right:10px;
-    padding-left:10px;
+    gap:4px;
+    padding-right:8px;
+    padding-left:8px;
   }
   .document-pip .pip-action{
     width:40px;

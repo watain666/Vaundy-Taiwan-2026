@@ -40,11 +40,11 @@
 .support-chat-launcher-label{
   position:absolute;
   right:-2px;bottom:calc(100% + 8px);
-  padding:4px 10px;
+  padding:4px 12px;
   border-radius:999px;
   background:var(--support-chat-orange);
   color:#fff;
-  font-size:12px;font-weight:700;line-height:1.4;
+  font-size:12px;font-weight:600;line-height:1.4;
   white-space:nowrap;
   box-shadow:0 4px 12px rgba(0,0,0,.25);
 }
@@ -97,14 +97,14 @@
 
 .support-chat-head{
   display:flex;align-items:center;gap:12px;
-  padding:10px 8px 10px 16px;
+  padding:12px 8px 12px 16px;
   border-bottom:1px solid var(--ui-line);
   background:var(--ui-surface);
 }
 .support-chat-heading{ flex:1;min-width:0; }
 .support-chat-heading h2{
   margin:0;
-  font-size:16px;font-weight:700;line-height:1.3;
+  font-size:16px;font-weight:600;line-height:1.3;
 }
 .support-chat-heading p{
   margin:2px 0 0;
@@ -131,7 +131,7 @@
 .support-chat-note{
   margin:12px 12px 0;
   padding:8px 12px;
-  border-radius:10px;
+  border-radius:8px;
   background:var(--ui-surface);
   font-size:12px;line-height:1.6;
   color:var(--ui-muted);
@@ -229,12 +229,12 @@
 .support-board .wl-text-number{ font-size:12px; }
 .support-board .wl-btn.primary{
   min-height:40px;
-  padding:0 18px;
+  padding:0 20px;
   border-radius:999px;
   border-color:var(--ui-accent);
   background:var(--ui-accent);
   color:var(--support-chat-ink);
-  font-size:14px;font-weight:700;
+  font-size:14px;font-weight:600;
 }
 /* 觸控裝置點完會停在 :hover，維持金色 */
 .support-board .wl-btn.primary:hover,
@@ -286,8 +286,10 @@
   margin-bottom:4px;
   line-height:1.4;
 }
-.support-board .wl-nick{ font-size:12.5px;font-weight:700;color:var(--ui-text); }
-.support-board .wl-time{ font-size:11.5px;color:var(--ui-muted); }
+/* Scoped to the card head: the name input in the composer is also .wl-nick,
+   and Waline's own .wl-card .wl-time would win at equal specificity. */
+.support-board .wl-card .wl-head .wl-nick{ font-size:13px;font-weight:600;color:var(--ui-text); }
+.support-board .wl-card .wl-head .wl-time{ font-size:12px;color:var(--ui-muted); }
 .support-board .wl-comment-actions{ margin-left:auto; }
 .support-board .wl-card .wl-content{
   display:inline-block;
@@ -305,7 +307,7 @@
   display:block;
   max-width:100%;max-height:320px;
   margin:4px 0;
-  border-radius:10px;
+  border-radius:8px;
   cursor:zoom-in;
 }
 .support-board .wl-content p + p{ margin-top:.5em; }
@@ -331,7 +333,7 @@
 .support-board .wl-quote{
   text-align:left;
   margin-top:8px;
-  padding-left:10px;
+  padding-left:12px;
   border-left:2px solid var(--ui-line);
 }
 .support-board .wl-quote .wl-card{ max-width:100%; }

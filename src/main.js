@@ -1105,7 +1105,7 @@ function renderHome(){
   }
   canReuseHome = false;
 
-  document.getElementById("guide-btn").addEventListener("click", ()=>{ location.hash = "#/guide"; });
+  document.getElementById("songs-btn").addEventListener("click", ()=>{ location.hash = "#/guide"; });
   document.getElementById("setlist-btn").addEventListener("click", ()=>{ location.hash = "#/setlist"; });
   setupAccordions();
   setupNoticeViewer();
@@ -1212,7 +1212,7 @@ function renderGuide(){
             <span class="legend-item"><span class="legend-icon jump">${INLINE_ICONS.jump}</span>跳躍</span>
             <span class="legend-item"><span class="legend-icon spin">${INLINE_ICONS.spin}</span>轉臂</span>
           </div>
-          <p class="song-legend-note">數字代表目前應援版本的大合唱歌詞行數。<br>切換歌曲時會依目前排序移動。<br>拍手・揮手提示會顯示在歌曲頁面。</p>
+          <p class="song-legend-note">數字代表目前應援版本的大合唱歌詞行數</p>
         </div>
         <details class="chant-source-details" id="guide-chant-source">
           <summary>應援版本說明</summary>
@@ -1248,6 +1248,7 @@ function renderGuide(){
   sourceDetails?.addEventListener("toggle", ()=>{
     if (!sourceDetails.open || !sourceContent || sourceContent.dataset.loaded === "1") return;
     sourceContent.innerHTML = `${chantSourceInfoHtml()}
+      <span class="chant-source-info">切換歌曲時會依目前排序移動。<br>拍手・揮手提示會顯示在歌曲頁面。</span>
       <section class="chant-differences" aria-labelledby="chant-differences-title">
         <div class="chant-differences-head">
           <h2 id="chant-differences-title">日本版／韓國版差異</h2>
@@ -1347,7 +1348,7 @@ function setlistRowHtml(item){
         <button class="set-row" data-id="${escapeHtml(e.id)}" ${exists ? "" : "disabled"}>
           <span class="set-num">${pad(item.n)}</span>
           <span class="set-title">${renderSongTitle(setlistTitle(e))}</span>
-          <span class="set-go">${exists ? "›" : ""}</span>
+          <span class="set-go" aria-hidden="true">${exists ? CHEVRON_SVG : ""}</span>
         </button>
       </li>`;
   }
@@ -1364,7 +1365,7 @@ function setlistRowHtml(item){
           <button class="set-row sub" data-id="${escapeHtml(e.id)}" ${exists ? "" : "disabled"}>
             <span class="day-chip ${e.day === "日" ? "sun" : ""}">${e.day}</span>
             <span class="set-title">${renderSongTitle(setlistTitle(e))}</span>
-            <span class="set-go">${exists ? "›" : ""}</span>
+            <span class="set-go" aria-hidden="true">${exists ? CHEVRON_SVG : ""}</span>
           </button>`;
         }).join("")}
       </div>
@@ -1415,13 +1416,12 @@ function renderSetlist(){
     <div class="setlist-page">
       <div class="song-topbar">
         <button class="back-btn" id="setlist-back-btn" aria-label="返回首頁" title="返回首頁">${BACK_SVG}</button>
-        <h1>歌單</h1>
         ${themeToggleHtml()}
       </div>
 
       <section class="setlist-body" id="setlist-body">
         <div class="setlist-head">
-          <h2>${escapeHtml(SETLIST_TOKYO.label)}歌單</h2>
+          <h1>亞巡歌單</h1>
           <p id="setlist-desc"></p>
         </div>
 
@@ -1793,7 +1793,7 @@ function startCountdown(){
     }
     if (nextIdx === -1){                 // 남은 공연 없음
       if (now >= finalEnd){
-        setPill("結束", "", "end");
+        setPill("台北場已圓滿結束", "", "end");
         stopCountdown();
       }
       return;
@@ -2023,7 +2023,7 @@ function buildSongShell(){
 
           <div class="lyrics-note">
             <span class="dot">●</span>
-            <span class="lyrics-note-copy">點選歌詞跳至影片位置，歌詞隨影片同步。</span>
+            <span class="lyrics-note-copy">點選歌詞跳至影片位置，歌詞隨影片同步</span>
           </div>
 
           <div class="lyrics-legend">

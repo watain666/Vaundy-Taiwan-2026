@@ -248,12 +248,18 @@ type PartLayout = {
 
 type RowLayout = { row: FrameRow; parts: PartLayout[]; height: number };
 
-const FRAME_PAD = 28;
-const HEADER_HEIGHT = 78;
-const PROGRESS_HEIGHT = 5;
-const ROW_PAD_X = 22;
+/* Spacing sits on a 4px grid at roughly twice the desktop PiP's CSS pixels.
+   FRAME_PAD keeps the title pill clear of the rounded corners of the
+   system PiP window (iOS clips the frame's corners). */
+const FRAME_PAD = 40;
+const HEADER_HEIGHT = 88;
+const HEADER_PILL_HEIGHT = 48;
+const PROGRESS_HEIGHT = 6;
+const ROW_PAD_X = 24;
 const ROW_PAD_Y = 12;
-const ROW_GAP = 10;
+const ROW_GAP = 12;
+const ROW_RADIUS = 24;
+const ACTIVE_MARK_WIDTH = 6;
 const PART_GAP = 4;
 /* Desktop PiP sizes (24px Japanese, 29px Chinese at 450px wide), scaled to the frame. */
 const BASE_SIZE: Record<FramePartKind, number> = { jp: 46, romaji: 30, zh: 50, bg: 30 };
@@ -298,13 +304,22 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.closePath();
 }
 
-function paintRow(ctx: CanvasRenderingContext2D, layout: RowLayout, x: number, y: number, width: number, lit: string): void {
+function paintRow(ctx: CanvasRenderingContext2D, layout: RowLayout, x: number, y: number, width: number, lit: string, mark: string): void {
   ctx.save();
   ctx.globalAlpha = layout.row.opacity;
   if (layout.row.background) {
     ctx.fillStyle = layout.row.background;
-    roundRect(ctx, x, y, width, layout.height, 14);
+    roundRect(ctx, x, y, width, layout.height, ROW_RADIUS);
     ctx.fill();
+  }
+  // The current line carries the same gold edge as on the song page and the desktop PiP.
+  if (layout.row.active) {
+    ctx.save();
+    roundRect(ctx, x, y, width, layout.height, ROW_RADIUS);
+    ctx.clip();
+    ctx.fillStyle = mark;
+    ctx.fillRect(x, y, ACTIVE_MARK_WIDTH, layout.height);
+    ctx.restore();
   }
   let cursorY = y + ROW_PAD_Y;
   layout.parts.forEach((part, index) => {
@@ -359,7 +374,7 @@ function paintRow(ctx: CanvasRenderingContext2D, layout: RowLayout, x: number, y
 
 function paintHeader(ctx: CanvasRenderingContext2D, model: FrameModel): void {
   const { width, theme } = model;
-  const pillHeight = 52;
+  const pillHeight = HEADER_PILL_HEIGHT;
   const pillY = (HEADER_HEIGHT - pillHeight) / 2;
   ctx.fillStyle = theme.pill;
   roundRect(ctx, FRAME_PAD, pillY, width - FRAME_PAD * 2, pillHeight, pillHeight / 2);
@@ -408,7 +423,7 @@ export function paintFrame(ctx: CanvasRenderingContext2D, model: FrameModel): vo
   ctx.fillRect(0, 0, width, height);
   paintHeader(ctx, model);
 
-  const top = HEADER_HEIGHT + PROGRESS_HEIGHT + 14;
+  const top = HEADER_HEIGHT + PROGRESS_HEIGHT + 16;
   const rowWidth = width - FRAME_PAD * 2;
   const available = height - top - 16;
 
@@ -437,11 +452,11 @@ export function paintFrame(ctx: CanvasRenderingContext2D, model: FrameModel): vo
   ctx.clip();
   let y = top;
   if (current) {
-    paintRow(ctx, current, FRAME_PAD, y, rowWidth, theme.lit);
+    paintRow(ctx, current, FRAME_PAD, y, rowWidth, theme.lit, theme.accent);
     y += current.height + ROW_GAP;
   }
   if (model.next && y < height) {
-    paintRow(ctx, layoutRow(ctx, model.next, scale, maxText), FRAME_PAD, y, rowWidth, theme.lit);
+    paintRow(ctx, layoutRow(ctx, model.next, scale, maxText), FRAME_PAD, y, rowWidth, theme.lit, theme.accent);
   }
   ctx.restore();
 }

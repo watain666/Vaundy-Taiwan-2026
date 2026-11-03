@@ -50,6 +50,7 @@
  *  Wasuremono +1.641 (+1.7912-0.15), Timeparadox +0.631 (+0.7507-0.12),
  *  TodomenoIchigeki +5.212, Kimagure +0.000,
  *  KokyuNoYouni +0.260 (+0.5000-0.24), mabataki +0.124,
+ *  TokyoFlash -0.277 (+0.0333-0.31),
  *  Tobouyo -0.290 (+0.0000-0.29), TheSILENCE +46.025 (+46.1550-0.13),
  *  Singularity +0.000, MixedNuts +0.000,
  *  HashireSAKAMOTO -0.450 (-0.0001-0.45),
@@ -64,11 +65,12 @@
  *  BokuwaKyomo -0.207 (+0.0333-0.24), Byebyme +1.034,
  *  Zenzenzense -0.150 (+0.0000-0.15)
  * SekainoHimitsu follows the "replica" Art Track c1x9eS-nIkI (+13.6398).
- * Excluded: pained (line-level only), Tomoshibi (live video), TokyoFlash
- * (clock ambiguous), KonnaToki and pain (no provider; 15 pain rows take
- * their vocal onset from ONSET_ROW_TIMES), WasureruMaeni and
- * MajideSayonaraBaby (NetEase LRC line-level only; their rows follow
- * LINE_LEVEL_CLOCK). Missing is bundled at -0.120 (line-start shift). pained keeps no words, but its 46 row times come from
+ * Excluded: pained (line-level only), Tomoshibi (live video), KonnaToki and
+ * pain (no provider; 15 pain rows take their vocal onset from
+ * ONSET_ROW_TIMES), WasureruMaeni and MajideSayonaraBaby (NetEase LRC line-
+ * level only; their rows follow LINE_LEVEL_CLOCK). Missing is bundled at
+ * -0.120 (line-start shift); TokyoFlash at -0.277 (clock anchored by ear, see
+ * PROVIDER_CLOCK). pained keeps no words, but its 46 row times come from
  * LINE_LEVEL_CLOCK: round(LRCLIB 22935081 line start + 45.3175, 0.1), the Art
  * Track offset, verified by a vocal-onset scan of the LRCLIB line starts
  * (+0.085 s, within 0.1 s) and NetEase LRC 2714023589 (same line starts).
@@ -147,6 +149,11 @@ const PROVIDER_CLOCK = {
   Somato: { studio: null, delta: -0.23 },
   BokuwaKyomo: { studio: null, delta: -0.24 },
   Zenzenzense: { studio: null, delta: -0.15 },
+  /* ambiguous ±1.3 s (two beats) resolved by a human listening anchor: first
+     line ≈22.6 s in the video (user, 2026-11-03). Within ±0.1 s of that peak
+     the word-onset scan peaks at -0.305 (z 4.1) and the line-start scan at
+     -0.31; the first line then starts at 22.56 s, line-start bias +0.09 (n 7). */
+  TokyoFlash: { studio: null, delta: -0.31 },
 };
 
 /* Line-start bias: median of (provider line start in the video clock - the
@@ -315,7 +322,6 @@ const AUDIO_REJECTED = {
 const EXCLUDED = {
   pained: "LRCLIB line-level timing only; no word-level provider",
   Tomoshibi: "the song video is a live performance; the studio word timing does not follow its vocal (weak onset agreement)",
-  TokyoFlash: "provider clock ambiguous between about -0.2 s and +1.0 s; not established within 0.1 s",
   KonnaToki: "no provider has this song (KuGou, NetEase, LRCLIB) and no Art Track",
   pain: "no provider has this song (searches return the different song pained) and no Art Track",
 };

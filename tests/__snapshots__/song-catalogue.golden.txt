@@ -201,7 +201,7 @@
   chantLines.jpSegments: -
   chantLines.kr: 4,5,7,19,27,28,30,31
   backingChantLines: -
-  translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  translationCreditUrl: null (text only)
   wordTiming: 32/32 rows (KuGou KRC 772251290)
 
 #18 "napori"

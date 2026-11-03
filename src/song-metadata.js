@@ -46,7 +46,7 @@ export const SONGS = [
   },
   {
     "id": "Fukakouryoku",
-    "title": "不可幸力 (不可幸力)",
+    "title": "不可幸力",
     "translationCredit": "巴哈姆特的月勳",
     "youtubeId": "Gbz2C2gQREI",
     "spotifyTrackId": "3eWLKn5HOZDrTP7jIFqJwV"
@@ -143,7 +143,7 @@ export const SONGS = [
   },
   {
     "id": "Backlight",
-    "title": "逆光 (逆光)",
+    "title": "逆光",
     "translationCredit": "巴哈姆特的大棕熊",
     "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5539051",
     "youtubeId": "RhDxXvn6YaQ",
@@ -167,7 +167,7 @@ export const SONGS = [
   },
   {
     "id": "Iseijin",
-    "title": "偉生人 (偉生人)",
+    "title": "偉生人",
     "translationCredit": "巴哈姆特的月勳",
     "youtubeId": "aDaWuvpB_Kw",
     "spotifyTrackId": "3g1Ca8PPhR4FBN6a66wkyq"
@@ -190,7 +190,7 @@ export const SONGS = [
   },
   {
     "id": "Fujin",
-    "title": "風神 (風神)",
+    "title": "風神",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "yiU0I0tvt6s",
@@ -198,7 +198,7 @@ export const SONGS = [
   },
   {
     "id": "Jonetsu",
-    "title": "常熱 (常熱)",
+    "title": "常熱",
     "translationCredit": "Oblivionis",
     "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5830053",
     "translationSourceUrl": "https://home.gamer.com.tw/artwork.php?sn=5830053",
@@ -428,7 +428,7 @@ export const SONGS = [
   },
   {
     "id": "Miyako",
-    "title": "宮 (宮)",
+    "title": "宮",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "PImnxaS4c-g",
@@ -512,7 +512,7 @@ export const SONGS = [
   },
   {
     "id": "Chikyugi",
-    "title": "地球儀 (地球儀)",
+    "title": "地球儀",
     "translationCredit": "巴哈姆特的fallen985（譯：澄野／意譯：CH）",
     "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5101141",
     "translationSourceUrl": "https://home.gamer.com.tw/artwork.php?sn=5101141",
@@ -573,7 +573,7 @@ export const SONGS = [
   },
   {
     "id": "Zenzenzense",
-    "title": "前前前世 (前前前世)",
+    "title": "前前前世",
     "translationCredit": "巴哈姆特的月勳",
     "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=6132751",
     "translationSourceUrl": "https://home.gamer.com.tw/artwork.php?sn=6132751",

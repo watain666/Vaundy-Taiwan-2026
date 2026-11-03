@@ -1,4 +1,4 @@
-38 songs, 1548 lyric lines
+39 songs, 1607 lyric lines
 
 #01 "Tokimeki"
   lines: 50
@@ -31,7 +31,7 @@
   chantLines.jpSegments: -
   chantLines.kr: 5,7,9,12,14,17,22,25,27,28,29,30,31,33,35,38,40,43,47,50,52,55
   backingChantLines: -
-  translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5578911
 
 #04 "KoikazeniNosete"
   lines: 29
@@ -64,7 +64,7 @@
   chantLines.jpSegments: 4,16
   chantLines.kr: 4,8,10,12,16,18,19
   backingChantLines: -
-  translationCreditUrl: https://www.youtube.com/watch?v=FT0GKCuSaW0
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5360572
 
 #07 "Fukakouryoku"
   lines: 54
@@ -207,7 +207,7 @@
   chantLines.jpSegments: 4,5,6,7,8,9,16,17,18,19,20,21,25,26,27,28,29,30
   chantLines.kr: 5,6,8,9,17,18,20,21,26,27,29,30
   backingChantLines: -
-  translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5539051
 
 #20 "NEOJAPAN"
   lines: 35
@@ -417,3 +417,14 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+
+#39 "mabataki"
+  lines: 59
+  linesWithReading: 56
+  linesWithRomaji: 59
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5554817

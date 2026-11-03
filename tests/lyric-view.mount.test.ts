@@ -77,13 +77,13 @@ describe("DOM golden after render", () => {
   beforeEach(() => ({ mount, list } = setup()));
   afterEach(() => mount.destroy());
 
-  test("hashes for 38 songs × 3 reading modes × 2 chant versions with the allocator", async () => {
+  test("hashes for 39 songs × 3 reading modes × 2 chant versions with the allocator", async () => {
     const lines: string[] = [];
     for (const { song, readingMode, chantVersion } of matrix(songs)) {
       mount.render(song, { readingMode, chantVersion, karaokeTiming: null, karaokeSources: sources });
       lines.push(`${JSON.stringify(song.id)} ${readingMode} ${chantVersion} sources-present ${shortHash(canonical(list))}`);
     }
-    expect(lines).toHaveLength(228);
+    expect(lines).toHaveLength(234);
     await expect(lines.join("\n") + "\n").toMatchFileSnapshot("./__snapshots__/lyric-mount.hashes.txt");
   }, 120_000);
 

@@ -1,4 +1,4 @@
-/* Shared inputs for the lyric view tests: the real catalogue and the 38 × 3 × 2 matrix. */
+/* Shared inputs for the lyric view tests: the real catalogue and the 39 × 3 × 2 matrix. */
 import "../karaoke-sources.js";
 import { createHash } from "node:crypto";
 import { assembleCatalogue, type Song } from "../src/catalogue/assemble";

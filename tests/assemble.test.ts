@@ -222,6 +222,18 @@ describe("build errors", () => {
     expectRejected(sources, "spotify-track-id", "Beta");
   });
 
+  test("a null Spotify track ID marks a song that is not on Spotify", () => {
+    const sources = makeSources();
+    sources.metadata = sources.metadata.map(entry => entry.id === "Beta" ? { ...entry, spotifyTrackId: null } : entry);
+    expect(assembleSong("Beta", sources).spotifyTrackId).toBeNull();
+  });
+
+  test("a missing Spotify track ID is still rejected", () => {
+    const sources = makeSources();
+    sources.metadata = sources.metadata.map(entry => entry.id === "Beta" ? { ...entry, spotifyTrackId: undefined as unknown as string } : entry);
+    expectRejected(sources, "spotify-track-id", "Beta");
+  });
+
   test("assembleSong rejects an unknown id", () => {
     expect(() => assembleSong("Nope", makeSources())).toThrow(CatalogueError);
     expect(() => assembleSong("Nope", makeSources())).toThrow(/\[unknown-song\] song "Nope"/);

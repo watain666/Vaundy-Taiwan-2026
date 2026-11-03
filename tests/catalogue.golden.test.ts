@@ -41,7 +41,7 @@ test("golden snapshot of the assembled catalogue", async () => {
 });
 
 test("real data has no build errors or warnings", () => {
-  expect(catalogue.songs).toHaveLength(39);
+  expect(catalogue.songs).toHaveLength(71);
   expect(catalogue.warnings).toEqual([]);
 });
 

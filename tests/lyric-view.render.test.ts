@@ -11,10 +11,10 @@ beforeAll(async () => {
   songs = await loadRealSongs();
 });
 
-test("golden hashes of the rendered rows, 39 songs × 3 reading modes × 2 chant versions", async () => {
+test("golden hashes of the rendered rows, 71 songs × 3 reading modes × 2 chant versions", async () => {
   const lines = matrix(songs).map(({ song, readingMode, chantVersion }) =>
     `${JSON.stringify(song.id)} ${readingMode} ${chantVersion} ${shortHash(renderLyricRows(song, { readingMode, chantVersion, interactive: true }))}`);
-  expect(lines).toHaveLength(234);
+  expect(lines).toHaveLength(426);
   await expect(lines.join("\n") + "\n").toMatchFileSnapshot("./__snapshots__/lyric-rows.hashes.txt");
 });
 

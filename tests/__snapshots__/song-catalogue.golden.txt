@@ -1,4 +1,4 @@
-39 songs, 1607 lyric lines
+71 songs, 3139 lyric lines
 
 #01 "Tokimeki"
   lines: 50
@@ -428,3 +428,355 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5554817
+
+#40 "Tobouyo"
+  lines: 36
+  linesWithReading: 28
+  linesWithRomaji: 36
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#41 "TheSILENCE"
+  lines: 52
+  linesWithReading: 39
+  linesWithRomaji: 52
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#42 "Singularity"
+  lines: 83
+  linesWithReading: 50
+  linesWithRomaji: 83
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#43 "WasureruMaeni"
+  lines: 59
+  linesWithReading: 52
+  linesWithRomaji: 59
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#44 "MajideSayonaraBaby"
+  lines: 45
+  linesWithReading: 33
+  linesWithRomaji: 45
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#45 "MixedNuts"
+  lines: 69
+  linesWithReading: 59
+  linesWithRomaji: 68
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#46 "HashireSAKAMOTO"
+  lines: 49
+  linesWithReading: 42
+  linesWithRomaji: 47
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#47 "SomebodyHelpUs"
+  lines: 43
+  linesWithReading: 15
+  linesWithRomaji: 19
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#48 "GORILLAShibai"
+  lines: 62
+  linesWithReading: 55
+  linesWithRomaji: 62
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#49 "Gift"
+  lines: 50
+  linesWithReading: 29
+  linesWithRomaji: 32
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#50 "KokoroArigatou"
+  lines: 31
+  linesWithReading: 24
+  linesWithRomaji: 31
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#51 "Bidenkyu"
+  lines: 32
+  linesWithReading: 31
+  linesWithRomaji: 32
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#52 "Carnival"
+  lines: 38
+  linesWithReading: 33
+  linesWithRomaji: 38
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#53 "OneLiter"
+  lines: 52
+  linesWithReading: 44
+  linesWithRomaji: 52
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5834591
+
+#54 "Miyako"
+  lines: 61
+  linesWithReading: 46
+  linesWithRomaji: 61
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#55 "Hokuro"
+  lines: 56
+  linesWithReading: 40
+  linesWithRomaji: 54
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#56 "replica"
+  lines: 64
+  linesWithReading: 37
+  linesWithRomaji: 41
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5830215
+
+#57 "YukaiSink"
+  lines: 46
+  linesWithReading: 30
+  linesWithRomaji: 30
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#58 "benefits"
+  lines: 36
+  linesWithReading: 20
+  linesWithRomaji: 21
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#59 "Somato"
+  lines: 41
+  linesWithReading: 39
+  linesWithRomaji: 41
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5506801
+
+#60 "Okitegami"
+  lines: 55
+  linesWithReading: 50
+  linesWithRomaji: 55
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#61 "Futaribanashi"
+  lines: 38
+  linesWithReading: 34
+  linesWithRomaji: 38
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#62 "HERO"
+  lines: 40
+  linesWithReading: 34
+  linesWithRomaji: 40
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5399123
+
+#63 "Omokage"
+  lines: 37
+  linesWithReading: 29
+  linesWithRomaji: 31
+  marks: chant jp=18 kr=18; clap wave
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: 6,7,8,9,10,11,22,23,24,25,29,30,31,32,33,34,35,36
+  backingChantLines: -
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5550299
+
+#64 "Chikyugi"
+  lines: 32
+  linesWithReading: 24
+  linesWithRomaji: 32
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5101141
+
+#65 "lifehack"
+  lines: 51
+  linesWithReading: 51
+  linesWithRomaji: 51
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#66 "BokuwaKyomo"
+  lines: 56
+  linesWithReading: 51
+  linesWithRomaji: 56
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5479200
+
+#67 "Byebyme"
+  lines: 49
+  linesWithReading: 35
+  linesWithRomaji: 48
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: https://smiecj.com/2023/03/01/vaundy-byebyeme/
+
+#68 "KonnaToki"
+  lines: 31
+  linesWithReading: 30
+  linesWithRomaji: 31
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#69 "pain"
+  lines: 38
+  linesWithReading: 38
+  linesWithRomaji: 38
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#70 "Missing"
+  lines: 56
+  linesWithReading: 46
+  linesWithRomaji: 48
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: null (text only)
+
+#71 "Zenzenzense"
+  lines: 44
+  linesWithReading: 39
+  linesWithRomaji: 44
+  marks: chant jp=0 kr=0; -
+  chantLines.jp: -
+  chantLines.jpSegments: -
+  chantLines.kr: -
+  backingChantLines: -
+  translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=6132751

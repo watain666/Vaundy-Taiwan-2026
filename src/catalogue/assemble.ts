@@ -2,7 +2,7 @@
  * Song catalogue: pure core.
  *
  * Joins the authoring files (metadata, lyrics, chant guides, readings, BPM,
- * setlist) into fully resolved songs and checks every data invariant. It runs
+ * setlist, bundled word timing) into fully resolved songs and checks every data invariant. It runs
  * at build time inside the Vite plugin and in tests; the browser only sees
  * its output. Nothing here touches the file system, the DOM or globals.
  */
@@ -83,6 +83,20 @@ export type LyricLine = {
   /** Romaji with corrections applied. */
   romaji?: string;
   chant?: LyricLineChant;
+  /** Bundled per-word karaoke timing in the video clock (src/word-timing.js). */
+  words?: TimedWord[];
+};
+
+/** One word of bundled karaoke timing, in seconds of the YouTube video. */
+export type TimedWord = { text: string; start: number; end: number };
+
+/** Where a song's bundled word timing came from (src/word-timing.js). */
+export type SongWordTiming = {
+  /** Provider name, e.g. "KuGou KRC". */
+  source: string;
+  sourceId: string;
+  /** Provider clock to video clock, in seconds; informational. */
+  offset: number;
 };
 
 export type Song = SongSummary & {
@@ -95,6 +109,8 @@ export type Song = SongSummary & {
         the guide's cues, otherwise it falls back to the Korean-version markers. */
     hasGuide: boolean;
   };
+  /** Present when the song has bundled word timing; its lines then carry `words`. */
+  wordTiming?: SongWordTiming;
 };
 
 /* ---------- authoring input shapes ---------- */
@@ -132,6 +148,15 @@ export type ChantGuide = {
 
 export type ReadingTable = Readonly<Record<string, string>>;
 
+/** One song's entry in src/word-timing.js: words keyed by the lyric row `time`. */
+export type WordTimingEntry = {
+  source: string;
+  sourceId: string | number;
+  offset: number;
+  /** Key = the row's `time` as written; words = [text, start, end] in the video clock. */
+  lines: Readonly<Record<string, readonly (readonly [string, number, number])[]>>;
+};
+
 /** The two karaoke helpers the alignment invariant needs (karaoke-sources.js). */
 export type KaraokeAlignment = {
   mapUnitsToReferenceTimings(
@@ -156,6 +181,8 @@ export type CatalogueSources = {
     romajiCorrections: ReadingTable;
   };
   karaoke: KaraokeAlignment;
+  /** Bundled per-word karaoke timing by song id (src/word-timing.js). */
+  wordTiming: Readonly<Record<string, WordTimingEntry>>;
   /** Used when a metadata entry leaves `translationCreditUrl` unset. */
   defaultTranslationCreditUrl: string;
 };
@@ -179,6 +206,11 @@ export const RULE_SEVERITY = {
   "unknown-song": "error",
   "dead-reading-key": "error",
   "id-punctuation": "error",
+  "word-timing-unknown-song": "error",
+  "word-timing-dead-key": "error",
+  "word-timing-text-mismatch": "error",
+  "word-timing-order": "error",
+  "word-timing-start-offset": "error",
 } as const;
 
 export type RuleName = keyof typeof RULE_SEVERITY;
@@ -312,6 +344,15 @@ function romajiUnits(value: string): string[] {
     index += 1;
   }
   return units;
+}
+
+/** A bundled word's first start may sit this far from its row time. */
+export const WORD_TIMING_START_TOLERANCE_SEC = 0.3;
+
+/* The text bundled words must spell: the row's Japanese without icon tokens
+   or whitespace. A row whose plain text is empty is not a karaoke row. */
+export function wordTimingText(value: unknown): string {
+  return String(value ?? "").replace(ICON_TOKEN_RE, "").replace(/\s/gu, "");
 }
 
 function isTimed(value: { start: number; end: number } | null | undefined): boolean {
@@ -474,6 +515,8 @@ function buildSong(
     if (chant.jp || chant.kr || chant.backing) line.chant = chant;
   });
 
+  const wordTiming = attachWordTiming(id, lines, sources, log);
+
   if (guide) {
     (guide.chantTimes || []).forEach((time, timeIndex) => {
       if (!Number.isFinite(Number(time)) || !lineBuckets.has(timeBucket(time))) {
@@ -523,7 +566,7 @@ function buildSong(
   if (meta.translationLicense !== undefined) summary.translationLicense = meta.translationLicense;
   if (meta.translationLicenseUrl !== undefined) summary.translationLicenseUrl = meta.translationLicenseUrl;
 
-  return {
+  const song: Song = {
     ...summary,
     lyrics: lines,
     chant: {
@@ -532,6 +575,64 @@ function buildSong(
       hasGuide: Boolean(guide),
     },
   };
+  if (wordTiming) song.wordTiming = wordTiming;
+  return song;
+}
+
+/* Bundled word timing joins rows by hundredth-second buckets of the row
+   `time`, like chant cues. Words must spell the row's plain text, run in
+   order and start near the row time; a key that matches no row is an error. */
+function attachWordTiming(id: string, lines: LyricLine[], sources: CatalogueSources, log: IssueLog): SongWordTiming | null {
+  const entry = Object.prototype.hasOwnProperty.call(sources.wordTiming, id) ? sources.wordTiming[id] : undefined;
+  if (!entry) return null;
+  const rowByBucket = new Map<number, LyricLine>();
+  lines.forEach(line => {
+    const bucket = timeBucket(line.time);
+    if (Number.isFinite(bucket) && !rowByBucket.has(bucket)) rowByBucket.set(bucket, line);
+  });
+  const joined = new Set<number>();
+  Object.entries(entry.lines || {}).forEach(([key, rawWords]) => {
+    const bucket = timeBucket(Number(key));
+    const line = key.trim() && Number.isFinite(bucket) ? rowByBucket.get(bucket) : undefined;
+    if (!line) {
+      log.add("word-timing-dead-key", `word timing key ${JSON.stringify(key)} matches no lyric line time`, id);
+      return;
+    }
+    if (joined.has(bucket)) {
+      log.add("word-timing-dead-key", `word timing key ${JSON.stringify(key)} repeats line time ${line.time}`, id, line.index);
+      return;
+    }
+    joined.add(bucket);
+    const list = Array.isArray(rawWords) ? rawWords : [];
+    const malformed = list.findIndex(word => !Array.isArray(word) || typeof word[0] !== "string"
+      || !Number.isFinite(word[1]) || !Number.isFinite(word[2]));
+    if (!Array.isArray(rawWords) || malformed >= 0) {
+      log.add("word-timing-order",
+        `word ${malformed} at key ${JSON.stringify(key)} is not [text, start, end] with finite seconds`, id, line.index);
+      return;
+    }
+    const words: TimedWord[] = list.map(([text, start, end]) => ({ text, start, end }));
+    const expected = wordTimingText(line.jp);
+    const actual = wordTimingText(words.map(word => word.text).join(""));
+    if (actual !== expected) {
+      log.add("word-timing-text-mismatch",
+        `words spell ${JSON.stringify(actual)} but the line reads ${JSON.stringify(expected)}`, id, line.index);
+    }
+    words.forEach((word, wordIndex) => {
+      if (word.end < word.start) {
+        log.add("word-timing-order", `word ${wordIndex} ${JSON.stringify(word.text)} ends (${word.end}) before it starts (${word.start})`, id, line.index);
+      }
+      if (wordIndex > 0 && word.start < words[wordIndex - 1].start) {
+        log.add("word-timing-order", `word ${wordIndex} ${JSON.stringify(word.text)} starts at ${word.start}, before the previous word (${words[wordIndex - 1].start})`, id, line.index);
+      }
+    });
+    if (words.length && Math.abs(words[0].start - Number(line.time)) > WORD_TIMING_START_TOLERANCE_SEC + 1e-9) {
+      log.add("word-timing-start-offset",
+        `first word starts at ${words[0].start}, more than ${WORD_TIMING_START_TOLERANCE_SEC}s from line time ${line.time}`, id, line.index);
+    }
+    line.words = words;
+  });
+  return { source: String(entry.source), sourceId: String(entry.sourceId), offset: Number(entry.offset) };
 }
 
 /* Same counting rule as the song list badges: a Japanese-version chant line
@@ -618,6 +719,9 @@ export function assembleCatalogue(sources: CatalogueSources): AssembledCatalogue
   Object.keys(sources.chantGuides).forEach(id => {
     if (!metadataIds.has(id)) log.add("id-set", "has a chant guide but no metadata", id);
   });
+  Object.keys(sources.wordTiming).forEach(id => {
+    if (!metadataIds.has(id)) log.add("word-timing-unknown-song", "has bundled word timing but no metadata", id);
+  });
   sources.setlist.items.forEach(item => item.songs.forEach(entry => {
     if (!metadataIds.has(entry.id)) log.add("id-set", "is in the setlist but has no metadata", entry.id);
   }));
@@ -644,7 +748,7 @@ export function assembleCatalogue(sources: CatalogueSources): AssembledCatalogue
   throwIfErrors(log);
   return {
     songs,
-    summaries: songs.map(({ lyrics: _lyrics, chant: _chant, ...summary }) => summary),
+    summaries: songs.map(({ lyrics: _lyrics, chant: _chant, wordTiming: _wordTiming, ...summary }) => summary),
     warnings: log.warnings,
     deadReadingKeys,
   };

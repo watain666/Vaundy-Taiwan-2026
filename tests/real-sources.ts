@@ -11,6 +11,7 @@ const MODULES: Record<string, () => Promise<unknown>> = {
   "furigana.js": () => import("../furigana.js"),
   "src/furigana-corrections.js": () => import("../src/furigana-corrections.js"),
   "src/data.js": () => import("../src/data.js"),
+  "src/word-timing.js": () => import("../src/word-timing.js"),
   "karaoke-sources.js": async () => undefined,
 };
 

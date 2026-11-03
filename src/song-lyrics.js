@@ -2681,7 +2681,7 @@ export const SONGS = [
   },
   {
     id: "Bidenkyu",
-    title: "美燈泡 (美電球)",
+    title: "美電球",
     translationCredit: "AI 翻譯（Claude Opus 5.5）",
     translationCreditUrl: null,
     youtubeId: "bS6RCQZoErg",
@@ -3040,7 +3040,7 @@ export const SONGS = [
   },
   {
     id: "YukaiSink",
-    title: "融解 sink (融解sink)",
+    title: "融解sink",
     translationCredit: "AI 翻譯（Claude Opus 5.5）",
     translationCreditUrl: null,
     youtubeId: "B383PElQMHo",
@@ -3140,7 +3140,7 @@ export const SONGS = [
   },
   {
     id: "Somato",
-    title: "走馬燈 (走馬灯)",
+    title: "走馬灯",
     translationCredit: "巴哈姆特的月勳",
     translationCreditUrl: "https://home.gamer.com.tw/artwork.php?sn=5506801",
     translationSourceUrl: "https://home.gamer.com.tw/artwork.php?sn=5506801",

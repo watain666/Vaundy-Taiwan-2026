@@ -182,7 +182,7 @@ export const SONGS = [
   },
   {
     "id": "SonnaBitternaHanashi",
-    "title": "そんなbitterな話 (那樣的 bitter 故事)",
+    "title": "そんな bitter な話 (那樣的 bitter 故事)",
     "translationCredit": "AI 翻譯（Claude Opus 5.5）",
     "translationCreditUrl": null,
     "youtubeId": "V-gxqhWEbxI",
@@ -419,7 +419,7 @@ export const SONGS = [
   },
   {
     "id": "OneLiter",
-    "title": "1リッター分の愛をこめて (飽含1公升的愛)",
+    "title": "1 リッター分の愛をこめて (飽含 1 公升的愛)",
     "translationCredit": "Oblivionis",
     "translationCreditUrl": "https://home.gamer.com.tw/artwork.php?sn=5834591",
     "translationSourceUrl": "https://home.gamer.com.tw/artwork.php?sn=5834591",

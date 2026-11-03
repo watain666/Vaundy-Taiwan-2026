@@ -83,8 +83,12 @@ _Avoid_: 徽章表、SONG_MARKS
 _Avoid_: 鏡射、clone、listMarkup
 
 **mount**:
-歌詞 view 在一個容器上的實例；歌曲頁與 PiP 各建一個，只透過它的 `render`、`setPlayhead` 等方法改歌詞行。
+歌詞 view 在一個容器上的實例；歌曲頁與 PiP 各建一個，只透過它的 `render`、`setPlayhead` 等方法改歌詞行。手機的影片 PiP 也建一個，掛在不顯示的容器上，只供畫面讀取。
 _Avoid_: 副本、鏡射列表
+
+**影片 PiP**（video PiP）:
+沒有 Document PiP 的瀏覽器（手機）用的字幕小窗（`src/video-pip.js`）：把自己 mount 的目前句與下一句畫到 canvas（`src/video-pip-frame.ts`），canvas 當成靜音影片的來源放進系統 PiP。和桌面 PiP 吃同一份 view model。
+_Avoid_: 假影片、截圖小窗
 
 **view 選項**:
 會改變歌詞行 markup 的設定：讀音模式（假名、羅馬字、兩者）與應援版本；逐字時間與分配器只改行內的時間屬性。

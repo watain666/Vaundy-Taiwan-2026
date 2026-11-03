@@ -293,6 +293,12 @@ button{touch-action:manipulation;}
 .song-page .pip-toggle[hidden]{display:none;}
 .song-page .pip-toggle svg{flex:none;width:16px;height:16px;}
 .song-page .pip-toggle.active{border-color:var(--ui-accent);color:var(--ui-accent);}
+/* 手機 PiP 的隱藏歌詞 mount 只供 canvas 讀取計算後的顏色：關掉轉場與動畫，
+   否則逐字高亮的 .08s 顏色轉場會被讀到中間值，小窗裡唱到的字就會閃爍。 */
+.video-pip-lyrics,
+.video-pip-lyrics *,
+.video-pip-lyrics *::before,
+.video-pip-lyrics *::after{transition:none !important;animation:none !important;}
 .song-page .playback-rate-select{
   color:var(--gold-soft);
   color-scheme:dark;

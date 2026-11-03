@@ -129,7 +129,8 @@ export const SONGS = [
   {
     "id": "NakiJizo",
     "title": "泣き地蔵 (哭泣地藏)",
-    "translationCredit": "巴哈姆特的月勳",
+    "translationCredit": "AI 翻譯（Claude Opus 5.5）",
+    "translationCreditUrl": null,
     "youtubeId": "XQTM2M5iD_I",
     "spotifyTrackId": "1Wb5MV3aqqFRnaGDjpRTeW"
   },

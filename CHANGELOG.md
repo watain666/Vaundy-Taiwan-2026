@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.23.5**
+## [**v1.23.5**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/dfb4b69f68352874552c6c8f2eb7783013c4f040)
 
 - [PR #78](https://github.com/watain666/Vaundy-Taiwan-2026/pull/78)：歌單的大合唱徽章、「只練合唱」播放與歌詞的應援標色改由同一套規則判定，不再各自計算，避免三者對不上；兩個應援版本的顯示與播放維持不變。
 

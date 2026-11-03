@@ -1,6 +1,6 @@
 /* Runs the catalogue core on the real authoring files. */
 import { beforeAll, describe, expect, test } from "vitest";
-import { assembleCatalogue, timeBucket, type AssembledCatalogue, type Song } from "../src/catalogue/assemble";
+import { assembleCatalogue, timeBucket, wordTimingText, type AssembledCatalogue, type Song } from "../src/catalogue/assemble";
 import { JP_CHANT_GUIDES } from "../src/chant-guide.js";
 import { loadRealSources } from "./real-sources";
 
@@ -12,6 +12,13 @@ beforeAll(async () => {
 
 function indices(song: Song, predicate: (line: Song["lyrics"][number]) => boolean): string {
   return song.lyrics.filter(predicate).map(line => line.index).join(",") || "-";
+}
+
+function wordTimingFacts(song: Song): string {
+  if (!song.wordTiming) return "-";
+  const timed = song.lyrics.filter(line => line.words?.length).length;
+  const rows = song.lyrics.filter(line => wordTimingText(line.jp)).length;
+  return `${timed}/${rows} rows (${song.wordTiming.source} ${song.wordTiming.sourceId})`;
 }
 
 /** Per-song facts that must change only when the authoring data changes. */
@@ -31,6 +38,7 @@ function golden(songs: Song[]): string {
       `  chantLines.kr: ${indices(song, line => Boolean(line.chant?.kr))}`,
       `  backingChantLines: ${indices(song, line => Boolean(line.chant?.backing))}`,
       `  translationCreditUrl: ${song.translationCreditUrl ?? "null (text only)"}`,
+      `  wordTiming: ${wordTimingFacts(song)}`,
     ].join("\n");
   });
   return `${songs.length} songs, ${total} lyric lines\n\n${blocks.join("\n\n")}\n`;

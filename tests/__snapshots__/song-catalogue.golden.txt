@@ -10,6 +10,7 @@
   chantLines.kr: 2,4,6,8,10,11,13,16,19,21,23,25,27,28,30,33,35,36,38,39,41,43,44,46,49
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 42/50 rows (KuGou KRC 57496391)
 
 #02 "KaijuNoHanauta"
   lines: 61
@@ -21,6 +22,7 @@
   chantLines.kr: 2,5,10,11,12,13,15,24,25,26,27,29,30,31,32,33,34,35,36,37,38,39,41,43,45,47,49,51,53,55,56,57,58,59,60
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 61/61 rows (KuGou KRC 117976886)
 
 #03 "CHAINSAWBLOOD"
   lines: 57
@@ -32,6 +34,7 @@
   chantLines.kr: 5,7,9,12,14,17,22,25,27,28,29,30,31,33,35,38,40,43,47,50,52,55
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5578911
+  wordTiming: 51/55 rows (KuGou KRC 160648878)
 
 #04 "KoikazeniNosete"
   lines: 29
@@ -43,6 +46,7 @@
   chantLines.kr: 5,6,7,8,15,16,17,18,24,25,26,27
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 27/27 rows (KuGou KRC 94373871)
 
 #05 "Odoriko"
   lines: 31
@@ -54,6 +58,7 @@
   chantLines.kr: 9,21,26,27,28,29,30
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 30/30 rows (KuGou KRC 312203000)
 
 #06 "HadakaNoYusha"
   lines: 21
@@ -65,6 +70,7 @@
   chantLines.kr: 4,8,10,12,16,18,19
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5360572
+  wordTiming: 21/21 rows (KuGou KRC 94463968)
 
 #07 "Fukakouryoku"
   lines: 54
@@ -76,6 +82,7 @@
   chantLines.kr: 4,5,7,8,10,11,13,15,17,19,21,22,24,26,28,30,41,42,44,45,46,48,50,52
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 52/53 rows (KuGou KRC 769498219)
 
 #08 "Reunion"
   lines: 27
@@ -87,6 +94,7 @@
   chantLines.kr: 1,2,7,9,11,12,13,22,24,26
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 26/26 rows (KuGou KRC 437275055)
 
 #09 "hanaurana"
   lines: 70
@@ -98,6 +106,7 @@
   chantLines.kr: 11,14,32,35,46,48,51,54,55,56,61,62,63,64,66,67,68,69
   backingChantLines: -
   translationCreditUrl: https://smiecj.com/2022/12/30/vaundy-hanauranai/
+  wordTiming: 68/70 rows (KuGou KRC 772459701)
 
 #10 "Yobigoe"
   lines: 50
@@ -109,6 +118,7 @@
   chantLines.kr: 3,6,8,10,12,14,16,18,19,23,31,32,33,35,36,38,40,41,42,44,45,47,49
   backingChantLines: -
   translationCreditUrl: https://bluekokomurmur.com/lyrics/vaundy-yobigoe/
+  wordTiming: 47/50 rows (KuGou KRC 517045675)
 
 #11 "Tomoshibi"
   lines: 30
@@ -120,6 +130,7 @@
   chantLines.kr: 19,21,22,26,27,28,29
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: -
 
 #12 "HowdoIknow"
   lines: 33
@@ -131,6 +142,7 @@
   chantLines.kr: 6,8,18,20,25,27,29,31
   backingChantLines: -
   translationCreditUrl: https://bluekokomurmur.com/lyrics/vaundy-boku-niwa-doshite-wakarundarou/
+  wordTiming: 33/33 rows (KuGou KRC 362485571)
 
 #13 "Shiwaawase"
   lines: 31
@@ -142,6 +154,7 @@
   chantLines.kr: 14,15,16,17,18,25,26,27,28,29,30
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 31/31 rows (KuGou KRC 157283714)
 
 #14 "Homunculus"
   lines: 44
@@ -153,6 +166,7 @@
   chantLines.kr: 0,1,4,5,6,9,11,13,18,19,20,23,25,32,34,36,38,40,42,43
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 38/44 rows (KuGou KRC 204080915)
 
 #15 "soramimi"
   lines: 30
@@ -164,6 +178,7 @@
   chantLines.kr: 1,2,3,5,6,7,8,11,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 28/29 rows (KuGou KRC 154340845)
 
 #16 "TokyoFlash"
   lines: 47
@@ -175,6 +190,7 @@
   chantLines.kr: 1,3,5,6,7,8,9,10,12,13,15,17,19,21,22,23,24,25,26,28,29,31,34,35,37,38,40,41,43,44,46
   backingChantLines: -
   translationCreditUrl: https://ameotoko1997.blog.fc2.com/blog-entry-375.html
+  wordTiming: -
 
 #17 "NakiJizo"
   lines: 33
@@ -186,6 +202,7 @@
   chantLines.kr: 4,5,7,19,27,28,30,31
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 32/32 rows (KuGou KRC 772251290)
 
 #18 "napori"
   lines: 35
@@ -197,6 +214,7 @@
   chantLines.kr: 2,3,4,6,8,10,15,16,17,19,21,23,24,26,28,30,32,34
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 35/35 rows (KuGou KRC 154342063)
 
 #19 "Backlight"
   lines: 31
@@ -208,6 +226,7 @@
   chantLines.kr: 5,6,8,9,17,18,20,21,26,27,29,30
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5539051
+  wordTiming: 31/31 rows (KuGou KRC 168576774)
 
 #20 "NEOJAPAN"
   lines: 35
@@ -219,6 +238,7 @@
   chantLines.kr: 9,13,30,34
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 35/35 rows (KuGou KRC 168601210)
 
 #21 "ZuttoLoveSong"
   lines: 39
@@ -230,6 +250,7 @@
   chantLines.kr: 8,9,11,12,13,27,28,30,31,33,34,35
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 38/39 rows (KuGou KRC 452689715)
 
 #22 "Iseijin"
   lines: 40
@@ -241,6 +262,7 @@
   chantLines.kr: 2,5,8,9,10,11,12,13,16,17,19,20,21,22,23,29,30,31,32,33,34,35,38
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 33/40 rows (KuGou KRC 491252793)
 
 #23 "ZERO"
   lines: 43
@@ -252,6 +274,7 @@
   chantLines.kr: 6,9,11,20,23,25,33,35,38,40
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 42/43 rows (KuGou KRC 168578568)
 
 #24 "SonnaBitternaHanashi"
   lines: 41
@@ -263,6 +286,7 @@
   chantLines.kr: 6,7,11,14,22,23,27,33,35,38
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 41/41 rows (NetEase YRC 2026823532)
 
 #25 "Fujin"
   lines: 38
@@ -274,6 +298,7 @@
   chantLines.kr: 3,5,7,8,9,11,16,18,20,21,22,24,29,30,31,33,34,35,37
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 38/38 rows (KuGou KRC 237261636)
 
 #26 "Jonetsu"
   lines: 40
@@ -285,6 +310,7 @@
   chantLines.kr: 9,10,11,12,13,14,25,26,27,28,29,30,33,34,35,36,37,38
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5830053
+  wordTiming: 38/38 rows (KuGou KRC 168666735)
 
 #27 "Kagero"
   lines: 35
@@ -296,6 +322,7 @@
   chantLines.kr: 1,4,5,6,8,9,11,13,16,17,18,20,21,23,28,29,31,32,34
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 35/35 rows (KuGou KRC 714444655)
 
 #28 "IdeagaAfureteNemurenai"
   lines: 48
@@ -307,6 +334,7 @@
   chantLines.kr: 7,8,9,10,11,22,23,24,25,26,27,29,30,31,33,35,36,37,38,39,40,41,42,47
   backingChantLines: 12,13,14,15,43,44,45,46
   translationCreditUrl: null (text only)
+  wordTiming: 46/48 rows (KuGou KRC 573482604)
 
 #29 "flyaway"
   lines: 46
@@ -318,6 +346,7 @@
   chantLines.kr: 4,6,7,9,10,14,15,22,23,25,26,30,31,32,34,35,37,38,42,43,44,45
   backingChantLines: -
   translationCreditUrl: https://www.youtube.com/watch?v=ARj1adoUoEU
+  wordTiming: 39/45 rows (KuGou KRC 570560634)
 
 #30 "mabuta"
   lines: 42
@@ -329,6 +358,7 @@
   chantLines.kr: 11,13,15,20,26,28,33,35,37,39,41
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/profile/index.php?owner=tsukilsao319
+  wordTiming: 39/41 rows (KuGou KRC 126509189)
 
 #31 "Hitomibore"
   lines: 59
@@ -340,6 +370,7 @@
   chantLines.kr: 25,28
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 57/57 rows (NetEase YRC 1988521127)
 
 #32 "SekainoHimitsu"
   lines: 47
@@ -351,6 +382,7 @@
   chantLines.kr: 46
   backingChantLines: -
   translationCreditUrl: https://smiecj.com/2023/05/07/vaundy-sekainohimitu/
+  wordTiming: 40/45 rows (KuGou KRC 198744376)
 
 #33 "Wasuremono"
   lines: 32
@@ -362,6 +394,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 32/32 rows (KuGou KRC 160979513)
 
 #34 "Timeparadox"
   lines: 30
@@ -373,6 +406,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://www.youtube.com/watch?v=ewhRE-BvJCg
+  wordTiming: 27/29 rows (KuGou KRC 175193196)
 
 #35 "TodomenoIchigeki"
   lines: 55
@@ -384,6 +418,7 @@
   chantLines.kr: 7,8,9,11,12,13,14,27,28,29,31,32,33,34,39,40,41,42,43,45,46,47,48,50,51,52,53,54
   backingChantLines: -
   translationCreditUrl: https://smiecj.com/2023/10/08/vaundy-todome/
+  wordTiming: 41/52 rows (KuGou KRC 166285798)
 
 #36 "Kimagure"
   lines: 33
@@ -395,6 +430,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 33/33 rows (KuGou KRC 646093163)
 
 #37 "KokyuNoYouni"
   lines: 35
@@ -406,6 +442,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 35/35 rows (KuGou KRC 168034909)
 
 #38 "pained"
   lines: 46
@@ -417,6 +454,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: -
 
 #39 "mabataki"
   lines: 59
@@ -428,6 +466,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5554817
+  wordTiming: 59/59 rows (NetEase YRC 1980109662)
 
 #40 "Tobouyo"
   lines: 36
@@ -439,6 +478,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 36/36 rows (KuGou KRC 570612896)
 
 #41 "TheSILENCE"
   lines: 52
@@ -450,6 +490,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 52/52 rows (KuGou KRC 564241127)
 
 #42 "Singularity"
   lines: 83
@@ -461,6 +502,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 82/83 rows (KuGou KRC 538057308)
 
 #43 "WasureruMaeni"
   lines: 59
@@ -472,6 +514,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: -
 
 #44 "MajideSayonaraBaby"
   lines: 45
@@ -483,6 +526,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: -
 
 #45 "MixedNuts"
   lines: 69
@@ -494,6 +538,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 68/69 rows (KuGou KRC 336594664)
 
 #46 "HashireSAKAMOTO"
   lines: 49
@@ -505,6 +550,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 49/49 rows (KuGou KRC 280356072)
 
 #47 "SomebodyHelpUs"
   lines: 43
@@ -516,6 +562,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 43/43 rows (KuGou KRC 319004764)
 
 #48 "GORILLAShibai"
   lines: 62
@@ -527,6 +574,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 62/62 rows (KuGou KRC 226861663)
 
 #49 "Gift"
   lines: 50
@@ -538,6 +586,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 50/50 rows (KuGou KRC 209224100)
 
 #50 "KokoroArigatou"
   lines: 31
@@ -549,6 +598,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 31/31 rows (KuGou KRC 183307828)
 
 #51 "Bidenkyu"
   lines: 32
@@ -560,6 +610,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 32/32 rows (KuGou KRC 169001460)
 
 #52 "Carnival"
   lines: 38
@@ -571,6 +622,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 36/38 rows (KuGou KRC 168666018)
 
 #53 "OneLiter"
   lines: 52
@@ -582,6 +634,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5834591
+  wordTiming: 52/52 rows (KuGou KRC 168576686)
 
 #54 "Miyako"
   lines: 61
@@ -593,6 +646,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 60/61 rows (KuGou KRC 168577420)
 
 #55 "Hokuro"
   lines: 56
@@ -604,6 +658,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 56/56 rows (KuGou KRC 168577668)
 
 #56 "replica"
   lines: 64
@@ -615,6 +670,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5830215
+  wordTiming: 64/64 rows (NetEase YRC 2095883500)
 
 #57 "YukaiSink"
   lines: 46
@@ -626,6 +682,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 30/46 rows (KuGou KRC 826265198)
 
 #58 "benefits"
   lines: 36
@@ -637,6 +694,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 36/36 rows (KuGou KRC 157754104)
 
 #59 "Somato"
   lines: 41
@@ -648,6 +706,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5506801
+  wordTiming: 41/41 rows (KuGou KRC 126512020)
 
 #60 "Okitegami"
   lines: 55
@@ -659,6 +718,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 55/55 rows (KuGou KRC 115644242)
 
 #61 "Futaribanashi"
   lines: 38
@@ -670,6 +730,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 38/38 rows (KuGou KRC 94357588)
 
 #62 "HERO"
   lines: 40
@@ -681,6 +742,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5399123
+  wordTiming: 40/40 rows (KuGou KRC 125786236)
 
 #63 "Omokage"
   lines: 37
@@ -692,6 +754,7 @@
   chantLines.kr: 6,7,8,9,10,11,22,23,24,25,29,30,31,32,33,34,35,36
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5550299
+  wordTiming: 31/37 rows (KuGou KRC 94355000)
 
 #64 "Chikyugi"
   lines: 32
@@ -703,6 +766,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5101141
+  wordTiming: 32/32 rows (NetEase YRC 1835620477)
 
 #65 "lifehack"
   lines: 51
@@ -714,6 +778,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 50/51 rows (KuGou KRC 771859942)
 
 #66 "BokuwaKyomo"
   lines: 56
@@ -725,6 +790,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=5479200
+  wordTiming: 56/56 rows (KuGou KRC 772459691)
 
 #67 "Byebyme"
   lines: 49
@@ -736,6 +802,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://smiecj.com/2023/03/01/vaundy-byebyeme/
+  wordTiming: 49/49 rows (NetEase YRC 1441993893)
 
 #68 "KonnaToki"
   lines: 31
@@ -747,6 +814,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: -
 
 #69 "pain"
   lines: 38
@@ -758,6 +826,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: -
 
 #70 "Missing"
   lines: 56
@@ -769,6 +838,7 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: null (text only)
+  wordTiming: 56/56 rows (KuGou KRC 140047440)
 
 #71 "Zenzenzense"
   lines: 44
@@ -780,3 +850,4 @@
   chantLines.kr: -
   backingChantLines: -
   translationCreditUrl: https://home.gamer.com.tw/artwork.php?sn=6132751
+  wordTiming: 44/44 rows (KuGou KRC 498389173)

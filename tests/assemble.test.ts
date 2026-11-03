@@ -279,3 +279,76 @@ describe("song ids", () => {
     expect(assembleCatalogue(sources).songs[1].id).toBe("Beta2");
   });
 });
+
+describe("bundled word timing", () => {
+  /* Alpha line 1 is "Hey そうだ" at 10; line 0 is "[clap]夜の歌" at 0. */
+  function withWordTiming(lines: Record<string, [string, number, number][]>) {
+    const sources = makeSources();
+    sources.wordTiming = { Alpha: { source: "KuGou KRC", sourceId: 123, offset: 0.4, lines } };
+    return sources;
+  }
+
+  test("joins words to the row with the same time bucket", () => {
+    const sources = withWordTiming({ "10.001": [["Hey", 10.05, 10.4], ["そう", 10.4, 10.8], ["だ", 10.8, 11]] });
+    const catalogue = assembleCatalogue(sources);
+    const [a, b] = catalogue.songs;
+    expect(a.lyrics[1].words).toEqual([
+      { text: "Hey", start: 10.05, end: 10.4 },
+      { text: "そう", start: 10.4, end: 10.8 },
+      { text: "だ", start: 10.8, end: 11 },
+    ]);
+    expect(a.lyrics[0].words).toBeUndefined();
+    expect(a.wordTiming).toEqual({ source: "KuGou KRC", sourceId: "123", offset: 0.4 });
+    expect(b.wordTiming).toBeUndefined();
+    expect(catalogue.summaries[0]).not.toHaveProperty("wordTiming");
+  });
+
+  test("icon tokens and whitespace in the row do not count as text", () => {
+    const sources = withWordTiming({ "0": [["夜", 0.1, 0.3], ["の", 0.3, 0.4], ["歌", 0.4, 0.9]] });
+    expect(assembleCatalogue(sources).songs[0].lyrics[0].words).toHaveLength(3);
+  });
+
+  test("bundled timing for a song without metadata", () => {
+    const sources = makeSources();
+    sources.wordTiming = { Ghost: { source: "KuGou KRC", sourceId: "1", offset: 0, lines: {} } };
+    expectRejected(sources, "word-timing-unknown-song", "Ghost");
+  });
+
+  test("a key that matches no lyric line time", () => {
+    const sources = withWordTiming({ "10.01": [["Hey", 10.05, 10.4], ["そうだ", 10.4, 11]] });
+    const error = expectRejected(sources, "word-timing-dead-key", "Alpha");
+    expect(error.message).toContain('key "10.01"');
+  });
+
+  test("words that do not spell the row text", () => {
+    const sources = withWordTiming({ "10": [["Hey", 10, 10.4], ["そうか", 10.4, 11]] });
+    const error = expectRejected(sources, "word-timing-text-mismatch", "Alpha", 1);
+    expect(error.message).toContain('"Heyそうか"');
+  });
+
+  test("word starts that go backwards", () => {
+    const sources = withWordTiming({ "10": [["Hey", 10.2, 10.4], ["そうだ", 10.1, 11]] });
+    expectRejected(sources, "word-timing-order", "Alpha", 1);
+  });
+
+  test("a word that ends before it starts", () => {
+    const sources = withWordTiming({ "10": [["Hey", 10, 10.4], ["そうだ", 10.4, 10.3]] });
+    expectRejected(sources, "word-timing-order", "Alpha", 1);
+  });
+
+  test("a malformed word", () => {
+    const sources = withWordTiming({ "10": [["Hey", 10, 10.4], ["そうだ", Number.NaN, 11]] });
+    expectRejected(sources, "word-timing-order", "Alpha", 1);
+  });
+
+  test("a first word more than 0.3s from the row time", () => {
+    expect(() => assembleCatalogue(withWordTiming({ "10": [["Hey", 10.3, 10.4], ["そうだ", 10.4, 11]] }))).not.toThrow();
+    expect(() => assembleCatalogue(withWordTiming({ "10": [["Hey", 9.7, 10.4], ["そうだ", 10.4, 11]] }))).not.toThrow();
+    expectRejected(withWordTiming({ "10": [["Hey", 10.31, 10.4], ["そうだ", 10.4, 11]] }), "word-timing-start-offset", "Alpha", 1);
+  });
+
+  test("assembleSong checks word timing too", () => {
+    const sources = withWordTiming({ "10": [["Hey", 10, 10.4], ["そうか", 10.4, 11]] });
+    expect(() => assembleSong("Alpha", sources)).toThrow(/\[word-timing-text-mismatch\] song "Alpha" line 1/);
+  });
+});

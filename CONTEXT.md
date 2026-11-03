@@ -98,6 +98,14 @@ _Avoid_: 顯示模式、render 參數
 目前行索引、播放秒數與卡拉 OK 是否開啟；每個 tick 由頁面腳本算一次，同樣的值送給每個 mount。
 _Avoid_: currentMarkup、目前行 HTML
 
+**逐字時間**（word timing）:
+一行歌詞中每個字詞在影片裡的開始與結束秒數，用來做卡拉 OK 逐字高亮；有內建逐字時間的歌直接用它，其他歌在開啟時由 `karaoke-sources.js` 連網查詢並對齊。
+_Avoid_: 時間碼（指逐字時間時）、karaoke 資料
+
+**內建逐字時間**（bundled word timing）:
+`src/word-timing.js` 裡由第三方逐字歌詞換算到影片時間軸的逐字時間，以歌詞行的 `time` 為 key 在建置時接到 `line.words`；不連網、離線可用。由 `scripts/word-timing/build-word-timing.mjs` 產生，不手改。
+_Avoid_: 快取時間、離線時間碼
+
 **容器設定**:
 不進歌詞行、只變成歌詞容器 class 的顯示設定：顯示日文、顯示中文、卡拉 OK、只練合唱與讀音模式「兩者」；由同一個函式推導，兩個 mount 的容器共用。
 _Avoid_: 鏡射 class、pageClasses
@@ -105,7 +113,7 @@ _Avoid_: 鏡射 class、pageClasses
 ## 建置
 
 **authoring 檔**:
-人工維護、作為歌曲目錄輸入的六個檔案：歌曲清單、歌詞、應援指南、讀音表、修正、演出資料（BPM 與歌單）。
+作為歌曲目錄輸入的七個檔案：人工維護的歌曲清單、歌詞、應援指南、讀音表、修正、演出資料（BPM 與歌單），以及由腳本產生後提交的內建逐字時間。
 _Avoid_: 原始資料、data 檔
 
 **產物**:

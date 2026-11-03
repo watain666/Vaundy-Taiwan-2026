@@ -85,6 +85,7 @@ export function makeSources(): CatalogueSources {
       },
     },
     karaoke,
+    wordTiming: {},
     defaultTranslationCreditUrl: DEFAULT_URL,
   };
 }

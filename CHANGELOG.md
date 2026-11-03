@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.23.4**
+
+- [PR #77](https://github.com/watain666/Vaundy-Taiwan-2026/pull/77)：〈GORILLA 芝居〉〈走れ SAKAMOTO〉〈そんな bitter な話〉〈1 リッター分の愛をこめて〉的歌名在漢字、假名與英文或數字之間加上半形空白，中文譯名「飽含 1 公升的愛」同樣調整。
+
 ## [**v1.23.3**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/6ad02ebaa7ab8723d59912c911cfe84f85d35f5f)
 
 - [PR #76](https://github.com/watain666/Vaundy-Taiwan-2026/pull/76)：〈東京フラッシュ〉也改用內建的逐字時間，打開就能逐字亮起、離線可用；歌詞換行與應援標色時間校正為實際開唱的時間點。

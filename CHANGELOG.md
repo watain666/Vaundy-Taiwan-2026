@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.21.1**
+## [**v1.21.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/195af598823472431b9e91d5182dc52afa51b9c5)
 
 - [PR #68](https://github.com/watain666/Vaundy-Taiwan-2026/pull/68)：手機按「PiP」開不了字幕小窗時，不再毫無反應：會先重試一次，仍失敗就在畫面底部提示原因；從 iPhone 主畫面打開的網站 App 不支援子母畫面，會提示改用 Safari 開啟本站。
 

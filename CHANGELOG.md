@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.23.7**
+## [**v1.23.7**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/9f4f560f73c05c73e0e7ac49f176980fb59c1285)
 
 - [PR #80](https://github.com/watain666/Vaundy-Taiwan-2026/pull/80)：〈泣き地蔵〉的中文翻譯整首重譯，修正「何回目の愛のお買い得？」、「感覚が落とした僕は泣き地蔵」、「知らぬ仏より馴染みの地獄で」等誤譯並移除多餘的英文，譯者署名改為「AI 翻譯（Claude Opus 5.5）」；日文歌詞與時間不變。
 

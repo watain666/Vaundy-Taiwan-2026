@@ -50,6 +50,7 @@ import { loadJapaneseFontSubset } from "./services/japanese-font.js";
 import { syncSupportChat } from "./ui/support-chat.js";
 import { store } from "./services/storage.js";
 import { createDocumentPip } from "./document-pip.js";
+import { createVideoPip } from "./video-pip.js";
 import { escapeHtml } from "./ui/text.ts";
 import {
   applyLyricContainerClasses,
@@ -241,6 +242,17 @@ const documentPip = createDocumentPip({
   onClosed: updateDocumentPipButton
 });
 
+/* Phones have no Document PiP: the same subtitle window is painted into a
+   video that goes into the system PiP window. Only one of the two is used. */
+const videoPip = createVideoPip({
+  onPlay: ()=>resumePlayback(),
+  onPause: ()=>pausePlaybackByVisitor(),
+  onPreviousSong: ()=>goNeighbor(-1),
+  onNextSong: ()=>goNeighbor(1),
+  onChange: updateDocumentPipButton
+});
+const pipSupported = documentPip.supported || videoPip.supported;
+
 function themeToggleHtml(extraClass = ""){
   return `<button class="theme-toggle ${extraClass}" type="button" data-theme-toggle></button>`;
 }
@@ -387,6 +399,7 @@ document.addEventListener("click", event => {
   event.stopPropagation();
   if (button.id === "guide-chant-version-btn") {
     pendingVideoId = null;
+    visitorPausedPlayback = true;
     if (player && typeof player.pauseVideo === "function") {
       try { player.pauseVideo(); } catch(e){}
     }
@@ -2064,7 +2077,7 @@ function buildSongShell(){
         <button class="venue-toggle bar-chip" id="venue-btn" type="button" aria-pressed="false" aria-label="簡潔模式：隱藏影片，只看歌詞" title="隱藏影片，只看歌詞">
           <span class="venue-label">簡潔</span>
         </button>
-        <button class="venue-toggle bar-chip pip-toggle" id="pip-btn" type="button" aria-pressed="false" aria-label="開啟或聚焦同步字幕小窗" title="開啟或聚焦同步字幕小窗"${documentPip.supported ? "" : " hidden"}>
+        <button class="venue-toggle bar-chip pip-toggle" id="pip-btn" type="button" aria-pressed="false" aria-label="開啟或聚焦同步字幕小窗" title="開啟或聚焦同步字幕小窗"${pipSupported ? "" : " hidden"}>
           ${PIP_SVG}
           <span class="venue-label pip-label">PiP</span>
         </button>
@@ -2273,6 +2286,24 @@ function buildSongShell(){
     pipButton.addEventListener("click", async ()=>{
       const opened = await documentPip.open(buildDocumentPipViewModel());
       if (opened) updateDocumentPipButton();
+    });
+    updateDocumentPipButton();
+  } else if (pipButton && videoPip.supported){
+    // Safari opens PiP only from inside the click, so the video is prepared
+    // now and the click handler awaits nothing before the request.
+    videoPip.prepare();
+    pipButton.addEventListener("click", ()=>{
+      // Safari does not focus a tapped button, so focus can still be in the
+      // YouTube iframe from starting the video; that would make every later
+      // pause look like the visitor's own (pauseCameFromPlayerControls).
+      const active = document.activeElement;
+      if (active && active.tagName === "IFRAME" && typeof active.blur === "function") active.blur();
+      if (videoPip.isOpen()){
+        videoPip.close();
+        updateDocumentPipButton();
+        return;
+      }
+      videoPip.open(buildDocumentPipViewModel()).then(updateDocumentPipButton);
     });
     updateDocumentPipButton();
   }
@@ -2510,6 +2541,7 @@ function chantOnlyTick(cur){
   chantDone = true;
   chantIdx  = blocks.length - 1;
   paintChantBar();
+  visitorPausedPlayback = true;   // an intended stop: the PiP auto-resume leaves it
   if (player && typeof player.pauseVideo === "function"){ try { player.pauseVideo(); } catch(e){} }
   return true;
 }
@@ -2894,6 +2926,8 @@ function leaveSongView(){
   hideTipPic();
   releaseWakeLock();
   documentPip.close();
+  videoPip.close();
+  visitorPausedPlayback = true;
   if (player && typeof player.pauseVideo === 'function') {
     try { player.pauseVideo(); } catch(e){}
   }
@@ -3099,12 +3133,76 @@ function playerIsPlaying(){
 
 function updateDocumentPipButton(){
   const button = document.getElementById("pip-btn");
-  if (!button || !documentPip.supported) return;
-  const open = documentPip.isOpen();
+  if (!button) return;
+  if (documentPip.supported){
+    const open = documentPip.isOpen();
+    button.classList.toggle("active", open);
+    button.setAttribute("aria-pressed", open ? "true" : "false");
+    button.setAttribute("aria-label", open ? "聚焦同步字幕小窗" : "開啟或聚焦同步字幕小窗");
+    button.setAttribute("title", open ? "聚焦同步字幕小窗" : "開啟或聚焦同步字幕小窗");
+    return;
+  }
+  if (!videoPip.supported) return;
+  // The system PiP window cannot be focused from the page: the button opens and closes it.
+  const open = videoPip.isOpen();
   button.classList.toggle("active", open);
   button.setAttribute("aria-pressed", open ? "true" : "false");
-  button.setAttribute("aria-label", open ? "聚焦同步字幕小窗" : "開啟或聚焦同步字幕小窗");
-  button.setAttribute("title", open ? "聚焦同步字幕小窗" : "開啟或聚焦同步字幕小窗");
+  button.setAttribute("aria-label", open ? "關閉同步字幕小窗" : "開啟同步字幕小窗");
+  button.setAttribute("title", open ? "關閉同步字幕小窗" : "開啟同步字幕小窗");
+}
+
+/* While the phone subtitle window is open, the video can be paused by the
+   browser or the player when the visitor leaves the page; that pause is
+   undone (see resumeAfterUnwantedPause). A pause the visitor asks for
+   through the page's or the PiP window's controls is remembered here and
+   kept. Playing again clears it. */
+let visitorPausedPlayback = false;
+let pipResumeTimer = null;
+let pipResumeAttempts = [];
+const PIP_RESUME_DELAY_MS = 300;
+const PIP_RESUME_WINDOW_MS = 20000;
+const PIP_RESUME_MAX_ATTEMPTS = 5;
+
+function pausePlaybackByVisitor(){
+  visitorPausedPlayback = true;
+  if (!player || !playerReady) return;
+  try { player.pauseVideo(); } catch(e){}
+}
+
+function resumePlayback(){
+  if (!player || !playerReady) return;
+  visitorPausedPlayback = false;
+  if (chantOnly && chantDone){ jumpToChant(0); return; }
+  try { player.playVideo(); } catch(e){}
+  updateDocumentPip();
+}
+
+/* True when the visitor is on the page and the last thing they touched is
+   the YouTube player itself: a pause from its own controls is theirs. */
+function pauseCameFromPlayerControls(){
+  if (document.visibilityState !== "visible") return false;
+  let focused = false;
+  try { focused = document.hasFocus(); } catch(e){}
+  const active = document.activeElement;
+  return focused && Boolean(active && active.tagName === "IFRAME" && active.closest("#yt-player, .video-wrap, .song-video"));
+}
+
+function resumeAfterUnwantedPause(){
+  if (!videoPip.isOpen() || visitorPausedPlayback || pauseCameFromPlayerControls()) return;
+  const now = Date.now();
+  pipResumeAttempts = pipResumeAttempts.filter(time => now - time < PIP_RESUME_WINDOW_MS);
+  // Stop fighting a pause that keeps coming back; the visitor can press play.
+  if (pipResumeAttempts.length >= PIP_RESUME_MAX_ATTEMPTS) return;
+  pipResumeAttempts.push(now);
+  clearTimeout(pipResumeTimer);
+  pipResumeTimer = setTimeout(()=>{
+    pipResumeTimer = null;
+    if (!videoPip.isOpen() || visitorPausedPlayback || !player || !playerReady) return;
+    let state = -1;
+    try { state = player.getPlayerState(); } catch(e){}
+    if (state !== YT.PlayerState.PAUSED) return;
+    try { player.playVideo(); } catch(e){}
+  }, PIP_RESUME_DELAY_MS);
 }
 
 function togglePlayback(){
@@ -3115,8 +3213,13 @@ function togglePlayback(){
     try { return player.getPlayerState(); } catch(e){ return -1; }
   })();
   try {
-    if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) player.pauseVideo();
-    else player.playVideo();
+    if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING){
+      visitorPausedPlayback = true;
+      player.pauseVideo();
+    } else {
+      visitorPausedPlayback = false;
+      player.playVideo();
+    }
   } catch(e){}
   updateDocumentPip();
 }
@@ -3154,6 +3257,7 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
     container: lyricContainerSettings(),
     beat: song ? { bpm: Number(song.bpm), startedAt: iconClockStartedAt } : null,
     isPlaying: playerIsPlaying(),
+    pausedByVisitor: visitorPausedPlayback,
     canPlayPause: Boolean(player && playerReady
       && typeof player.playVideo === "function"
       && typeof player.pauseVideo === "function"),
@@ -3165,8 +3269,12 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
 }
 
 function updateDocumentPip(activeIdx = lastActiveIdx){
-  if (!documentPip.isOpen()) return;
-  documentPip.update(buildDocumentPipViewModel(activeIdx));
+  const documentOpen = documentPip.isOpen();
+  const videoOpen = videoPip.isOpen();
+  if (!documentOpen && !videoOpen) return;
+  const model = buildDocumentPipViewModel(activeIdx);
+  if (documentOpen) documentPip.update(model);
+  if (videoOpen) videoPip.update(model);
 }
 
 function setKaraokeSourceStatus(state, text){
@@ -3739,6 +3847,8 @@ function updatePlayButton(){
 function onPlayerStateChange(event) {
   updatePlayButton();
   updateDocumentPip();
+  if (event.data === YT.PlayerState.PLAYING) visitorPausedPlayback = false;
+  if (event.data === YT.PlayerState.PAUSED) resumeAfterUnwantedPause();
   if (event.data === YT.PlayerState.PLAYING || event.data === YT.PlayerState.CUED) {
     // loadVideoById 會把 YouTube 速度重設為 x1，換歌後在影片可播放時恢復選擇。
     applyPlaybackRate();

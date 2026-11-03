@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.23.2**
+
+- [PR #75](https://github.com/watain666/Vaundy-Taiwan-2026/pull/75)：歌名改成日文原題在前、中文譯名放在括號內，例如「気まぐれ (任性)」「東京フラッシュ (東京 Flash)」；只有日文原題的歌名不變，〈融解sink〉改寫成〈融解 sink〉。
+
 ## [**v1.23.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/dcdbf56ff256eca6ba8d4cc1dd8ecacd8d3d10b4)
 
 - [PR #74](https://github.com/watain666/Vaundy-Taiwan-2026/pull/74)：〈怪獣の花唄〉〈二人話〉的歌名改成只顯示日文原題。

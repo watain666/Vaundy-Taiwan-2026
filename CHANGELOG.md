@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.23.5**
+
+- [PR #78](https://github.com/watain666/Vaundy-Taiwan-2026/pull/78)：歌單的大合唱徽章、「只練合唱」播放與歌詞的應援標色改由同一套規則判定，不再各自計算，避免三者對不上；兩個應援版本的顯示與播放維持不變。
+
 ## [**v1.23.4**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/f3f51055fda3da1003151879aa92eb86bc3e56a0)
 
 - [PR #77](https://github.com/watain666/Vaundy-Taiwan-2026/pull/77)：〈GORILLA 芝居〉〈走れ SAKAMOTO〉〈そんな bitter な話〉〈1 リッター分の愛をこめて〉的歌名在漢字、假名與英文或數字之間加上半形空白，中文譯名「飽含 1 公升的愛」同樣調整。

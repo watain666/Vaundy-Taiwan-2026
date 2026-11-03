@@ -295,6 +295,25 @@ button{touch-action:manipulation;}
 .song-page .pip-toggle.active{border-color:var(--ui-accent);color:var(--ui-accent);}
 /* 手機 PiP 的隱藏歌詞 mount 只供 canvas 讀取計算後的顏色：關掉轉場與動畫，
    否則逐字高亮的 .08s 顏色轉場會被讀到中間值，小窗裡唱到的字就會閃爍。 */
+/* 手機 PiP 開不起來時的提示：浮在底部控制列上方，幾秒後自動消失。 */
+.pip-unavailable{
+  position:fixed;
+  left:50%;
+  bottom:calc(var(--dock-height, 56px) + 72px + env(safe-area-inset-bottom, 0px));
+  z-index:60;
+  width:max-content;
+  max-width:min(92vw, 420px);
+  margin:0;
+  padding:var(--space-3, 12px) var(--space-4, 16px);
+  transform:translateX(-50%);
+  border-radius:var(--radius-notice, 14px);
+  background:var(--ui-raised);
+  color:var(--ui-text);
+  box-shadow:var(--elevation-float, 0 8px 24px rgba(0,0,0,.28));
+  font-size:14px;
+  line-height:1.5;
+}
+.pip-unavailable[hidden]{display:none;}
 .video-pip-lyrics,
 .video-pip-lyrics *,
 .video-pip-lyrics *::before,

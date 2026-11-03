@@ -12,14 +12,14 @@ export function makeSources(): CatalogueSources {
     metadata: [
       {
         id: "Alpha",
-        title: "阿爾法 (アルファ)",
+        title: "アルファ (阿爾法)",
         translationCredit: "Translator A",
         youtubeId: "yt-alpha",
         spotifyTrackId: "AAAAAAAAAAAAAAAAAAAAA1",
       },
       {
         id: "Beta",
-        title: "貝塔 (ベータ)",
+        title: "ベータ (貝塔)",
         translationCredit: "AI",
         translationCreditUrl: null,
         youtubeId: "yt-beta",
@@ -29,7 +29,7 @@ export function makeSources(): CatalogueSources {
     lyrics: [
       {
         id: "Alpha",
-        title: "阿爾法 (アルファ)",
+        title: "アルファ (阿爾法)",
         translationCredit: "Translator A",
         youtubeId: "yt-alpha",
         lyrics: [
@@ -45,7 +45,7 @@ export function makeSources(): CatalogueSources {
       },
       {
         id: "Beta",
-        title: "貝塔 (ベータ)",
+        title: "ベータ (貝塔)",
         translationCredit: "AI",
         translationCreditUrl: null,
         youtubeId: "yt-beta",

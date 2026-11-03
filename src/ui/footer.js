@@ -23,8 +23,8 @@ export function siteFooterHtml(build){
             Fork from SEOUL 응원가이드
           </a>
         </span>
-        <a class="credits-fork" href="${KOREAN_AUTHOR_URL}" target="_blank" rel="noopener" aria-label="Thanks to the original Korean creator, 카쿠메.">
-          Thanks to the original Korean creator, 카쿠메.
+        <a class="credits-fork" href="${KOREAN_AUTHOR_URL}" target="_blank" rel="noopener" aria-label="Thanks to the original Korean creator, 카쿠메">
+          Thanks to the original Korean creator, 카쿠메
         </a>
         <span class="credits-actions">
           <button class="credits-link announcement-trigger" type="button" data-open-announcement aria-haspopup="dialog" aria-controls="announcement-view">

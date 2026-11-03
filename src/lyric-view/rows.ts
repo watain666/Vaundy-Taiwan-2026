@@ -9,13 +9,14 @@
  * The seg-chant marking and the karaoke units are added afterwards by the
  * mount, on its own container (decorate.ts).
  */
-import type { BackingChant, ChantSegment, LyricLine, LyricSegment, Song } from "../catalogue/assemble";
+import type { ChantSegment, LyricLine, LyricSegment, Song } from "../catalogue/assemble";
+import { backingChants, lineHasChantCue, lineIsChant, type ChantVersion } from "../chant/index";
 import { INLINE_ICONS } from "../ui/icons.js";
 import { escapeHtml, ICON_TOKEN_RE, iconTokensToMarkup, spaceCjkLatinMarkup, spaceCjkLatinText, withIcons } from "../ui/text";
 import { wrapChantMarkup } from "./chant-markup";
 
 export type ReadingMode = "kana" | "romaji" | "both";
-export type ChantVersion = "jp" | "kr";
+export type { ChantVersion };
 
 /** The view options that change the row markup. */
 export type LyricViewOptions = { readingMode: ReadingMode; chantVersion: ChantVersion };
@@ -87,16 +88,9 @@ export function lineHasChantSegments(line: LyricLine | null | undefined): boolea
   return !!line && (hasChantSegment(line.jpSegments) || hasChantSegment(line.trSegments));
 }
 
-/* 日本版：有應援指南的歌曲依指南的時間點；沒有指南的歌曲沿用歌詞標記。
-   韓國版：歌詞內的 [mic]、[chant]、tag "chant"。 */
-function lineIsChant(line: LyricLine, song: Song, chantVersion: ChantVersion): boolean {
-  if (chantVersion === "jp" && song.chant.hasGuide) return Boolean(line.chant?.jp);
-  return Boolean(line.chant?.kr);
-}
-
-function backingChants(line: LyricLine, chantVersion: ChantVersion): BackingChant[] {
-  return chantVersion === "jp" ? line.chant?.backing || [] : [];
-}
+/* Whether a line is a chant line, has a chant cue or has backing chants is
+   decided once in src/chant/ (日本版：有應援指南的歌曲依指南的時間點；
+   沒有指南的歌曲沿用歌詞標記。韓國版：歌詞內的 [mic]、[chant]、tag "chant"). */
 
 function chantLineClass(line: LyricLine, song: Song, chantVersion: ChantVersion): string {
   if (!lineIsChant(line, song, chantVersion)) return "";
@@ -110,8 +104,7 @@ function chantLineClass(line: LyricLine, song: Song, chantVersion: ChantVersion)
 /* 合唱行與背景合唱行都算「這裡要唱」：左側麥克風。
    拍手、揮手只用歌詞內的圖示表示。 */
 function lyricIconsHtml(line: LyricLine, song: Song, chantVersion: ChantVersion): string {
-  const hasChant = lineIsChant(line, song, chantVersion) || backingChants(line, chantVersion).length > 0;
-  return hasChant ? `<span class="lyric-type-icon chant" title="大合唱">${MIC_ICON}</span>` : "";
+  return lineHasChantCue(line, song, chantVersion) ? `<span class="lyric-type-icon chant" title="大合唱">${MIC_ICON}</span>` : "";
 }
 
 /* 日本版的背景合唱：主唱照常唱主歌詞，台下同時唱另一句。主歌詞不標成

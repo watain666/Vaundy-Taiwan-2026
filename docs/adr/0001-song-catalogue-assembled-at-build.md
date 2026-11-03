@@ -11,4 +11,4 @@ A song is joined from six authoring files by four different keys (song id, lyric
 
 - Each song is its own chunk, so the service worker precache (which lists every built JS asset) covers songs automatically.
 - Chant times match lyric times by hundredth-second buckets (`Math.round(seconds * 100)`); retiming a lyric line without its chant times is a build error rather than a silently lost chant mark.
-- The page no longer derives chant cues itself: whether a line is a chant line or has a chant cue, its backing chants, the chant blocks for chant-only playback and the song list marks all come from `line.chant` and `marks` through `src/chant/`, which the lyric view uses too. Before the page moved onto it, its old rules were checked against this module on every song and chant version with no difference.
+- The page no longer derives chant cues itself: whether a line is a chant line or has a chant cue, its backing chants, the chant blocks for chant-only playback and the song list marks all come from `line.chant` and `marks` through `src/chant/`, which the lyric view uses too.

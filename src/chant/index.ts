@@ -3,10 +3,14 @@
  *
  * Answers, for a song and a chant version, which lines are chant lines,
  * which lines carry a chant cue (a chant line or a backing chant), the
- * song's chant blocks for "只聽大合唱" playback, and its song list marks.
+ * song's chant blocks for "只練合唱" playback, and its song list marks.
  * Every answer is read from what the song catalogue resolved at build time
  * (`line.chant`, `song.chant.hasGuide`, `song.marks`); nothing here reads
  * the chant guide, the DOM, the page's globals or the clock.
+ *
+ * The only state is the chant-block memo, keyed by song object. It compares
+ * line times only, so it relies on the catalogue's songs never having their
+ * lyric lines or `line.chant` mutated in place.
  */
 import type { BackingChant, LyricLine, Song, SongSummary } from "../catalogue/assemble";
 
@@ -68,9 +72,10 @@ export function songMarks(song: Pick<SongSummary, "marks">, version: ChantVersio
   };
 }
 
-export const CHANT_LEAD_SEC = 1.2;   // enter one beat before the chant to get ready
-export const CHANT_TAIL_SEC = 0.6;   // keep a little after so the last syllable is not cut
-export const CHANT_GAP_MERGE = 2.5;  // only join gaps short enough to belong together
+const CHANT_LEAD_SEC = 1.2;   // enter one beat before the chant to get ready
+const CHANT_TAIL_SEC = 0.6;   // keep a little after so the last syllable is not cut
+const CHANT_GAP_MERGE = 2.5;  // only join gaps short enough to belong together
+const LAST_LINE_SEC = 8;      // assumed length of the song's last line, which has no next line to end it
 
 type BlockMemo = { times: number[]; blocks: ChantBlock[] };
 const blockMemo = new WeakMap<ChantSong, Map<ChantVersion, BlockMemo>>();
@@ -95,7 +100,7 @@ export function chantBlocks(song: ChantSong | null | undefined, version: ChantVe
   const memo = byVersion.get(version);
   if (memo && sameTimes(memo.times, times)) return memo.blocks;
 
-  const lineEnd = (i: number) => lines[i + 1] ? times[i + 1] : times[i] + 8;
+  const lineEnd = (i: number) => lines[i + 1] ? times[i + 1] : times[i] + LAST_LINE_SEC;
   const raw: ChantBlock[] = [];
   for (let i = 0; i < lines.length; i++) {
     if (!lineHasChantCue(lines[i], song, version)) continue;

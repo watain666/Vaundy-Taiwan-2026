@@ -16,7 +16,6 @@ import { escapeHtml, ICON_TOKEN_RE, iconTokensToMarkup, spaceCjkLatinMarkup, spa
 import { wrapChantMarkup } from "./chant-markup";
 
 export type ReadingMode = "kana" | "romaji" | "both";
-export type { ChantVersion };
 
 /** The view options that change the row markup. */
 export type LyricViewOptions = { readingMode: ReadingMode; chantVersion: ChantVersion };
@@ -88,10 +87,8 @@ export function lineHasChantSegments(line: LyricLine | null | undefined): boolea
   return !!line && (hasChantSegment(line.jpSegments) || hasChantSegment(line.trSegments));
 }
 
-/* Whether a line is a chant line, has a chant cue or has backing chants is
-   decided once in src/chant/ (日本版：有應援指南的歌曲依指南的時間點；
-   沒有指南的歌曲沿用歌詞標記。韓國版：歌詞內的 [mic]、[chant]、tag "chant"). */
-
+/* Whether the line is a chant line is decided in src/chant/; this only
+   picks how the row shows it (whole line, partial or segment-only). */
 function chantLineClass(line: LyricLine, song: Song, chantVersion: ChantVersion): string {
   if (!lineIsChant(line, song, chantVersion)) return "";
   /* 分段是依日本版應援整理的，只在日本版生效；韓國版維持整行標色。 */

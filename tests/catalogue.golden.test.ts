@@ -1,6 +1,7 @@
 /* Runs the catalogue core on the real authoring files. */
-import { beforeAll, expect, test } from "vitest";
+import { beforeAll, describe, expect, test } from "vitest";
 import { assembleCatalogue, wordTimingText, type AssembledCatalogue, type Song } from "../src/catalogue/assemble";
+import { JP_CHANT_GUIDES } from "../src/chant-guide.js";
 import { loadRealSources } from "./real-sources";
 
 let catalogue: AssembledCatalogue;
@@ -56,4 +57,19 @@ test("Reunion keeps the user-confirmed 夏=ここ reading", () => {
   const reunion = catalogue.songs.find(song => song.id === "Reunion")!;
   const line = reunion.lyrics.find(item => item.jp === "[wave]君に出会えるからまた夏で話そう");
   expect(line?.reading).toMatch(/<ruby>夏<rt>ここ<\/rt><\/ruby>/u);
+});
+
+/* The golden snapshot lists which lines have chant segments; this checks
+   their text and romaji against the real chant guide, which the rows render
+   as-is. Segments attach to the line whose time is within |Δ| < 0.01. */
+describe("line.chant.jp.segments carry the chant guide's segments", () => {
+  test.each(Object.keys(JP_CHANT_GUIDES))("%s", id => {
+    const song = catalogue.songs.find(item => item.id === id)!;
+    const guide = (JP_CHANT_GUIDES as Record<string, { chantSegments?: { time: number; text: string }[] }>)[id];
+    song.lyrics.forEach(line => {
+      const expected = (guide.chantSegments || []).filter(segment =>
+        segment && Math.abs(Number(segment.time) - line.time) < 0.01 && segment.text);
+      expect(line.chant?.jp?.segments ?? [], `${id}#${line.index}`).toEqual(expected);
+    });
+  });
 });

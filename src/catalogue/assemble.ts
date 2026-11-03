@@ -25,7 +25,8 @@ export type SongSummary = {
   /** The Japanese original title: the last parenthesised part of `title`. */
   titleJa: string;
   youtubeId: string;
-  spotifyTrackId: string;
+  /** null for a song that is not on Spotify (no word-level karaoke timing). */
+  spotifyTrackId: string | null;
   translationCredit: string;
   /** Resolved: a URL to link to, or null for a text-only credit. */
   translationCreditUrl: string | null;
@@ -103,7 +104,8 @@ export type MetadataEntry = {
   title: string;
   translationCredit: string;
   youtubeId: string;
-  spotifyTrackId: string;
+  /** A 22-character Spotify track ID, or null when the song is not on Spotify. */
+  spotifyTrackId: string | null;
   translationCreditUrl?: string | null;
   translationSourceUrl?: string;
   translationLicense?: string;
@@ -377,8 +379,8 @@ function buildSong(
         `${field} differs: metadata ${JSON.stringify(meta[field])}, lyrics ${JSON.stringify(authored[field])}`, id);
     }
   }
-  if (!SPOTIFY_TRACK_ID_RE.test(String(meta.spotifyTrackId ?? ""))) {
-    log.add("spotify-track-id", `spotifyTrackId ${JSON.stringify(meta.spotifyTrackId)} is not a 22-character Spotify ID`, id);
+  if (meta.spotifyTrackId !== null && !SPOTIFY_TRACK_ID_RE.test(String(meta.spotifyTrackId ?? ""))) {
+    log.add("spotify-track-id", `spotifyTrackId ${JSON.stringify(meta.spotifyTrackId)} is neither a 22-character Spotify ID nor null`, id);
   }
   const bpm = Number(sources.bpm[id]);
   if (!Object.prototype.hasOwnProperty.call(sources.bpm, id) || !Number.isFinite(bpm) || bpm <= 0) {

@@ -2,6 +2,10 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.21.0**
+
+- [PR #67](https://github.com/watain666/Vaundy-Taiwan-2026/pull/67)：手機（iOS Safari、Android Chrome 等）的歌曲頁也有「PiP」按鈕了：字幕會用系統的子母畫面小窗顯示，版面和桌面版小窗相同（歌名、播放進度、目前句與下一句，含讀音、應援標色、卡拉 OK 逐字高亮與深淺色），切到主畫面或其他 App 時仍浮在畫面上；小窗的播放／暫停與上一首／下一首可以控制影片。小窗開著時，YouTube 因網頁離開畫面而自行暫停會自動恢復播放，自己按的暫停則不會被恢復。
+
 ## [**v1.20.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/7fb51b9abe770e6b1d03b678a00491ff7d4caa6f)
 
 - [PR #66](https://github.com/watain666/Vaundy-Taiwan-2026/pull/66)：新增〈mabataki〉，含日文歌詞、假名與羅馬字讀音、巴哈姆特大棕熊的繁體中文翻譯，歌詞時間對齊官方 MV；收在「全部歌曲」清單（共 39 首），不在歌單內。

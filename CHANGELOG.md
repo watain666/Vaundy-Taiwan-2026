@@ -2,6 +2,11 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.20.0**
+
+- [PR #66](https://github.com/watain666/Vaundy-Taiwan-2026/pull/66)：新增〈mabataki〉，含日文歌詞、假名與羅馬字讀音、巴哈姆特大棕熊的繁體中文翻譯，歌詞時間對齊官方 MV；收在「全部歌曲」清單（共 39 首），不在歌單內。
+- [PR #66](https://github.com/watain666/Vaundy-Taiwan-2026/pull/66)：〈CHAINSAW BLOOD〉〈裸の勇者〉〈逆光〉的中文翻譯改用巴哈姆特大棕熊的譯本，署名連到原文章；日文歌詞與讀音經多方來源核對，維持不變。
+
 ## [**v1.19.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/80607c0205345290f8409f9280042366777cb148)
 
 - [PR #64](https://github.com/watain666/Vaundy-Taiwan-2026/pull/64)：新增〈呼吸のように〉與〈pained〉兩首歌，含日文歌詞、假名與羅馬字讀音、繁體中文翻譯（AI 翻譯），歌詞時間對齊官方 MV；兩首都是意見回饋表單收到的建議，目前沒有應援資料，收在「全部歌曲」清單（共 38 首），不在歌單內。

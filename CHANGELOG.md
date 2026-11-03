@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.22.0**
+## [**v1.22.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/12e81c5ac2b4749cf3861aaa371ee5f58a9df622)
 
 - [PR #69](https://github.com/watain666/Vaundy-Taiwan-2026/pull/69)：新增 32 首歌，「全部歌曲」清單共 71 首：〈飛ぼうよ〉〈The SILENCE〉〈シンギュラリティ〉〈忘れる前に〉〈まじで、サヨナラべぃべぃ〉〈人生はミックスナッツの組み合わせ〉〈走れSAKAMOTO〉〈Somebody help us〉〈GORILLA芝居〉〈Gift〉〈ココロありがとう〉〈美電球〉〈カーニバル〉〈1リッター分の愛をこめて〉〈宮〉〈黒子〉〈replica〉〈融解sink〉〈benefits〉〈走馬灯〉〈置き手紙〉〈二人話〉〈HERO〉〈おもかげ〉〈地球儀〉〈life hack〉〈僕は今日も〉〈Bye by me〉〈こんな時〉〈pain〉〈Missing〉〈前前前世〉。每首都有日文歌詞、假名與羅馬字讀音、繁體中文翻譯，歌詞時間跟著影片走；歌詞與時間取自韓國歌迷站 VAUNDY BALL 的整理，並與 UtaTen 等歌詞網站核對。這些歌不在歌單內。
 - [PR #69](https://github.com/watain666/Vaundy-Taiwan-2026/pull/69)：新歌中 9 首使用網友的繁體中文翻譯並附上署名與原文連結：巴哈姆特月勳（〈HERO〉〈走馬灯〉〈僕は今日も〉〈前前前世〉）、Oblivionis（〈replica〉〈1リッター分の愛をこめて〉）、大棕熊（〈おもかげ〉，翻唱新增的段落為 AI 翻譯）、Smiecj（〈Bye by me〉）、fallen985（〈地球儀〉）；其餘 23 首為 AI 翻譯。

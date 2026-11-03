@@ -2,6 +2,13 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
+## **v1.22.0**
+
+- [PR #69](https://github.com/watain666/Vaundy-Taiwan-2026/pull/69)：新增 32 首歌，「全部歌曲」清單共 71 首：〈飛ぼうよ〉〈The SILENCE〉〈シンギュラリティ〉〈忘れる前に〉〈まじで、サヨナラべぃべぃ〉〈人生はミックスナッツの組み合わせ〉〈走れSAKAMOTO〉〈Somebody help us〉〈GORILLA芝居〉〈Gift〉〈ココロありがとう〉〈美電球〉〈カーニバル〉〈1リッター分の愛をこめて〉〈宮〉〈黒子〉〈replica〉〈融解sink〉〈benefits〉〈走馬灯〉〈置き手紙〉〈二人話〉〈HERO〉〈おもかげ〉〈地球儀〉〈life hack〉〈僕は今日も〉〈Bye by me〉〈こんな時〉〈pain〉〈Missing〉〈前前前世〉。每首都有日文歌詞、假名與羅馬字讀音、繁體中文翻譯，歌詞時間跟著影片走；歌詞與時間取自韓國歌迷站 VAUNDY BALL 的整理，並與 UtaTen 等歌詞網站核對。這些歌不在歌單內。
+- [PR #69](https://github.com/watain666/Vaundy-Taiwan-2026/pull/69)：新歌中 9 首使用網友的繁體中文翻譯並附上署名與原文連結：巴哈姆特月勳（〈HERO〉〈走馬灯〉〈僕は今日も〉〈前前前世〉）、Oblivionis（〈replica〉〈1リッター分の愛をこめて〉）、大棕熊（〈おもかげ〉，翻唱新增的段落為 AI 翻譯）、Smiecj（〈Bye by me〉）、fallen985（〈地球儀〉）；其餘 23 首為 AI 翻譯。
+- [PR #69](https://github.com/watain666/Vaundy-Taiwan-2026/pull/69)：〈おもかげ〉加上韓國版應援標記（拍手、揮手與大合唱，共 33 行）；其他新歌目前沒有應援資料。
+- [PR #69](https://github.com/watain666/Vaundy-Taiwan-2026/pull/69)：〈pain〉與〈こんな時〉沒有在 Spotify 上架，這兩首不會有卡拉 OK 逐字高亮，只依整行時間顯示。
+
 ## [**v1.21.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/195af598823472431b9e91d5182dc52afa51b9c5)
 
 - [PR #68](https://github.com/watain666/Vaundy-Taiwan-2026/pull/68)：手機按「PiP」開不了字幕小窗時，不再毫無反應：會先重試一次，仍失敗就在畫面底部提示原因；從 iPhone 主畫面打開的網站 App 不支援子母畫面，會提示改用 Safari 開啟本站。

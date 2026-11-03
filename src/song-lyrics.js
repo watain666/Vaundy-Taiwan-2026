@@ -2401,7 +2401,7 @@ export const SONGS = [
   },
   {
     id: "HashireSAKAMOTO",
-    title: "走れSAKAMOTO (奔跑吧 SAKAMOTO)",
+    title: "走れ SAKAMOTO (奔跑吧 SAKAMOTO)",
     translationCredit: "AI 翻譯（Claude Opus 5.5）",
     translationCreditUrl: null,
     youtubeId: "jbgG5tzgP9k",
@@ -2511,7 +2511,7 @@ export const SONGS = [
   },
   {
     id: "GORILLAShibai",
-    title: "GORILLA芝居 (GORILLA 戲碼)",
+    title: "GORILLA 芝居 (GORILLA 戲碼)",
     translationCredit: "AI 翻譯（Claude Opus 5.5）",
     translationCreditUrl: null,
     youtubeId: "QTYjA7QV7tY",

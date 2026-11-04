@@ -1013,6 +1013,13 @@ button{touch-action:manipulation;}
   .song-page .chant-version-note{
     display:none;
   }
+  /* 短橫屏仍留著 MV／現場版切換，只收起說明文字。 */
+  .song-page .lyrics-note:has(.video-source-segment:not([hidden])){
+    display:flex;
+  }
+  .song-page .lyrics-note:has(.video-source-segment:not([hidden])) > :not(.video-source-segment){
+    display:none;
+  }
 
   .song-page .lyrics-pane{
     flex:1 1 auto;
@@ -1204,7 +1211,34 @@ button{touch-action:manipulation;}
 .song-page .settings-segment .chant-version-option.active{background:var(--ui-accent);color:var(--ui-bg);}
 .song-page .settings-flag{display:inline-flex;}
 .song-page .settings-flag svg{display:block;width:20px;height:14px;}
-.song-page .player-controls .pip-toggle[hidden]{display:none;}
+.song-page .player-controls .pip-toggle[hidden],
+.song-page .lyrics-note .video-source-segment[hidden]{display:none;}
+.song-page .lyrics-note .video-source-segment{
+  flex:none;
+  width:auto;
+  gap:2px;
+  padding:2px;
+  margin-left:auto;
+  align-self:center;
+}
+.song-page .lyrics-note .video-source-segment .chant-version-option{
+  flex:none;
+  height:20px;
+  min-height:20px;
+  padding:0 8px;
+  font-size:12px;
+  line-height:20px;
+}
+.song-page .settings-copy{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+}
+.song-page .settings-hint{
+  color:var(--ui-muted);
+  font:400 12px/1.4 var(--font-tw-sans);
+}
 .song-page .settings-switch{
   flex:none;
   display:flex;

@@ -108,6 +108,8 @@ GitHub Pages 使用 HTTPS 提供網站，因此離線快取功能可以直接運
 
 控制列 PiP 右邊的「單曲循環」圖示預設關閉；開啟後影片播完會從頭重播同一首，不再自動跳到下一首，歌詞也會立刻清掉高亮並捲回開頭（手動把影片拉回前奏時同樣如此）；手動按上一首／下一首仍會照常切歌，設定保存在 localStorage 的 `horo-repeat-one`。
 
+有官方現場版的歌，進入時預設播放現場版：設定面板的「優先播放 Live 版」預設開啟（關閉後一律先播 MV），設定保存在 localStorage 的 `horo-prefer-live`，變更會立刻套用到目前這首。歌曲頁影片下方、「點選歌詞跳至影片位置」那一行的右側會多一個「MV／Live」切換（沒有現場版的歌不會出現），只改目前這首、不保存，切到上一首／下一首會回到設定的預設。現場版的影片換成現場影片，歌詞行、點歌詞跳轉、只練合唱與同步字幕小窗都改用現場的時間；現場版只有逐行時間，不套用逐字時間，卡拉 OK 高亮會在每一行的時間範圍內平均推進。現場影片裡主唱把某幾行交給台下合唱時，那幾行在現場版會和應援指引一樣顯示成大合唱（橘色標示與麥克風圖示，也會算進只練合唱；只在現場版出現）；標記寫在 `src/live-timing.js` 的 `singAlong`（歌詞行索引）。現場版的影片與每行時間寫在 `src/live-timing.js`，格式見檔案開頭的說明與 `docs/adr/0006-live-video-timing.md`。
+
 控制列的 `字` 選單可以調整歌詞字級（小、標準、大、特大、超大），會同時縮放日文、讀音、羅馬字、繁中翻譯與背景合唱，開啟中的 PiP 字幕小窗也會同步套用；切換後目前這一句會重新置中，設定同樣會保存。
 
 開啟歌曲頁時（不論 `卡拉OK` 開關是否開啟），頁面會先用歌曲的 Spotify track ID（`src/song-metadata.js` 的 `spotifyTrackId`）查詢 [Beautiful Lyrics Reborn](https://github.com/yeahnangua/beautiful-lyrics-reborn) 的公開歌詞服務，它會聚合 Musixmatch RichSync、QQ QRC、酷狗 KRC、網易雲 YRC 等來源；沒有 ID 的歌曲會略過這一步。接著 fallback 到 AMLL TTML DB，最後才查 LRCLIB 的 `lyricsfile`／同步 LRC。前四者可提供逐字或逐音節時間；LRCLIB 是逐行時間，因此會在該句範圍內按比例高亮，適合補足前面來源沒有收錄的歌曲。取得後以歌詞文字對齊目前 YouTube 影片。每一行仍以現有手動錨點為準，來源只提供句內節奏，因此不同版本的前奏或分行不會讓整段畫面漂移；最後仍保留原本依句時間估算的 fallback。逐字資料會以 `karaoke-sources.js` 的 `timed-lyrics-v1`（每句 `start`／`end` 加上 `words[]`）作為前端統一格式，不需要改動現有的翻譯、應援標記或手動句錨點。

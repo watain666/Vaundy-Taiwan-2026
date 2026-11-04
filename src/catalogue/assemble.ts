@@ -35,6 +35,8 @@ export type SongSummary = {
   translationLicenseUrl?: string;
   bpm: number;
   marks: SongMarks;
+  /** Present when the song has an official live video (the row times load with the full song). */
+  live?: SongLiveVideo;
 };
 
 /** A part of a split lyric line, as written in the lyrics file. */
@@ -99,7 +101,10 @@ export type SongWordTiming = {
   offset: number;
 };
 
-export type Song = SongSummary & {
+/** An official live video of a song, with its own lyric row start times (src/live-timing.js). */
+export type SongLiveVideo = { youtubeId: string; label: string };
+
+export type Song = Omit<SongSummary, "live"> & {
   /** Named `lyrics` because the karaoke adapter reads `song.lyrics`. */
   lyrics: LyricLine[];
   chant: {
@@ -111,6 +116,8 @@ export type Song = SongSummary & {
   };
   /** Present when the song has bundled word timing; its lines then carry `words`. */
   wordTiming?: SongWordTiming;
+  /** Present when the song has an official live video; `times[i]` is lyric row i's start in that video. */
+  live?: SongLiveVideo & { times: number[]; singAlong: number[] };
 };
 
 /* ---------- authoring input shapes ---------- */
@@ -157,6 +164,17 @@ export type WordTimingEntry = {
   lines: Readonly<Record<string, readonly (readonly [string, number, number])[]>>;
 };
 
+/** One song's entry in src/live-timing.js: a live video and one start time per lyric row. */
+export type LiveTimingEntry = {
+  youtubeId: string;
+  /** Short name shown to fans, e.g. "HORO 首爾". */
+  label: string;
+  /** Seconds in the live video, parallel to the song's lyric rows (cue-only rows included). */
+  times: readonly number[];
+  /** Optional lyric row indices where the audience sings in this live video, strictly increasing. */
+  singAlong?: readonly number[];
+};
+
 /** The two karaoke helpers the alignment invariant needs (karaoke-sources.js). */
 export type KaraokeAlignment = {
   mapUnitsToReferenceTimings(
@@ -183,6 +201,8 @@ export type CatalogueSources = {
   karaoke: KaraokeAlignment;
   /** Bundled per-word karaoke timing by song id (src/word-timing.js). */
   wordTiming: Readonly<Record<string, WordTimingEntry>>;
+  /** Official live videos with their own row times by song id (src/live-timing.js). */
+  liveTiming: Readonly<Record<string, LiveTimingEntry>>;
   /** Used when a metadata entry leaves `translationCreditUrl` unset. */
   defaultTranslationCreditUrl: string;
 };
@@ -211,6 +231,12 @@ export const RULE_SEVERITY = {
   "word-timing-text-mismatch": "error",
   "word-timing-order": "error",
   "word-timing-start-offset": "error",
+  "live-timing-unknown-song": "error",
+  "live-timing-youtube-id": "error",
+  "live-timing-label": "error",
+  "live-timing-row-count": "error",
+  "live-timing-order": "error",
+  "live-timing-sing-along": "error",
 } as const;
 
 export type RuleName = keyof typeof RULE_SEVERITY;
@@ -270,6 +296,7 @@ const ROMAJI_WORD_CHAR_RE = /[\p{Script=Latin}\p{N}]/u;
 const ROMAJI_WORD_CONTINUATION_RE = /[\p{Script=Latin}\p{N}'’_-]/u;
 const SPOTIFY_TRACK_ID_RE = /^[A-Za-z0-9]{22}$/;
 const PLAIN_ID_RE = /^[A-Za-z0-9]+$/;
+const YOUTUBE_ID_RE = /^[A-Za-z0-9_-]{11}$/;
 
 const IDENTITY_FIELDS = [
   "title",
@@ -516,6 +543,7 @@ function buildSong(
   });
 
   const wordTiming = attachWordTiming(id, lines, sources, log);
+  const live = attachLiveTiming(id, lines, sources, log);
 
   if (guide) {
     (guide.chantTimes || []).forEach((time, timeIndex) => {
@@ -548,7 +576,7 @@ function buildSong(
     });
   }
 
-  const summary: SongSummary = {
+  const summary: Omit<SongSummary, "live"> = {
     id: id as SongId,
     number,
     title: meta.title,
@@ -576,6 +604,7 @@ function buildSong(
     },
   };
   if (wordTiming) song.wordTiming = wordTiming;
+  if (live) song.live = live;
   return song;
 }
 
@@ -633,6 +662,62 @@ function attachWordTiming(id: string, lines: LyricLine[], sources: CatalogueSour
     line.words = words;
   });
   return { source: String(entry.source), sourceId: String(entry.sourceId), offset: Number(entry.offset) };
+}
+
+/* A live video carries one start time per lyric row, parallel to the rows.
+   The times are the live performance's own, so they are never mixed with the
+   studio row times or the studio word timing. */
+function attachLiveTiming(id: string, lines: LyricLine[], sources: CatalogueSources, log: IssueLog): Song["live"] | null {
+  const entry = Object.prototype.hasOwnProperty.call(sources.liveTiming, id) ? sources.liveTiming[id] : undefined;
+  if (!entry) return null;
+  let valid = true;
+  if (typeof entry.youtubeId !== "string" || !YOUTUBE_ID_RE.test(entry.youtubeId)) {
+    log.add("live-timing-youtube-id", `youtubeId ${JSON.stringify(entry.youtubeId)} is not 11 characters of A-Z a-z 0-9 _ -`, id);
+    valid = false;
+  }
+  const times = Array.isArray(entry.times) ? entry.times : [];
+  if (!Array.isArray(entry.times) || times.length !== lines.length) {
+    log.add("live-timing-row-count",
+      `live times has ${Array.isArray(entry.times) ? times.length : "no"} entries but the song has ${lines.length} lyric rows`, id);
+    valid = false;
+  } else {
+    times.forEach((time, index) => {
+      if (typeof time !== "number" || !Number.isFinite(time) || time < 0) {
+        log.add("live-timing-order", `live time ${JSON.stringify(time)} is not a finite number of seconds >= 0`, id, index);
+        valid = false;
+      } else if (index > 0 && typeof times[index - 1] === "number" && time <= times[index - 1]) {
+        log.add("live-timing-order", `live time ${time} is not after the previous row's ${times[index - 1]}`, id, index);
+        valid = false;
+      }
+    });
+  }
+  if (typeof entry.label !== "string" || !entry.label.trim()) {
+    log.add("live-timing-label", "label must be a non-empty string", id);
+    valid = false;
+  }
+  const singAlong: number[] = [];
+  if (entry.singAlong !== undefined) {
+    if (!Array.isArray(entry.singAlong)) {
+      log.add("live-timing-sing-along", "singAlong must be an array of lyric row indices", id);
+      valid = false;
+    } else {
+      entry.singAlong.forEach((value, position) => {
+        if (typeof value !== "number" || !Number.isInteger(value)) {
+          log.add("live-timing-sing-along", `sing-along index ${JSON.stringify(value)} is not an integer`, id, position);
+          valid = false;
+        } else if (value < 0 || value >= lines.length) {
+          log.add("live-timing-sing-along", `sing-along row ${value} is outside the song's ${lines.length} lyric rows`, id, position);
+          valid = false;
+        } else if (position > 0 && typeof entry.singAlong![position - 1] === "number" && value <= entry.singAlong![position - 1]) {
+          log.add("live-timing-sing-along", `sing-along row ${value} is not after the previous index ${entry.singAlong![position - 1]} (must be strictly increasing, no duplicates)`, id, position);
+          valid = false;
+        } else {
+          singAlong.push(value);
+        }
+      });
+    }
+  }
+  return valid ? { youtubeId: entry.youtubeId, label: entry.label, times: [...times], singAlong } : null;
 }
 
 /* Same counting rule as the song list badges: a Japanese-version chant line
@@ -722,6 +807,9 @@ export function assembleCatalogue(sources: CatalogueSources): AssembledCatalogue
   Object.keys(sources.wordTiming).forEach(id => {
     if (!metadataIds.has(id)) log.add("word-timing-unknown-song", "has bundled word timing but no metadata", id);
   });
+  Object.keys(sources.liveTiming).forEach(id => {
+    if (!metadataIds.has(id)) log.add("live-timing-unknown-song", "has live timing but no metadata", id);
+  });
   sources.setlist.items.forEach(item => item.songs.forEach(entry => {
     if (!metadataIds.has(entry.id)) log.add("id-set", "is in the setlist but has no metadata", entry.id);
   }));
@@ -748,7 +836,10 @@ export function assembleCatalogue(sources: CatalogueSources): AssembledCatalogue
   throwIfErrors(log);
   return {
     songs,
-    summaries: songs.map(({ lyrics: _lyrics, chant: _chant, wordTiming: _wordTiming, ...summary }) => summary),
+    summaries: songs.map(({ lyrics: _lyrics, chant: _chant, wordTiming: _wordTiming, live: _live, ...summary }) => {
+      const live = _live ? { youtubeId: _live.youtubeId, label: _live.label } : undefined;
+      return live ? { ...summary, live } : summary;
+    }),
     warnings: log.warnings,
     deadReadingKeys,
   };

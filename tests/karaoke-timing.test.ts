@@ -3,8 +3,12 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { assembleCatalogue, type Song } from "../src/catalogue/assemble";
 import {
+  activeVideoId,
   bundledKaraokeTiming,
+  isLiveActive,
+  liveKaraokeTiming,
   loadSongKaraokeTiming,
+  resolveVideoSource,
   type KaraokeTimingApi,
   type KaraokeStatus,
 } from "../src/services/karaoke-timing";
@@ -142,5 +146,58 @@ describe("loadSongKaraokeTiming", () => {
     expect(result.timing?.bundled).toBeUndefined();
     expect(result.status.state).toBe("ready");
     expect(result.status.text).toMatch(/^歌詞逐字時間：LRCLIB（已對齊 /);
+  });
+});
+
+describe("live video", () => {
+  function liveSongs(): Song[] {
+    const sources = makeSources();
+    sources.liveTiming = { Alpha: { youtubeId: "abcDEF_-123", label: "Dome Tour", times: [3, 13, 24] } };
+    sources.wordTiming = {
+      Alpha: { source: "KuGou KRC", sourceId: "1", offset: 0, lines: { "0": [["夜", 0.1, 0.3], ["の", 0.3, 0.4], ["歌", 0.4, 0.9]] } },
+    };
+    return assembleCatalogue(sources).songs;
+  }
+
+  test("activeVideoId falls back to the MV unless live is selected and exists", () => {
+    const [alpha, beta] = liveSongs();
+    expect(activeVideoId(alpha, "mv")).toBe("yt-alpha");
+    expect(activeVideoId(alpha, "live")).toBe("abcDEF_-123");
+    expect(activeVideoId(beta, "live")).toBe("yt-beta");
+    expect(activeVideoId(alpha, "anything")).toBe("yt-alpha");
+    expect(activeVideoId(null, "live")).toBe("");
+    expect(isLiveActive(alpha, "live")).toBe(true);
+    expect(isLiveActive(beta, "live")).toBe(false);
+    expect(isLiveActive(alpha, "mv")).toBe(false);
+  });
+
+  test("resolveVideoSource applies the setting, the per-song override and the live guard", () => {
+    const [alpha, beta] = liveSongs();
+    expect(resolveVideoSource(alpha, true)).toBe("live");
+    expect(resolveVideoSource(alpha, false)).toBe("mv");
+    expect(resolveVideoSource(alpha, true, "mv")).toBe("mv");
+    expect(resolveVideoSource(alpha, false, "live")).toBe("live");
+    expect(resolveVideoSource(alpha, true, null)).toBe("live");
+    expect(resolveVideoSource(beta, true)).toBe("mv");
+    expect(resolveVideoSource(beta, false, "live")).toBe("mv");
+    expect(resolveVideoSource(null, true, "live")).toBe("mv");
+  });
+
+  test("converts live times to line rows that end at the next row, with no words", () => {
+    const [alpha] = liveSongs();
+    const timing = liveKaraokeTiming(alpha)!;
+    expect(timing).toMatchObject({ format: "timed-lyrics-v1-aligned", songId: "Alpha", matchedLines: 3, totalLines: 3 });
+    expect(timing.lines).toEqual([
+      { start: 3, end: 13, granularity: "line" },
+      { start: 13, end: 24, granularity: "line" },
+      { start: 24, end: 28, granularity: "line" },
+    ]);
+  });
+
+  test("ignores the studio word timing and returns null for a song without live", () => {
+    const [alpha, beta] = liveSongs();
+    expect(bundledKaraokeTiming(alpha)).not.toBeNull();
+    expect(liveKaraokeTiming(alpha)!.lines.every(line => !line || !("words" in line))).toBe(true);
+    expect(liveKaraokeTiming(beta)).toBeNull();
   });
 });

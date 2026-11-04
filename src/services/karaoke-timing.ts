@@ -78,6 +78,68 @@ export function bundledKaraokeTiming(song: Song | null | undefined): AlignedKara
   };
 }
 
+/** Seconds a live row is assumed to run when no later row bounds it. */
+const LIVE_LAST_ROW_SEC = 4;
+
+/**
+ * The video source a song opens with: its live video when the viewer prefers
+ * live and the song has one, else the MV. `override` is the viewer's choice
+ * for this song only (inline MV / live toggle); it wins over the preference,
+ * but a song without a live video is always "mv".
+ */
+export function resolveVideoSource(
+  song: { live?: unknown } | null | undefined,
+  preferLive: boolean,
+  override?: "mv" | "live" | null,
+): "mv" | "live" {
+  if (!song || !song.live) return "mv";
+  if (override === "mv" || override === "live") return override;
+  return preferLive ? "live" : "mv";
+}
+
+/** The preferred video of a song: its live video when `source` is "live" and the song has one, else the MV. */
+export function activeVideoId(song: { youtubeId: string; live?: { youtubeId: string } } | null | undefined, source: string): string {
+  if (!song) return "";
+  return source === "live" && song.live ? song.live.youtubeId : song.youtubeId;
+}
+
+/** True when `source` selects the song's live video and the song has one. */
+export function isLiveActive(song: { live?: unknown } | null | undefined, source: string): boolean {
+  return source === "live" && Boolean(song && song.live);
+}
+
+/**
+ * Row timing for a song's live video, in the aligned shape the lyric view and
+ * the page read: each row starts at its live time and ends at the next row's
+ * start. Rows are `granularity: "line"` with no words, so the studio word
+ * timing is never applied; karaoke falls back to the line-proportional
+ * allocation inside each live row. Null when the song has no live video.
+ */
+export function liveKaraokeTiming(song: Song | null | undefined): AlignedKaraokeTiming | null {
+  const live = song && song.live;
+  if (!song || !live || !Array.isArray(live.times) || live.times.length !== song.lyrics.length) return null;
+  const lines = live.times.map((start, index): TimedLine => ({
+    start,
+    end: index + 1 < live.times.length ? live.times[index + 1] : start + LIVE_LAST_ROW_SEC,
+    granularity: "line",
+  }));
+  return {
+    format: "timed-lyrics-v1-aligned",
+    songId: song.id,
+    source: live.label,
+    providerOrder: [live.label],
+    offset: 0,
+    matchedLines: lines.length,
+    totalLines: song.lyrics.length,
+    lines,
+    bundled: true,
+  };
+}
+
+export function liveStatusText(label: string): string {
+  return `現場版（${label}）：使用現場逐行時間，不套用逐字時間`;
+}
+
 export function bundledStatusText(timing: AlignedKaraokeTiming): string {
   return `歌詞逐字時間：內建 ${timing.source}（已對齊 ${timing.matchedLines}/${timing.totalLines} 行）`;
 }

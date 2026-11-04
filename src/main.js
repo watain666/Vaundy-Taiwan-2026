@@ -46,9 +46,16 @@ import {
   CHANT_REFERENCE_URL
 } from "./chant-guide.js";
 import { get as getSong, list as listSongs, load as loadSong, UnknownSongError } from "./catalogue/index.ts";
-import { chantBlocks, songMarks } from "./chant/index.ts";
+import { chantBlocks, songMarks, withSingAlongChant } from "./chant/index.ts";
 import { loadKaraokeSources } from "./services/lazy-modules.js";
-import { loadSongKaraokeTiming } from "./services/karaoke-timing.ts";
+import {
+  activeVideoId,
+  isLiveActive,
+  resolveVideoSource,
+  liveKaraokeTiming,
+  liveStatusText,
+  loadSongKaraokeTiming
+} from "./services/karaoke-timing.ts";
 import { loadJapaneseFontSubset } from "./services/japanese-font.js";
 import { syncSupportChat } from "./ui/support-chat.js";
 import { store } from "./services/storage.js";
@@ -85,6 +92,10 @@ let karaokeEnabled = store("horo-karaoke") === "1";
 let autoplayEnabled = store("horo-autoplay") !== "0";
 // 單曲循環，預設關閉；開啟時影片播完從頭重播同一首，不跳下一首。
 let repeatOneEnabled = store("horo-repeat-one") === "1";
+// 優先播放 Live 版，預設開啟；有官方現場版的歌預設看現場版（歌詞改用現場時間）。
+let preferLive = store("horo-prefer-live") !== "0";
+// 目前這首歌在歌曲頁用 MV／現場版切換鈕選的來源；不保存，換歌就回到設定的預設。
+let videoSourceOverride = null;   // { songId, source } | null
 let lastActiveIdx = -1;
 let karaokeTiming = null;       // 對齊到目前 YouTube 影片的真實逐字時間
 let karaokeLoadSeq = 0;         // 換歌時忽略上一首尚未完成的網路回應
@@ -2029,6 +2040,10 @@ function buildSongShell(){
           <div class="lyrics-note">
             <span class="dot">●</span>
             <span class="lyrics-note-copy">點選歌詞跳至影片位置，歌詞隨影片同步</span>
+            <div class="chant-version-segment video-source-segment" id="video-source-segment" role="group" aria-label="影片來源" hidden>
+              <button type="button" class="chant-version-option" data-video-source="mv" aria-pressed="true">MV</button>
+              <button type="button" class="chant-version-option" data-video-source="live" aria-pressed="false">Live</button>
+            </div>
           </div>
 
           <div class="lyrics-legend">
@@ -2150,6 +2165,15 @@ function buildSongShell(){
             <div class="settings-row">
               <span class="settings-label" id="autoplay-label">進入歌曲時自動播放</span>
               <button class="settings-switch${autoplayEnabled ? " active" : ""}" id="autoplay-btn" type="button" aria-pressed="${autoplayEnabled ? "true" : "false"}" aria-labelledby="autoplay-label">
+                <span class="venue-switch"><span class="venue-knob"></span></span>
+              </button>
+            </div>
+            <div class="settings-row">
+              <span class="settings-copy">
+                <span class="settings-label" id="prefer-live-label">優先播放 Live 版</span>
+                <span class="settings-hint">有官方 Live 版的歌曲預設播放 Live 版</span>
+              </span>
+              <button class="settings-switch${preferLive ? " active" : ""}" id="prefer-live-btn" type="button" aria-pressed="${preferLive ? "true" : "false"}" aria-labelledby="prefer-live-label">
                 <span class="venue-switch"><span class="venue-knob"></span></span>
               </button>
             </div>
@@ -2395,6 +2419,28 @@ function buildSongShell(){
     e.currentTarget.setAttribute("aria-pressed", repeatOneEnabled ? "true" : "false");
   });
 
+  document.getElementById("prefer-live-btn").addEventListener("click", (e)=>{
+    const before = liveActive(currentSong);
+    preferLive = !preferLive;
+    store("horo-prefer-live", preferLive ? "1" : "0");
+    e.currentTarget.classList.toggle("active", preferLive);
+    e.currentTarget.setAttribute("aria-pressed", preferLive ? "true" : "false");
+    // 設定立刻套用到目前這首（取代這首歌上暫時選的來源）。
+    if (!currentSong || !currentSong.live) return;
+    videoSourceOverride = null;
+    if (liveActive(currentSong) !== before) switchVideoSource();
+  });
+
+  document.querySelectorAll("[data-video-source]").forEach(button => {
+    button.addEventListener("click", ()=>{
+      if (!currentSong || !currentSong.live) return;
+      const source = button.dataset.videoSource === "live" ? "live" : "mv";
+      if (liveActive(currentSong) === (source === "live")) return;
+      videoSourceOverride = { songId: currentSong.id, source };
+      switchVideoSource();
+    });
+  });
+
   document.getElementById("autoscroll-btn").addEventListener("click", (e)=>{
     autoScrollEnabled = !autoScrollEnabled;
     e.currentTarget.classList.toggle("active", autoScrollEnabled);
@@ -2451,7 +2497,7 @@ let chantWaitUntil  = 0;       // 여기까지도 못 가면 포기하고 그냥
 /* 떼창 구간은 src/chant/ 가 계산한다. 가사 시간은 지금 쓰는 karaoke 시간을 따르고,
    시간이 바뀌면 그쪽에서 알아서 다시 계산한다 (캐시를 손으로 비우지 않는다). */
 function currentChantBlocks(){
-  return chantBlocks(currentSong, chantVersion, index => playbackTimeForLine(currentSong, index));
+  return chantBlocks(viewSong(currentSong), chantVersion, index => playbackTimeForLine(currentSong, index));
 }
 
 function setChantVersion(next){
@@ -2617,7 +2663,7 @@ function skipPart(d){
    (모바일은 사용자 제스처 안에서 시작한 재생만 소리를 허용하기 때문) */
 function gotoSong(song){
   if (!song) return;
-  openSongVideo(song.youtubeId);
+  openSongVideo(videoIdOf(song));
   location.hash = `#/song/${song.id}`;
 }
 
@@ -2721,11 +2767,13 @@ function renderSong(song){
     updateLyricsSync(true);
   });
 
+  if (videoSourceOverride && videoSourceOverride.songId !== song.id) videoSourceOverride = null;
   currentSong = song;
   resetPlaybackProgress();
   lastActiveIdx = -1;
   playheadTime = null;
-  karaokeTiming = null;
+  // 現場版：歌詞行時間直接用現場時間，第一次 render 就要套用。
+  karaokeTiming = liveActive(song) ? liveKaraokeTiming(song) : null;
   // 떼창만 듣기는 곡을 옮겨도 켜진 채로 — 구간 번호만 새 곡 기준으로 다시
   chantIdx = -1; chantDone = false; chantWantSec = null; chantWaitUntil = 0;
   // 每首歌一個新的歌詞 view mount：它負責目前句、逐字高亮、可見範圍與捲動，
@@ -2805,6 +2853,7 @@ function renderSong(song){
   songView.inert = false;
   app.style.display = "none";
 
+  applyVideoSourceUi();
   applyChantVersionUi();
   renderChantVersionNote(song);
   renderChantNotes(song);
@@ -2823,7 +2872,7 @@ function renderSong(song){
   showVideoStatus();
   loadYouTubeApi();
   ensurePlayer();
-  ensurePlaying(song.youtubeId);
+  ensurePlaying(videoIdOf(song));
   loadKaraokeTiming(song);
   scheduleJapaneseFontLoad(songJapaneseFontText(song), [400, 500, 700]);
 }
@@ -2836,7 +2885,7 @@ function lyricContainerSettings(){
    切應援版本、逐字時間或分配器載入完成都走這裡，不做局部修補。 */
 function renderSongLyrics(){
   if (!songLyricMount || !currentSong || !Array.isArray(currentSong.lyrics)) return;
-  songLyricMount.render(currentSong, {
+  songLyricMount.render(viewSong(currentSong), {
     readingMode,
     chantVersion,
     karaokeTiming,
@@ -3306,7 +3355,7 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
     progressText: duration && currentTime !== null
       ? `${formatPlaybackTime(currentTime)} / ${formatPlaybackTime(duration)}`
       : "正在載入播放進度",
-    song,
+    song: viewSong(song),
     view: {
       readingMode,
       chantVersion,
@@ -3358,10 +3407,64 @@ function playbackTimeForLine(song, index){
   return timed && Number.isFinite(Number(timed.start)) ? Number(timed.start) : Number(local && local.time) || 0;
 }
 
+/* 這首歌現在用哪個影片來源：只有目前這首才吃得到暫時選的來源。 */
+function sourceOf(song){
+  const override = song && videoSourceOverride && videoSourceOverride.songId === song.id
+    ? videoSourceOverride.source : null;
+  return resolveVideoSource(song, preferLive, override);
+}
+function videoIdOf(song){ return activeVideoId(song, sourceOf(song)); }
+function liveActive(song){ return isLiveActive(song, sourceOf(song)); }
+/* 歌詞 view、只練合唱與 PiP 看到的歌：現場版時，live.singAlong 的行也算大合唱應援
+   （其餘一律是原本的 song）。MV 模式與沒有標記的歌回傳同一個物件。 */
+function viewSong(song){
+  return song && liveActive(song) ? withSingAlongChant(song, song.live.singAlong) : song;
+}
+
+/* MV／現場版切換：只在目前這首有 live 時顯示；狀態以 aria-pressed 表示。 */
+function applyVideoSourceUi(){
+  const group = document.getElementById("video-source-segment");
+  if (!group) return;
+  const has = Boolean(currentSong && currentSong.live);
+  const on = liveActive(currentSong);
+  group.hidden = !has;
+  group.querySelectorAll("[data-video-source]").forEach(button => {
+    const isLive = button.dataset.videoSource === "live";
+    button.classList.toggle("active", isLive === on);
+    button.setAttribute("aria-pressed", isLive === on ? "true" : "false");
+    if (isLive) button.title = has ? currentSong.live.label : "";
+  });
+}
+
+/* 換影片來源：影片、歌詞行時間、逐字時間與應援索引一起換。 */
+function switchVideoSource(){
+  const song = currentSong;
+  if (!song) return;
+  applyVideoSourceUi();
+  karaokeLoadSeq++;                       // 丟掉尚未完成的網路逐字回應
+  karaokeTiming = liveActive(song) ? liveKaraokeTiming(song) : null;
+  chantIdx = -1; chantDone = false; chantWantSec = null; chantWaitUntil = 0;
+  lastActiveIdx = -1;
+  playheadTime = null;
+  openSongVideo(videoIdOf(song));
+  if (liveActive(song)) setKaraokeSourceStatus("ready", liveStatusText(song.live.label));
+  else loadKaraokeTiming(song);
+  renderSongLyrics();
+  syncChantUi();
+  paintChantBar();
+  updateLyricsSync(true);
+}
+
 /* 有內建逐字時間的歌直接用歌曲目錄裡的時間（不連網、離線可用）；
    其他歌照舊由 karaoke-sources.js 連網查詢後對齊。 */
 async function loadKaraokeTiming(song){
   const seq = ++karaokeLoadSeq;
+  if (liveActive(song)){
+    // 現場版只有逐行時間；錄音室的逐字時間與網路來源都不能套在現場影片上。
+    karaokeTiming = liveKaraokeTiming(song);
+    setKaraokeSourceStatus("ready", liveStatusText(song.live.label));
+    return;
+  }
   karaokeTiming = null;
   const result = await loadSongKaraokeTiming(song, {
     loadSources: loadKaraokeSources,
@@ -3561,7 +3664,7 @@ function ensurePlayer(){
   if (player || !window.YT || !window.YT.Player) return;
   buildSongShell();                       // #yt-player 자리 확보
   if (!document.getElementById("yt-player")) return;
-  currentVideoId = (currentSong || listSongs()[0]).youtubeId;
+  currentVideoId = videoIdOf(currentSong || listSongs()[0]);
   player = new YT.Player('yt-player', {
     videoId: currentVideoId,
     playerVars: {
@@ -3607,7 +3710,7 @@ function onPlayerError(){
 /* 影片嵌入失敗時，在影片框內提供直接開啟 YouTube 的連結。 */
 function showVideoFallback(status, message){
   const link = document.createElement("a");
-  link.href = `https://www.youtube.com/watch?v=${encodeURIComponent((currentSong || listSongs()[0]).youtubeId)}`;
+  link.href = `https://www.youtube.com/watch?v=${encodeURIComponent(videoIdOf(currentSong || listSongs()[0]))}`;
   link.target = "_blank";
   link.rel = "noopener";
   link.textContent = "在 YouTube 開啟 ↗";
@@ -3752,7 +3855,7 @@ function onPlayerStateChange(event) {
    (이미 재생 중인 iframe 을 그대로 쓰므로 소리도 이어서 난다) */
 function replayCurrentSong() {
   if (!currentSong || !isSongViewActive()) return;
-  playVideoFor(currentSong.youtubeId);   // 同一支影片：seekTo(0) 後播放
+  playVideoFor(videoIdOf(currentSong));   // 同一支影片：seekTo(0) 後播放
 }
 
 function goToNextSong() {
@@ -3761,7 +3864,7 @@ function goToNextSong() {
 
   // 곡이 하나뿐이면 해시가 그대로라 hashchange 가 안 뜨므로 직접 처음부터 재생
   if (n.next.id === currentSong.id) {
-    playVideoFor(n.next.youtubeId);
+    playVideoFor(videoIdOf(n.next));
     return;
   }
   goNeighbor(1);

@@ -3,7 +3,10 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import type { Song } from "../src/catalogue/assemble";
 import { applyLyricContainerClasses, createLyricMount, lyricContainerClasses, type LyricMount } from "../src/lyric-view/index";
+import { withSingAlongChant } from "../src/chant/index";
+import { liveKaraokeTiming } from "../src/services/karaoke-timing";
 import type { KaraokeSources } from "../src/lyric-view/decorate";
+import type { KaraokeTiming } from "../src/lyric-view/timing";
 import { karaokeSources, loadRealSongs, matrix, REPRESENTATIVE_OPTIONS, REPRESENTATIVE_SONGS, shortHash } from "./lyric-view.fixtures";
 
 /* jsdom has no IntersectionObserver; a fake one lets the tests drive "in view". */
@@ -110,6 +113,66 @@ describe("DOM golden after render", () => {
     expect(list.querySelectorAll<HTMLElement>(".lyric-line")[1].dataset.time).toBe(String(song.lyrics[1].time));
     mount.render(song, { readingMode: "kana", chantVersion: "jp", karaokeTiming: { ...timing, songId: "Other" }, karaokeSources: sources });
     expect(list.querySelector<HTMLElement>(".lyric-line")!.dataset.time).toBe(String(song.lyrics[0].time));
+  });
+});
+
+describe("live timing override", () => {
+  test("rows take the live time for data-time and carry no word timing", () => {
+    const song = songs.find(item => item.id === "Tokimeki")!;
+    const times = song.lyrics.map(line => line.time + 3);
+    const live = { ...song, live: { youtubeId: "abcDEF_-123", label: "Live", times } } as Song;
+    const timing = liveKaraokeTiming(live)! as KaraokeTiming;
+    const { list, mount } = setup();
+    mount.render(live, { readingMode: "both", chantVersion: "jp", karaokeTiming: timing, karaokeSources: sources });
+    const rowTimes = [...list.querySelectorAll<HTMLElement>(".lyric-line")].map(row => Number(row.dataset.time));
+    expect(rowTimes).toEqual(times);
+    const kinds = [...list.querySelectorAll<HTMLElement>(".lyric-line")].map(row => row.dataset.karaokeSource);
+    expect(kinds.every(kind => kind === "line-proportional")).toBe(true);
+    expect(list.querySelector<HTMLElement>(".lyric-line")!.dataset.karaokeStart).toBe(String(times[0]));
+    mount.destroy();
+  });
+});
+
+describe("live sing-along rows", () => {
+  const chantRows = (list: HTMLElement) =>
+    [...list.querySelectorAll<HTMLElement>(".lyric-line.is-chant")].map(row => Number(row.dataset.idx));
+  const micRows = (list: HTMLElement) =>
+    [...list.querySelectorAll<HTMLElement>(".lyric-line")]
+      .filter(row => row.querySelector(".lyric-type-icon.chant")).map(row => Number(row.dataset.idx));
+
+  test("render as chant rows with the mic icon in live mode, and are plain in MV mode", () => {
+    const song = songs.find(item => item.id === "Tokimeki")!;
+    const crowd = song.lyrics.map((line, index) => (line.chant?.jp ? -1 : index)).filter(index => index >= 0).slice(0, 2);
+    expect(crowd).toHaveLength(2);
+    for (const chantVersion of ["jp", "kr"] as const) {
+      const mv = setup();
+      mv.mount.render(song, { readingMode: "both", chantVersion, karaokeSources: sources });
+      const live = setup();
+      live.mount.render(withSingAlongChant(song, crowd), { readingMode: "both", chantVersion, karaokeSources: sources });
+      crowd.forEach(index => {
+        expect(chantRows(mv.list)).not.toContain(index);
+        expect(chantRows(live.list)).toContain(index);
+        expect(micRows(live.list)).toContain(index);
+      });
+      expect(live.list.innerHTML).not.toContain("lyric-crowd");
+      mv.mount.destroy();
+      live.mount.destroy();
+    }
+  });
+
+  test("MV mode and an empty list pass the song through unchanged", () => {
+    const song = songs.find(item => item.id === "Tokimeki")!;
+    expect(withSingAlongChant(song, null)).toBe(song);
+    expect(withSingAlongChant(song, [])).toBe(song);
+    const rows = [1];
+    expect(withSingAlongChant(song, rows)).toBe(withSingAlongChant(song, rows));
+  });
+
+  test("a row the chant version already marks keeps its own cue", () => {
+    const song = songs.find(item => item.id === "Tokimeki")!;
+    const marked = song.lyrics.findIndex(line => line.chant?.jp);
+    if (marked < 0) return;
+    expect(withSingAlongChant(song, [marked]).lyrics[marked].chant!.jp).toBe(song.lyrics[marked].chant!.jp);
   });
 });
 

@@ -2,7 +2,7 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { assembleCatalogue, type Song } from "../src/catalogue/assemble";
 import { list } from "../src/catalogue/index";
-import { backingChants, chantBlocks, lineHasChantCue, lineIsChant, songMarks } from "../src/chant/index";
+import { backingChants, chantBlocks, lineHasChantCue, lineIsChant, songMarks, withSingAlongChant } from "../src/chant/index";
 import { makeSources } from "./fixtures";
 import { loadRealSongs } from "./lyric-view.fixtures";
 
@@ -21,6 +21,16 @@ describe("on the fixture catalogue", () => {
     expect(chantBlocks(alpha, "jp")).toEqual([{ from: 0, to: 2, start: 0, end: 29.1 }]);
     expect(songMarks(alpha, "jp").chant).toBe(3);
     expect(songMarks(alpha, "kr").chant).toBe(1);
+  });
+
+  test("live sing-along rows join the chant cues and chant blocks without touching the original song", () => {
+    const live = withSingAlongChant(alpha, [0]);
+    expect(cues(alpha, "jp")[0]).toEqual([false, 1, true]);
+    expect(lineIsChant(live.lyrics[0], live, "jp")).toBe(true);
+    expect(lineIsChant(live.lyrics[0], live, "kr")).toBe(true);
+    expect(chantBlocks(live, "kr")).toEqual([{ from: 0, to: 1, start: 0, end: 21.1 }]);
+    expect(chantBlocks(alpha, "kr")).toEqual([{ from: 1, to: 1, start: 8.8, end: 21.1 }]);
+    expect(live.lyrics[1]).toBe(alpha.lyrics[1]);
   });
 
   test("a song without a chant guide falls back to the lyric markers in the Japanese version", () => {

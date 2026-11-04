@@ -80,6 +80,8 @@ let chantVersion = storedChantVersion === "kr" ? "kr" : DEFAULT_CHANT_VERSION;
 let chantNotesExpanded = false;
 // 卡拉OK 預設關閉；若使用者曾手動選擇，則沿用保存的設定。
 let karaokeEnabled = store("horo-karaoke") === "1";
+// 進入歌曲時自動播放影片，預設開啟；關閉時只載入影片，等使用者自己按播放。
+let autoplayEnabled = store("horo-autoplay") !== "0";
 let lastActiveIdx = -1;
 let karaokeTiming = null;       // 對齊到目前 YouTube 影片的真實逐字時間
 let karaokeLoadSeq = 0;         // 換歌時忽略上一首尚未完成的網路回應
@@ -2140,6 +2142,12 @@ function buildSongShell(){
               </button>
             </div>
             <div class="settings-row">
+              <span class="settings-label" id="autoplay-label">進入歌曲時自動播放</span>
+              <button class="settings-switch${autoplayEnabled ? " active" : ""}" id="autoplay-btn" type="button" aria-pressed="${autoplayEnabled ? "true" : "false"}" aria-labelledby="autoplay-label">
+                <span class="venue-switch"><span class="venue-knob"></span></span>
+              </button>
+            </div>
+            <div class="settings-row">
               <span class="settings-label" id="autoscroll-label">歌詞自動捲動</span>
               <button class="settings-switch${autoScrollEnabled ? " active" : ""}" id="autoscroll-btn" type="button" aria-pressed="${autoScrollEnabled ? "true" : "false"}" aria-labelledby="autoscroll-label">
                 <span class="venue-switch"><span class="venue-knob"></span></span>
@@ -2367,6 +2375,13 @@ function buildSongShell(){
     updateKaraokeUi();
   });
 
+  document.getElementById("autoplay-btn").addEventListener("click", (e)=>{
+    autoplayEnabled = !autoplayEnabled;
+    store("horo-autoplay", autoplayEnabled ? "1" : "0");
+    e.currentTarget.classList.toggle("active", autoplayEnabled);
+    e.currentTarget.setAttribute("aria-pressed", autoplayEnabled ? "true" : "false");
+  });
+
   document.getElementById("autoscroll-btn").addEventListener("click", (e)=>{
     autoScrollEnabled = !autoScrollEnabled;
     e.currentTarget.classList.toggle("active", autoScrollEnabled);
@@ -2589,7 +2604,7 @@ function skipPart(d){
    (모바일은 사용자 제스처 안에서 시작한 재생만 소리를 허용하기 때문) */
 function gotoSong(song){
   if (!song) return;
-  playVideoFor(song.youtubeId);
+  openSongVideo(song.youtubeId);
   location.hash = `#/song/${song.id}`;
 }
 
@@ -3563,7 +3578,7 @@ function onPlayerReady(){
   if (pendingVideoId && isSongViewActive()) { // 歌曲頁仍在前景才執行排隊播放
     const id = pendingVideoId;
     pendingVideoId = null;
-    playVideoFor(id);
+    openSongVideo(id);
   } else pendingVideoId = null;
   updateDocumentPip();
 }
@@ -3645,7 +3660,39 @@ function ensurePlaying(videoId){
     try { st = player.getPlayerState(); } catch(e){}
     if (st === YT.PlayerState.PLAYING || st === YT.PlayerState.BUFFERING) return;
   }
-  playVideoFor(videoId);
+  openSongVideo(videoId);
+}
+
+/* 進入歌曲時的影片：自動播放開啟就直接播放，關閉時只載入到開頭不出聲
+   （避免使用者同時用其他平台播歌時被打斷）。關閉時若目前正在播放或剛播完
+   （使用者自己按了播放，再切歌或播完換下一首），就接著播下一首。 */
+function openSongVideo(videoId){
+  if (autoplayEnabled || isPlayerPlayingOrEnded()) playVideoFor(videoId);
+  else cueVideoFor(videoId);
+}
+
+function isPlayerPlayingOrEnded(){
+  if (!player || !playerReady) return false;
+  let st = -1;
+  try { st = player.getPlayerState(); } catch(e){}
+  return st === YT.PlayerState.PLAYING || st === YT.PlayerState.BUFFERING || st === YT.PlayerState.ENDED;
+}
+
+function cueVideoFor(videoId){
+  if (!player || !playerReady) { pendingVideoId = videoId; return; }
+  try {
+    if (currentVideoId === videoId) {
+      const st = player.getPlayerState();
+      // 剛建立的播放器已經停在這支影片開頭，不必重新載入
+      if (st === YT.PlayerState.CUED || st === YT.PlayerState.UNSTARTED) return;
+    } else {
+      currentVideoId = videoId;
+      availablePlaybackRates = [];
+      playbackRateRestorePending = true;
+      updatePlaybackRateUi();
+    }
+    player.cueVideoById(videoId);         // 停止目前影片，載入到開頭但不播放
+  } catch(e){}
 }
 
 /* 재생 버튼 모양을 현재 상태에 맞춘다 */

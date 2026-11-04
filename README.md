@@ -104,6 +104,8 @@ GitHub Pages 使用 HTTPS 提供網站，因此離線快取功能可以直接運
 
 `卡拉OK` 開關可以關閉逐字高亮；關閉後仍保留一般歌詞同步、日文讀音與其他工具列功能，設定同樣會保存。
 
+設定面板的「進入歌曲時自動播放」預設開啟；關閉後點進歌曲只會載入 YouTube 影片、停在開頭不出聲，要按播放才開始（適合同時用其他平台播歌的人）；按下播放後，播完或切換上一首／下一首會接著播放，暫停中切歌則同樣停在開頭，設定保存在 localStorage 的 `horo-autoplay`。
+
 控制列的 `字` 選單可以調整歌詞字級（小、標準、大、特大、超大），會同時縮放日文、讀音、羅馬字、繁中翻譯與背景合唱，開啟中的 PiP 字幕小窗也會同步套用；切換後目前這一句會重新置中，設定同樣會保存。
 
 開啟歌曲頁時（不論 `卡拉OK` 開關是否開啟），頁面會先用歌曲的 Spotify track ID（`src/song-metadata.js` 的 `spotifyTrackId`）查詢 [Beautiful Lyrics Reborn](https://github.com/yeahnangua/beautiful-lyrics-reborn) 的公開歌詞服務，它會聚合 Musixmatch RichSync、QQ QRC、酷狗 KRC、網易雲 YRC 等來源；沒有 ID 的歌曲會略過這一步。接著 fallback 到 AMLL TTML DB，最後才查 LRCLIB 的 `lyricsfile`／同步 LRC。前四者可提供逐字或逐音節時間；LRCLIB 是逐行時間，因此會在該句範圍內按比例高亮，適合補足前面來源沒有收錄的歌曲。取得後以歌詞文字對齊目前 YouTube 影片。每一行仍以現有手動錨點為準，來源只提供句內節奏，因此不同版本的前奏或分行不會讓整段畫面漂移；最後仍保留原本依句時間估算的 fallback。逐字資料會以 `karaoke-sources.js` 的 `timed-lyrics-v1`（每句 `start`／`end` 加上 `words[]`）作為前端統一格式，不需要改動現有的翻譯、應援標記或手動句錨點。

@@ -15,6 +15,7 @@ import {
   TRACK_PREV_SVG,
   TRACK_NEXT_SVG,
   PIP_SVG,
+  REPEAT_ONE_SVG,
   SLIDERS_SVG,
   CLOSE_SVG,
   SUN_SVG,
@@ -82,6 +83,8 @@ let chantNotesExpanded = false;
 let karaokeEnabled = store("horo-karaoke") === "1";
 // 進入歌曲時自動播放影片，預設開啟；關閉時只載入影片，等使用者自己按播放。
 let autoplayEnabled = store("horo-autoplay") !== "0";
+// 單曲循環，預設關閉；開啟時影片播完從頭重播同一首，不跳下一首。
+let repeatOneEnabled = store("horo-repeat-one") === "1";
 let lastActiveIdx = -1;
 let karaokeTiming = null;       // 對齊到目前 YouTube 影片的真實逐字時間
 let karaokeLoadSeq = 0;         // 換歌時忽略上一首尚未完成的網路回應
@@ -2088,6 +2091,9 @@ function buildSongShell(){
           ${PIP_SVG}
           <span class="venue-label pip-label">PiP</span>
         </button>
+        <button class="venue-toggle bar-chip repeat-one-toggle${repeatOneEnabled ? " active" : ""}" id="repeat-one-btn" type="button" aria-pressed="${repeatOneEnabled ? "true" : "false"}" aria-label="單曲循環" title="單曲循環：播完重播這首">
+          ${REPEAT_ONE_SVG}
+        </button>
         <button class="venue-toggle bar-chip settings-toggle" id="settings-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="settings-sheet" aria-label="顯示設定" title="顯示設定">
           ${SLIDERS_SVG}
           <span class="venue-label settings-label">設定</span>
@@ -2380,6 +2386,13 @@ function buildSongShell(){
     store("horo-autoplay", autoplayEnabled ? "1" : "0");
     e.currentTarget.classList.toggle("active", autoplayEnabled);
     e.currentTarget.setAttribute("aria-pressed", autoplayEnabled ? "true" : "false");
+  });
+
+  document.getElementById("repeat-one-btn").addEventListener("click", (e)=>{
+    repeatOneEnabled = !repeatOneEnabled;
+    store("horo-repeat-one", repeatOneEnabled ? "1" : "0");
+    e.currentTarget.classList.toggle("active", repeatOneEnabled);
+    e.currentTarget.setAttribute("aria-pressed", repeatOneEnabled ? "true" : "false");
   });
 
   document.getElementById("autoscroll-btn").addEventListener("click", (e)=>{
@@ -3717,9 +3730,11 @@ function onPlayerStateChange(event) {
     applyPlaybackRate();
   }
   // 영상이 끝나면 다음 곡으로 (마지막 곡이면 첫 곡으로 되돌아감)
+  // 單曲循環開啟時改為從頭重播同一首。
   if (event.data === YT.PlayerState.ENDED) {
     stopSyncTimer();
-    goToNextSong();
+    if (repeatOneEnabled) replayCurrentSong();
+    else goToNextSong();
     return;
   }
 
@@ -3735,6 +3750,11 @@ function onPlayerStateChange(event) {
 
 /* 다음 곡으로. 마지막 곡이면 첫 곡으로 순환한다.
    (이미 재생 중인 iframe 을 그대로 쓰므로 소리도 이어서 난다) */
+function replayCurrentSong() {
+  if (!currentSong || !isSongViewActive()) return;
+  playVideoFor(currentSong.youtubeId);   // 同一支影片：seekTo(0) 後播放
+}
+
 function goToNextSong() {
   if (!currentSong || !isSongViewActive()) return;
   const n = songNeighbors(currentSong);

@@ -1223,9 +1223,11 @@ button{touch-action:manipulation;}
 }
 .song-page .lyrics-note .video-source-segment .chant-version-option{
   flex:none;
-  min-height:26px;
-  padding:2px 9px;
+  height:20px;
+  min-height:20px;
+  padding:0 8px;
   font-size:12px;
+  line-height:20px;
 }
 .song-page .settings-copy{
   display:flex;

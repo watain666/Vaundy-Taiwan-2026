@@ -92,7 +92,7 @@ let karaokeEnabled = store("horo-karaoke") === "1";
 let autoplayEnabled = store("horo-autoplay") !== "0";
 // 單曲循環，預設關閉；開啟時影片播完從頭重播同一首，不跳下一首。
 let repeatOneEnabled = store("horo-repeat-one") === "1";
-// 優先播放現場版，預設開啟；有官方現場版的歌預設看現場版（歌詞改用現場時間）。
+// 優先播放 Live 版，預設開啟；有官方現場版的歌預設看現場版（歌詞改用現場時間）。
 let preferLive = store("horo-prefer-live") !== "0";
 // 目前這首歌在歌曲頁用 MV／現場版切換鈕選的來源；不保存，換歌就回到設定的預設。
 let videoSourceOverride = null;   // { songId, source } | null
@@ -2042,7 +2042,7 @@ function buildSongShell(){
             <span class="lyrics-note-copy">點選歌詞跳至影片位置，歌詞隨影片同步</span>
             <div class="chant-version-segment video-source-segment" id="video-source-segment" role="group" aria-label="影片來源" hidden>
               <button type="button" class="chant-version-option" data-video-source="mv" aria-pressed="true">MV</button>
-              <button type="button" class="chant-version-option" data-video-source="live" aria-pressed="false">現場版</button>
+              <button type="button" class="chant-version-option" data-video-source="live" aria-pressed="false">Live</button>
             </div>
           </div>
 
@@ -2170,8 +2170,8 @@ function buildSongShell(){
             </div>
             <div class="settings-row">
               <span class="settings-copy">
-                <span class="settings-label" id="prefer-live-label">優先播放現場版</span>
-                <span class="settings-hint">有官方現場版的歌曲預設播放現場版</span>
+                <span class="settings-label" id="prefer-live-label">優先播放 Live 版</span>
+                <span class="settings-hint">有官方 Live 版的歌曲預設播放 Live 版</span>
               </span>
               <button class="settings-switch${preferLive ? " active" : ""}" id="prefer-live-btn" type="button" aria-pressed="${preferLive ? "true" : "false"}" aria-labelledby="prefer-live-label">
                 <span class="venue-switch"><span class="venue-knob"></span></span>

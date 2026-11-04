@@ -1939,26 +1939,6 @@
     font-size:.86em;
     font-style:normal;
   }
-  /* 現場版：影片裡交給台下大合唱的行。記錄實況，不是應援指引，所以用中性強調色的
-     文字標籤加左側細線，不用應援的橘色。 */
-  .lyric-line.live-sing-along .lyric-body{
-    box-shadow:inset 3px 0 0 var(--ui-accent, currentColor);
-    padding-left:8px;
-    margin-left:-8px;
-  }
-  .lyric-crowd{
-    display:inline-block;
-    align-self:flex-start;
-    margin-top:3px;
-    padding:0 8px;
-    border:1px solid var(--ui-accent, currentColor);
-    border-radius:var(--radius-pill, 999px);
-    color:var(--ui-accent, currentColor);
-    font-size:calc(.78rem * var(--lyric-scale, 1));
-    font-weight:700;
-    line-height:1.6;
-    font-style:normal;
-  }
   .seg-chant{color:var(--chant);}
   .seg-clap{color:var(--clap);}
 

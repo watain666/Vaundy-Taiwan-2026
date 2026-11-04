@@ -100,10 +100,10 @@ export function createLyricMount(container: HTMLElement, options: LyricMountOpti
 
   function render(song: Song, input: LyricRenderInput): void {
     if (destroyed) return;
-    const { readingMode, chantVersion, singAlong } = input;
+    const { readingMode, chantVersion } = input;
     const timing = input.karaokeTiming || null;
     const sources = input.karaokeSources || null;
-    container.innerHTML = renderLyricRows(song, { readingMode, chantVersion, singAlong, interactive: options.interactive });
+    container.innerHTML = renderLyricRows(song, { readingMode, chantVersion, interactive: options.interactive });
     rows = [...container.querySelectorAll<HTMLElement>(".lyric-line")];
     units = new WeakMap();
     karaokeRow = null;

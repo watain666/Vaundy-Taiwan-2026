@@ -7,7 +7,7 @@
  *     label: "HORO 首爾",         // short name shown on the switch
  *     times: [0, 12.4, ...],      // seconds in the LIVE video; one start time per lyric row
  *     singAlong: [20, 21, 22],    // optional: lyric row indices (0-based) where Vaundy hands the line
- *                                 // to the crowd in this live video; shown as 現場大合唱 in live mode only
+ *                                 // to the crowd in this live video; shown as 大合唱 應援 rows in live mode only
  *   }
  *
  * `times` is parallel to the song's lyric rows in src/song-lyrics.js: same
@@ -17,9 +17,10 @@
  * video. A mismatch fails the build (live-timing-* rules).
  *
  * `singAlong` lists row indices, each an integer in
- * [0, row count), strictly increasing (no duplicates). It records what happened
- * in this video, so it is independent of the chant-guide fan guidance. A bad
- * index fails the build (live-timing-sing-along).
+ * [0, row count), strictly increasing (no duplicates). In live mode those rows
+ * are treated as chant rows (the 大合唱 mic cue, chant-only practice), on top of
+ * whatever the chant guide already marks; MV mode ignores them. A bad index
+ * fails the build (live-timing-sing-along).
  *
  * Choosing the video: this guide serves the ASIA ARENA TOUR 2026 "HORO", so
  * use an official full single-song upload from a HORO show when one exists;

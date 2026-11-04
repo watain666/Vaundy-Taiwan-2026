@@ -72,6 +72,32 @@ export function songMarks(song: Pick<SongSummary, "marks">, version: ChantVersio
   };
 }
 
+/* Live mode: the rows an official live entry lists in `singAlong` (Vaundy hands
+   the line to the crowd) are chant rows, shown and practised like any chant-guide
+   row. Returns the song with a chant cue added to those rows in both chant
+   versions; a row the chant version already marks keeps its own cue (segments
+   included). Without marks it returns `song` itself, so MV mode renders exactly
+   as before. The result is memoized per song and mark list, so its identity is
+   stable for the chant-block memo and for the Document PiP's change check. */
+const singAlongMemo = new WeakMap<object, { rows: readonly number[]; song: unknown }>();
+
+export function withSingAlongChant<T extends ChantSong>(song: T, rows: readonly number[] | null | undefined): T {
+  if (!rows || !rows.length) return song;
+  const cached = singAlongMemo.get(song);
+  if (cached && cached.rows === rows) return cached.song as T;
+  const crowd = new Set(rows);
+  const lyrics = song.lyrics.map((line, index) => {
+    if (!crowd.has(index)) return line;
+    const chant = { ...line.chant };
+    if (!chant.jp) chant.jp = { full: true, segments: [] };
+    if (!chant.kr) chant.kr = true;
+    return { ...line, chant };
+  });
+  const derived = { ...song, lyrics };
+  singAlongMemo.set(song, { rows, song: derived });
+  return derived;
+}
+
 const CHANT_LEAD_SEC = 1.2;   // enter one beat before the chant to get ready
 const CHANT_TAIL_SEC = 0.6;   // keep a little after so the last syllable is not cut
 const CHANT_GAP_MERGE = 2.5;  // only join gaps short enough to belong together

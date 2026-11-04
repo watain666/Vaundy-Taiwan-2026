@@ -46,7 +46,7 @@ import {
   CHANT_REFERENCE_URL
 } from "./chant-guide.js";
 import { get as getSong, list as listSongs, load as loadSong, UnknownSongError } from "./catalogue/index.ts";
-import { chantBlocks, songMarks } from "./chant/index.ts";
+import { chantBlocks, songMarks, withSingAlongChant } from "./chant/index.ts";
 import { loadKaraokeSources } from "./services/lazy-modules.js";
 import {
   activeVideoId,
@@ -2497,7 +2497,7 @@ let chantWaitUntil  = 0;       // 여기까지도 못 가면 포기하고 그냥
 /* 떼창 구간은 src/chant/ 가 계산한다. 가사 시간은 지금 쓰는 karaoke 시간을 따르고,
    시간이 바뀌면 그쪽에서 알아서 다시 계산한다 (캐시를 손으로 비우지 않는다). */
 function currentChantBlocks(){
-  return chantBlocks(currentSong, chantVersion, index => playbackTimeForLine(currentSong, index));
+  return chantBlocks(viewSong(currentSong), chantVersion, index => playbackTimeForLine(currentSong, index));
 }
 
 function setChantVersion(next){
@@ -2885,12 +2885,11 @@ function lyricContainerSettings(){
    切應援版本、逐字時間或分配器載入完成都走這裡，不做局部修補。 */
 function renderSongLyrics(){
   if (!songLyricMount || !currentSong || !Array.isArray(currentSong.lyrics)) return;
-  songLyricMount.render(currentSong, {
+  songLyricMount.render(viewSong(currentSong), {
     readingMode,
     chantVersion,
     karaokeTiming,
-    karaokeSources: window.KARAOKE_SOURCES || null,
-    singAlong: liveSingAlong(currentSong)
+    karaokeSources: window.KARAOKE_SOURCES || null
   });
 }
 
@@ -3356,13 +3355,12 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
     progressText: duration && currentTime !== null
       ? `${formatPlaybackTime(currentTime)} / ${formatPlaybackTime(duration)}`
       : "正在載入播放進度",
-    song,
+    song: viewSong(song),
     view: {
       readingMode,
       chantVersion,
       karaokeTiming,
-      karaokeSources: window.KARAOKE_SOURCES || null,
-      singAlong: liveSingAlong(song)
+      karaokeSources: window.KARAOKE_SOURCES || null
     },
     playhead: { activeIdx: hasLine ? currentIndex : -1, time: playheadTime, karaokeEnabled },
     container: lyricContainerSettings(),
@@ -3417,9 +3415,10 @@ function sourceOf(song){
 }
 function videoIdOf(song){ return activeVideoId(song, sourceOf(song)); }
 function liveActive(song){ return isLiveActive(song, sourceOf(song)); }
-/* 現場大合唱的行：只在現場版顯示；MV 模式與沒有標記的歌回傳 null。 */
-function liveSingAlong(song){
-  return liveActive(song) && song.live.singAlong && song.live.singAlong.length ? song.live.singAlong : null;
+/* 歌詞 view、只練合唱與 PiP 看到的歌：現場版時，live.singAlong 的行也算大合唱應援
+   （其餘一律是原本的 song）。MV 模式與沒有標記的歌回傳同一個物件。 */
+function viewSong(song){
+  return song && liveActive(song) ? withSingAlongChant(song, song.live.singAlong) : song;
 }
 
 /* MV／現場版切換：只在目前這首有 live 時顯示；狀態以 aria-pressed 表示。 */

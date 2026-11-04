@@ -230,7 +230,7 @@ describe("live video by chant version on the real catalogue", () => {
     const kaiju = songs.find(song => song.id === "KaijuNoHanauta")!;
     const jp = pickLiveVideo(kaiju, "jp")!;
     const kr = pickLiveVideo(kaiju, "kr")!;
-    expect([jp.youtubeId, jp.times[0], jp.times.length, jp.singAlong]).toEqual(["ci2lGX16f7Y", 2.13, 61, []]);
+    expect([jp.youtubeId, jp.times[0], jp.times.length, jp.singAlong]).toEqual(["ci2lGX16f7Y", 2.13, 61, [20, 21, 30, 31, 32, 34, 35, 43, 45, 47, 49, 51, 53, 59]]);
     expect([kr.youtubeId, kr.times[0]]).toEqual(["I3_jV2zO0l0", 5.04]);
     expect(kr.singAlong).toContain(33);
     expect(liveKaraokeTiming(kaiju, "jp")!.lines[0]!.start).toBe(2.13);

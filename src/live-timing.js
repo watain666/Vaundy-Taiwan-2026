@@ -56,13 +56,14 @@ export const LIVE_TIMING = {
     // Vaundy DOME TOUR 2026 "SILENCE" at TOKYO DOME (official upload). Aligned
     // to the MV row times with chroma + MFCC DTW and per-row onset
     // cross-correlation: the live take keeps the studio arrangement and tempo,
-    // a constant shift of -6.47 s. The Japanese crowd does not take over lines
-    // here, so there is no singAlong.
+    // a constant shift of -6.47 s. Sing-along rows use the same two-sign rule
+    // as the Seoul entry.
     {
       chantVersion: "jp",
       youtubeId: "ci2lGX16f7Y",
       label: "SILENCE 東京巨蛋",
       times: [2.13, 5.23, 8.43, 14.83, 18.03, 21.23, 27.83, 30.93, 34.03, 36.03, 40.03, 41.03, 45.43, 52.53, 53.83, 58.13, 65.93, 69.23, 72.43, 75.53, 78.83, 82.03, 85.23, 87.03, 91.33, 92.23, 96.43, 103.83, 105.03, 109.33, 117.13, 120.33, 123.63, 130.23, 133.23, 136.43, 141.93, 143.43, 147.73, 154.83, 156.23, 160.53, 167.93, 169.13, 171.03, 172.23, 174.03, 175.43, 177.13, 181.83, 183.73, 185.03, 186.73, 188.23, 189.98, 194.03, 197.23, 200.43, 206.83, 210.03, 213.13],
+      singAlong: [20, 21, 30, 31, 32, 34, 35, 43, 45, 47, 49, 51, 53, 59],
     },
   ],
   // Vaundy ASIA ARENA TOUR 2026 "HORO" @ INSPIRE ARENA in SEOUL (official

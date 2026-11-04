@@ -435,6 +435,9 @@
     line-height:1;
   }
   .song-mark svg{ width:12px;height:12px; }
+  /* 旋轉標記：身體與手臂兩層疊在同一格，列表中不播放動畫 */
+  .song-mark-spin{ position:relative;width:12px;height:12px; }
+  .song-mark-spin svg{ position:absolute;inset:0; }
   .song-mark b{
     font-family:var(--font-tw-sans);
     font-weight:400;

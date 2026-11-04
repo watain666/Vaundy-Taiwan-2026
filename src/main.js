@@ -1210,7 +1210,7 @@ function renderGuide(){
             <span class="legend-item"><span class="legend-icon clap">${INLINE_ICONS.clap}</span>拍手</span>
             <span class="legend-item"><span class="legend-icon wave">${INLINE_ICONS.wave}</span>揮手</span>
             <span class="legend-item"><span class="legend-icon jump">${INLINE_ICONS.jump}</span>跳躍</span>
-            <span class="legend-item"><span class="legend-icon spin">${INLINE_ICONS.spin}</span>轉臂</span>
+            <span class="legend-item"><span class="legend-icon spin">${INLINE_ICONS.spin}</span>舉起食指逆時針旋轉</span>
           </div>
           <p class="song-legend-note">數字代表目前應援版本的大合唱歌詞行數</p>
         </div>
@@ -3404,7 +3404,7 @@ function songMarksHtml(song){
   if (m.clap)  html += `<span class="song-mark dot clap common" title="拍手" aria-label="拍手">${useSvg("i-hand")}</span>`;
   if (m.wave)  html += `<span class="song-mark dot wave common" title="揮手" aria-label="揮手">${useSvg("i-wave")}</span>`;
   if (m.jump)  html += `<span class="song-mark dot jump" title="跳躍" aria-label="跳躍">${useSvg("i-jump")}</span>`;
-  if (m.spin)  html += `<span class="song-mark dot spin" title="轉臂" aria-label="轉臂">${useSvg("i-cheer")}</span>`;
+  if (m.spin)  html += `<span class="song-mark dot spin" title="舉起食指逆時針旋轉" aria-label="舉起食指逆時針旋轉"><span class="song-mark-spin">${useSvg("i-cheer")}${useSvg("i-cheer-arm")}</span></span>`;
   return html ? `<span class="song-marks">${html}</span>` : "";
 }
 

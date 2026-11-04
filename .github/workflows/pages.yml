@@ -1,8 +1,13 @@
 name: Deploy Vite site to GitHub Pages
 
+# Deploy only when a push to main changes package.json, which happens on a
+# release (`npm version`). Merging a PR alone leaves the version and the
+# service worker's CACHE_VERSION unchanged, so deploying it would be cancelled
+# by the release push minutes later anyway. Run it manually to deploy otherwise.
 on:
   push:
     branches: [main]
+    paths: [package.json]
   workflow_dispatch:
 
 permissions:
@@ -19,10 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -40,13 +45,13 @@ jobs:
         run: npm run build
 
       - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

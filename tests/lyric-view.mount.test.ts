@@ -3,7 +3,9 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import type { Song } from "../src/catalogue/assemble";
 import { applyLyricContainerClasses, createLyricMount, lyricContainerClasses, type LyricMount } from "../src/lyric-view/index";
+import { liveKaraokeTiming } from "../src/services/karaoke-timing";
 import type { KaraokeSources } from "../src/lyric-view/decorate";
+import type { KaraokeTiming } from "../src/lyric-view/timing";
 import { karaokeSources, loadRealSongs, matrix, REPRESENTATIVE_OPTIONS, REPRESENTATIVE_SONGS, shortHash } from "./lyric-view.fixtures";
 
 /* jsdom has no IntersectionObserver; a fake one lets the tests drive "in view". */
@@ -110,6 +112,23 @@ describe("DOM golden after render", () => {
     expect(list.querySelectorAll<HTMLElement>(".lyric-line")[1].dataset.time).toBe(String(song.lyrics[1].time));
     mount.render(song, { readingMode: "kana", chantVersion: "jp", karaokeTiming: { ...timing, songId: "Other" }, karaokeSources: sources });
     expect(list.querySelector<HTMLElement>(".lyric-line")!.dataset.time).toBe(String(song.lyrics[0].time));
+  });
+});
+
+describe("live timing override", () => {
+  test("rows take the live time for data-time and carry no word timing", () => {
+    const song = songs.find(item => item.id === "Tokimeki")!;
+    const times = song.lyrics.map(line => line.time + 3);
+    const live = { ...song, live: { youtubeId: "abcDEF_-123", label: "Live", times } } as Song;
+    const timing = liveKaraokeTiming(live)! as KaraokeTiming;
+    const { list, mount } = setup();
+    mount.render(live, { readingMode: "both", chantVersion: "jp", karaokeTiming: timing, karaokeSources: sources });
+    const rowTimes = [...list.querySelectorAll<HTMLElement>(".lyric-line")].map(row => Number(row.dataset.time));
+    expect(rowTimes).toEqual(times);
+    const kinds = [...list.querySelectorAll<HTMLElement>(".lyric-line")].map(row => row.dataset.karaokeSource);
+    expect(kinds.every(kind => kind === "line-proportional")).toBe(true);
+    expect(list.querySelector<HTMLElement>(".lyric-line")!.dataset.karaokeStart).toBe(String(times[0]));
+    mount.destroy();
   });
 });
 

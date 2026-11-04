@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.25.0**
+## [**v1.25.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/60e3fd2d984b23b8247004b5a34f85066dca311a)
 
 - [PR #83](https://github.com/watain666/Vaundy-Taiwan-2026/pull/83)：歌曲頁控制列在 PiP 右邊新增「單曲循環」圖示，預設關閉並會保存；開啟後影片播完會從頭重播同一首，不再自動跳到下一首，手動按上一首／下一首仍照常切歌。重播或把影片拉回前奏時，歌詞會立刻清掉上一首最後一句的高亮並捲回開頭，不再等到第一句才跳上去。
 - [PR #83](https://github.com/watain666/Vaundy-Taiwan-2026/pull/83)：〈ホムンクルス〉「風の目の方に歩き出す脱、言念、且つ自暴論」的中文翻譯移除機器翻譯殘留的「Zaporozhye （ Zaporozhye ） Ron」。

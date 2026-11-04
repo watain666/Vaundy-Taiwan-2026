@@ -120,7 +120,7 @@ describe("live timing override", () => {
   test("rows take the live time for data-time and carry no word timing", () => {
     const song = songs.find(item => item.id === "Tokimeki")!;
     const times = song.lyrics.map(line => line.time + 3);
-    const live = { ...song, live: { youtubeId: "abcDEF_-123", label: "Live", times } } as Song;
+    const live = { ...song, live: [{ chantVersion: "jp", youtubeId: "abcDEF_-123", label: "Live", times, singAlong: [] }] } as Song;
     const timing = liveKaraokeTiming(live)! as KaraokeTiming;
     const { list, mount } = setup();
     mount.render(live, { readingMode: "both", chantVersion: "jp", karaokeTiming: timing, karaokeSources: sources });

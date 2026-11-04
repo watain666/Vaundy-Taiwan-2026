@@ -6,6 +6,7 @@ import {
   activeVideoId,
   bundledKaraokeTiming,
   isLiveActive,
+  pickLiveVideo,
   liveKaraokeTiming,
   loadSongKaraokeTiming,
   resolveVideoSource,
@@ -13,6 +14,7 @@ import {
   type KaraokeStatus,
 } from "../src/services/karaoke-timing";
 import { karaoke, makeSources } from "./fixtures";
+import { loadRealSongs } from "./lyric-view.fixtures";
 
 const live = karaoke as unknown as KaraokeTimingApi;
 
@@ -152,7 +154,12 @@ describe("loadSongKaraokeTiming", () => {
 describe("live video", () => {
   function liveSongs(): Song[] {
     const sources = makeSources();
-    sources.liveTiming = { Alpha: { youtubeId: "abcDEF_-123", label: "Dome Tour", times: [3, 13, 24] } };
+    sources.liveTiming = {
+      Alpha: [
+        { chantVersion: "kr", youtubeId: "seoulSEOUL1", label: "Seoul", times: [5, 15, 26], singAlong: [1] },
+        { chantVersion: "jp", youtubeId: "abcDEF_-123", label: "Dome Tour", times: [3, 13, 24] },
+      ],
+    };
     sources.wordTiming = {
       Alpha: { source: "KuGou KRC", sourceId: "1", offset: 0, lines: { "0": [["夜", 0.1, 0.3], ["の", 0.3, 0.4], ["歌", 0.4, 0.9]] } },
     };
@@ -162,13 +169,28 @@ describe("live video", () => {
   test("activeVideoId falls back to the MV unless live is selected and exists", () => {
     const [alpha, beta] = liveSongs();
     expect(activeVideoId(alpha, "mv")).toBe("yt-alpha");
-    expect(activeVideoId(alpha, "live")).toBe("abcDEF_-123");
+    expect(activeVideoId(alpha, "live", "jp")).toBe("abcDEF_-123");
+    expect(activeVideoId(alpha, "live", "kr")).toBe("seoulSEOUL1");
+    expect(activeVideoId(alpha, "mv", "kr")).toBe("yt-alpha");
     expect(activeVideoId(beta, "live")).toBe("yt-beta");
     expect(activeVideoId(alpha, "anything")).toBe("yt-alpha");
     expect(activeVideoId(null, "live")).toBe("");
     expect(isLiveActive(alpha, "live")).toBe(true);
     expect(isLiveActive(beta, "live")).toBe(false);
     expect(isLiveActive(alpha, "mv")).toBe(false);
+  });
+
+  test("pickLiveVideo takes the chant version's video, else falls back to the other one", () => {
+    const [alpha, beta] = liveSongs();
+    expect(pickLiveVideo(alpha, "jp")!.label).toBe("Dome Tour");
+    expect(pickLiveVideo(alpha, "kr")!.label).toBe("Seoul");
+    expect(pickLiveVideo(beta, "kr")).toBeNull();
+    const krOnly = { live: [alpha.live![0]] };
+    const fallback = pickLiveVideo(krOnly, "jp")!;
+    expect(fallback.youtubeId).toBe("seoulSEOUL1");
+    expect(fallback.singAlong).toEqual([1]);
+    expect(pickLiveVideo(alpha, "jp")!.singAlong).toEqual([]);
+    expect(activeVideoId({ youtubeId: "mv", ...krOnly }, "live", "jp")).toBe("seoulSEOUL1");
   });
 
   test("resolveVideoSource applies the setting, the per-song override and the live guard", () => {
@@ -185,7 +207,7 @@ describe("live video", () => {
 
   test("converts live times to line rows that end at the next row, with no words", () => {
     const [alpha] = liveSongs();
-    const timing = liveKaraokeTiming(alpha)!;
+    const timing = liveKaraokeTiming(alpha, "jp")!;
     expect(timing).toMatchObject({ format: "timed-lyrics-v1-aligned", songId: "Alpha", matchedLines: 3, totalLines: 3 });
     expect(timing.lines).toEqual([
       { start: 3, end: 13, granularity: "line" },
@@ -199,5 +221,27 @@ describe("live video", () => {
     expect(bundledKaraokeTiming(alpha)).not.toBeNull();
     expect(liveKaraokeTiming(alpha)!.lines.every(line => !line || !("words" in line))).toBe(true);
     expect(liveKaraokeTiming(beta)).toBeNull();
+  });
+});
+
+describe("live video by chant version on the real catalogue", () => {
+  test("怪獣の花唄 uses the Dome live for jp and the Seoul live for kr, each with its own sing-along", async () => {
+    const songs = await loadRealSongs();
+    const kaiju = songs.find(song => song.id === "KaijuNoHanauta")!;
+    const jp = pickLiveVideo(kaiju, "jp")!;
+    const kr = pickLiveVideo(kaiju, "kr")!;
+    expect([jp.youtubeId, jp.times[0], jp.times.length, jp.singAlong]).toEqual(["ci2lGX16f7Y", 2.13, 61, []]);
+    expect([kr.youtubeId, kr.times[0]]).toEqual(["I3_jV2zO0l0", 5.04]);
+    expect(kr.singAlong).toContain(33);
+    expect(liveKaraokeTiming(kaiju, "jp")!.lines[0]!.start).toBe(2.13);
+    expect(liveKaraokeTiming(kaiju, "kr")!.lines[0]!.start).toBe(5.04);
+  });
+
+  test("しわあわせ only has the Seoul live: jp plays it with its sing-along rows", async () => {
+    const shiwaawase = (await loadRealSongs()).find(song => song.id === "Shiwaawase")!;
+    const video = pickLiveVideo(shiwaawase, "jp")!;
+    expect([video.chantVersion, video.youtubeId]).toEqual(["kr", "NuPVr1BxqU8"]);
+    expect(activeVideoId(shiwaawase, "live", "jp")).toBe("NuPVr1BxqU8");
+    expect(video.singAlong).toEqual([15, 16, 17, 27, 28, 29, 30]);
   });
 });

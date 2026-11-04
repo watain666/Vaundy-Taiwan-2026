@@ -97,14 +97,26 @@ export function resolveVideoSource(
   return preferLive ? "live" : "mv";
 }
 
-/** The preferred video of a song: its live video when `source` is "live" and the song has one, else the MV. */
-export function activeVideoId(song: { youtubeId: string; live?: { youtubeId: string } } | null | undefined, source: string): string {
+/**
+ * The live video of a song to use for a chant version: the one that belongs to
+ * that version, else (the song has no video for it) another version's video,
+ * which plays and times the song and whose own sing-along marks apply. Null when the song has no live video.
+ */
+export function pickLiveVideo<V extends { chantVersion: string }>(song: { live?: readonly V[] } | null | undefined, chantVersion: string): V | null {
+  const videos = song && song.live;
+  if (!videos || !videos.length) return null;
+  return videos.find(video => video.chantVersion === chantVersion) || videos[0];
+}
+
+/** The preferred video of a song: its live video for the chant version when `source` is "live" and the song has one, else the MV. */
+export function activeVideoId(song: { youtubeId: string; live?: readonly { chantVersion: string; youtubeId: string }[] } | null | undefined, source: string, chantVersion: string = "jp"): string {
   if (!song) return "";
-  return source === "live" && song.live ? song.live.youtubeId : song.youtubeId;
+  const video = source === "live" ? pickLiveVideo(song, chantVersion) : null;
+  return video ? video.youtubeId : song.youtubeId;
 }
 
 /** True when `source` selects the song's live video and the song has one. */
-export function isLiveActive(song: { live?: unknown } | null | undefined, source: string): boolean {
+export function isLiveActive(song: { live?: readonly unknown[] } | null | undefined, source: string): boolean {
   return source === "live" && Boolean(song && song.live);
 }
 
@@ -115,8 +127,8 @@ export function isLiveActive(song: { live?: unknown } | null | undefined, source
  * timing is never applied; karaoke falls back to the line-proportional
  * allocation inside each live row. Null when the song has no live video.
  */
-export function liveKaraokeTiming(song: Song | null | undefined): AlignedKaraokeTiming | null {
-  const live = song && song.live;
+export function liveKaraokeTiming(song: Song | null | undefined, chantVersion: string = "jp"): AlignedKaraokeTiming | null {
+  const live = pickLiveVideo(song, chantVersion);
   if (!song || !live || !Array.isArray(live.times) || live.times.length !== song.lyrics.length) return null;
   const lines = live.times.map((start, index): TimedLine => ({
     start,

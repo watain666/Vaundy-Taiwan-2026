@@ -1376,8 +1376,23 @@
   .video-frame iframe, .video-frame div{position:absolute;inset:0;width:100%;height:100%;border:0;}
 
 
+  /* 說明、MV／Live 切換與應援圖示放在影片下方，與影片左右切齊。
+     窄時兩列：說明＋切換一列、圖示一列；夠寬（見 @container）時合成一列。 */
+  .video-meta{
+    container:video-meta / inline-size;
+    margin:8px 0 12px;
+  }
+  .video-meta-row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"note source" "legend legend";
+    align-items:center;
+    column-gap:12px;
+    row-gap:8px;
+  }
   .lyrics-note{
-    width:100%;max-width:720px;margin:16px auto 0;padding:0 16px;
+    grid-area:note;
+    min-width:0;
     font-size:12px;line-height:1.5;color:#b9a98a;
     display:flex;gap:4px;align-items:baseline;
     flex-wrap:nowrap;
@@ -1455,8 +1470,24 @@
   .karaoke-source-popover[data-state="fallback"] summary{color:#b9a98a;}
 
   .lyrics-legend{
-    max-width:720px;margin:14px auto 12px;padding:0 16px;
+    grid-area:legend;
+    min-width:0;
     display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  }
+  /* One row needs about 562px, or 671px with the 應援說明 toggle shown. */
+  @container video-meta (min-width:580px){
+    .video-meta-row:not(:has(.chant-notes-toggle:not([hidden]))){
+      grid-template-columns:auto minmax(0,1fr) auto;
+      grid-template-areas:"note legend source";
+      column-gap:24px;
+    }
+  }
+  @container video-meta (min-width:690px){
+    .video-meta-row{
+      grid-template-columns:auto minmax(0,1fr) auto;
+      grid-template-areas:"note legend source";
+      column-gap:24px;
+    }
   }
   .legend-item{
     display:flex;align-items:center;gap:7px;
@@ -1504,10 +1535,8 @@
   .chant-notes-chevron svg{width:13px;height:13px;}
   .chant-notes-toggle.active .chant-notes-chevron{transform:rotate(180deg);}
   .chant-notes-panel{
-    /* Match the 720px note/legend row's inner width and center it with them. */
-    width:calc(100% - 32px);
-    max-width:688px;
-    margin:-2px auto 12px;
+    /* Sits in .video-wrap under the note/legend row, so it matches the video's width. */
+    margin:-2px 0 12px;
     padding:10px 16px;
     border:1px solid var(--stage-line);
     border-radius:10px;
@@ -1520,7 +1549,7 @@
      停住並可捲動，否則說明下半部會被控制列蓋住。只在展開時開啟捲動，
      平常保留讓提示圖凸出到歌詞區上方的效果；短橫屏版型另有規則，不套用。 */
   @media (max-width:899px) and (orientation:portrait), (max-width:899px) and (min-height:601px){
-    .song-fixed-top:has(> .chant-notes-panel:not([hidden])){
+    .song-fixed-top:has(.chant-notes-panel:not([hidden])){
       flex:0 1 auto;
       min-height:0;
       overflow-y:auto;
@@ -2813,8 +2842,7 @@
     opacity:0;
     pointer-events:none;
   }
-  .song-page.venue .lyrics-note,
-  .song-page.venue .lyrics-legend,
+  .song-page.venue .video-meta,
   .song-page.venue .chant-notes-panel,
   .song-page.venue .venue-hint{ display:none; }
   .song-page.venue .lyrics-scroll{

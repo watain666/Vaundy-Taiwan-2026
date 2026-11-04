@@ -231,6 +231,7 @@ export const RULE_SEVERITY = {
   "word-timing-start-offset": "error",
   "live-timing-unknown-song": "error",
   "live-timing-youtube-id": "error",
+  "live-timing-label": "error",
   "live-timing-row-count": "error",
   "live-timing-order": "error",
 } as const;
@@ -688,7 +689,7 @@ function attachLiveTiming(id: string, lines: LyricLine[], sources: CatalogueSour
     });
   }
   if (typeof entry.label !== "string" || !entry.label.trim()) {
-    log.add("live-timing-youtube-id", "label must be a non-empty string", id);
+    log.add("live-timing-label", "label must be a non-empty string", id);
     valid = false;
   }
   return valid ? { youtubeId: entry.youtubeId, label: entry.label, times: [...times] } : null;

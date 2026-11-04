@@ -386,8 +386,8 @@ describe("live timing", () => {
     expectRejected(withLive({ youtubeId }), "live-timing-youtube-id", "Alpha");
   });
 
-  test("live-timing-youtube-id rejects an empty label", () => {
-    expectRejected(withLive({ label: " " }), "live-timing-youtube-id", "Alpha");
+  test("live-timing-label rejects an empty label", () => {
+    expectRejected(withLive({ label: " " }), "live-timing-label", "Alpha");
   });
 
   test.each([[[1, 11]], [[1, 11, 22, 30]], [[]]])("live-timing-row-count rejects %j", times => {

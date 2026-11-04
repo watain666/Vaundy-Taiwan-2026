@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.26.0**
+## [**v1.26.0**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/605ab3f7cff2112e8a37806accfb68acb1d1f348)
 
 - [PR #84](https://github.com/watain666/Vaundy-Taiwan-2026/pull/84)：新增官方 Live 版影片：有官方 Live 影片的歌曲（目前為〈怪獣の花唄〉與〈しわあわせ〉）可以改看現場演出，歌詞行、點歌詞跳轉、只練合唱與子母畫面都改用 Live 影片的時間；Live 版只有逐行時間，不套用錄音室的逐字高亮。設定面板新增「優先播放 Live 版」，預設開啟；歌曲頁影片下方右側新增「MV／Live」切換，只改目前這首。Live 影片裡 Vaundy 把歌詞交給台下合唱的段落，在 Live 版會和應援指引一樣標成大合唱。
 - [PR #85](https://github.com/watain666/Vaundy-Taiwan-2026/pull/85)：Live 影片依應援版本挑選：〈怪獣の花唄〉日本版使用 DOME TOUR 2026 "SILENCE" 東京巨蛋場、韓國版使用 ASIA ARENA TOUR 2026 "HORO" 首爾場，各自標出該場觀眾的大合唱段落；切換日本版／韓國版時，Live 影片、歌詞時間與大合唱標示會一起切換。〈しわあわせ〉目前只有 HORO 首爾場，兩個版本都使用這支影片。

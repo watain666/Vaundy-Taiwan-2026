@@ -75,7 +75,7 @@ npm run preview
 ## 2. 開啟 GitHub Pages
 
 1. 將儲存庫的 **Settings** → **Pages** → **Build and deployment / Source** 設為 **GitHub Actions**。
-2. 推送到 `main` 後，`.github/workflows/pages.yml` 會執行 `npm ci`、`npm run build`，再發布 `dist/`。
+2. 推送到 `main` 且變更了 `package.json`（也就是發版時的 `npm version`）後，`.github/workflows/pages.yml` 會執行 `npm ci`、`npm run build`，再發布 `dist/`。只合併 PR 不會部署，要臨時部署可在 Actions 頁面手動執行這個 workflow。
 3. 等待 Actions 完成後，就會產生 `https://帳號.github.io/儲存庫名稱/` 網址。
 4. 開啟或更新 pull request 時，`.github/workflows/ci.yml` 會執行 `npm run typecheck`、`npm test`、`npm run build` 與 `git diff --check`，只檢查、不部署。
 

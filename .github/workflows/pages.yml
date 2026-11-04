@@ -1,8 +1,13 @@
 name: Deploy Vite site to GitHub Pages
 
+# Deploy only when a push to main changes package.json, which happens on a
+# release (`npm version`). Merging a PR alone leaves the version and the
+# service worker's CACHE_VERSION unchanged, so deploying it would be cancelled
+# by the release push minutes later anyway. Run it manually to deploy otherwise.
 on:
   push:
     branches: [main]
+    paths: [package.json]
   workflow_dispatch:
 
 permissions:

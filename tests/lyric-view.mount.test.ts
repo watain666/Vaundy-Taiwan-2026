@@ -190,9 +190,9 @@ describe("playhead", () => {
     expect(fresh.querySelectorAll(".lyric-romaji .karaoke-lit").length).toBeGreaterThan(0);
   });
 
-  test("no current line keeps the last active row by default, and clears it when asked", () => {
+  test("an unknown playback time keeps the last active row by default, and clears it when asked", () => {
     ctx.mount.setPlayhead({ activeIdx: 2, time: 0, karaokeEnabled: true });
-    ctx.mount.setPlayhead({ activeIdx: -1, time: 0, karaokeEnabled: true });
+    ctx.mount.setPlayhead({ activeIdx: -1, time: null, karaokeEnabled: true });
     expect(rows()[2].classList.contains("active")).toBe(true);
     const pip = setup(false, "top");
     const pipMount = createLyricMount(pip.list, { interactive: false, scrollAnchor: "top", scroller: pip.scroller, keepLastActive: false });
@@ -255,6 +255,28 @@ describe("rows, guard, observers and scrolling", () => {
     expect(hand.style.animationDelay).toMatch(/^-0\.\d+s$/);
     mount.destroy();
     expect(observer.disconnected).toBe(true);
+  });
+
+  test("playback back before the first line clears the current line and scrolls to the start", () => {
+    document.body.innerHTML = '<div class="lyrics-scroll"><ul id="lyrics-list"></ul></div>';
+    const list = document.getElementById("lyrics-list")!;
+    const scroller = list.parentElement!;
+    let top = 0;
+    Object.defineProperty(scroller, "scrollTop", { configurable: true, get: () => top, set: value => { top = value; } });
+    const mount = createLyricMount(list, { interactive: true, scrollAnchor: "center", scroller, scrollDurationMs: 0 });
+    mount.render(songs[0], { readingMode: "kana", chantVersion: "jp", karaokeTiming: null, karaokeSources: sources });
+    const row = list.querySelectorAll<HTMLElement>(".lyric-line")[5];
+    mount.setPlayhead({ activeIdx: 5, time: (Number(row.dataset.karaokeStart) + Number(row.dataset.karaokeEnd)) / 2, karaokeEnabled: true });
+    expect(row.querySelectorAll(".karaoke-lit, .karaoke-current").length).toBeGreaterThan(0);
+    top = 900;   // the song played on: the list is scrolled far down
+    mount.setPlayhead({ activeIdx: -1, time: 0.2, karaokeEnabled: true });   // replayed from the start
+    expect(list.querySelectorAll(".lyric-line.active")).toHaveLength(0);
+    expect(row.querySelectorAll(".karaoke-lit, .karaoke-current")).toHaveLength(0);
+    expect(top).toBe(0);
+    top = 300;   // the visitor scrolls during the intro: later ticks leave it alone
+    mount.setPlayhead({ activeIdx: -1, time: 0.4, karaokeEnabled: true });
+    expect(top).toBe(300);
+    mount.destroy();
   });
 
   test("the top anchor jumps after a render and scrolls smoothly on a new line", () => {

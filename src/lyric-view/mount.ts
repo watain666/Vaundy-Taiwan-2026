@@ -34,8 +34,10 @@ export type LyricMountOptions = {
   /** Top anchor offset of the current line. */
   topOffset?: number;
   /**
-   * When the playhead has no current line, keep the last active row (the
-   * song page's behaviour) or clear it (the PiP window's). Default true.
+   * When the playback time is unknown, keep the last active row (the song
+   * page's behaviour) or clear it (the PiP window's). Default true. A known
+   * time before the first line (a replay or a seek back into the intro)
+   * always clears it.
    */
   keepLastActive?: boolean;
 };
@@ -232,7 +234,9 @@ export function createLyricMount(container: HTMLElement, options: LyricMountOpti
     // 目前句與逐字 Karaoke 同時更新；後者不能等到目前句改變才刷新。
     updateKaraoke(target, playhead.time, playhead.karaokeEnabled);
     // 讀不到播放位置時，多餘的目前句也一定要清掉。
-    if (target || options.keepLastActive !== false) pruneActive(target);
+    // 播放位置已知但還沒到第一句（重播、拉回前奏）時，上一首的最後一句不能留著。
+    const keepLast = options.keepLastActive !== false && playhead.time === null;
+    if (target || keepLast) pruneActive(target);
     else container.querySelectorAll(".lyric-line.active").forEach(row => row.classList.remove("active"));
     if (target && !target.classList.contains("active")) target.classList.add("active");
     return target;
@@ -260,9 +264,14 @@ export function createLyricMount(container: HTMLElement, options: LyricMountOpti
        （每個 tick 重新開始 smooth 捲動會造成卡頓），除非 force。 */
     needsAnchor = false;
     if (playhead.time === null) return;
-    if (playhead.activeIdx === lastScrollIdx && !setOptions.force) return;
+    const changed = playhead.activeIdx !== lastScrollIdx;
+    if (!changed && !setOptions.force) return;
     lastScrollIdx = playhead.activeIdx;
-    if (target && autoScroll()) scrollCentered(target);
+    if (!autoScroll()) return;
+    if (target) scrollCentered(target);
+    // 回到第一句之前（重播、拉回前奏）：捲回開頭，和剛進歌曲時一樣。
+    // 只在剛回到開頭時捲一次，前奏中使用者自己捲動不會被拉回。
+    else if (changed && scroller) animateScrollTo(scroller, 0);
   }
 
   /* ---------- scrolling ---------- */

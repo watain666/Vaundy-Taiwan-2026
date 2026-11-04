@@ -8,6 +8,7 @@ import {
   isLiveActive,
   liveKaraokeTiming,
   loadSongKaraokeTiming,
+  resolveVideoSource,
   type KaraokeTimingApi,
   type KaraokeStatus,
 } from "../src/services/karaoke-timing";
@@ -168,6 +169,18 @@ describe("live video", () => {
     expect(isLiveActive(alpha, "live")).toBe(true);
     expect(isLiveActive(beta, "live")).toBe(false);
     expect(isLiveActive(alpha, "mv")).toBe(false);
+  });
+
+  test("resolveVideoSource applies the setting, the per-song override and the live guard", () => {
+    const [alpha, beta] = liveSongs();
+    expect(resolveVideoSource(alpha, true)).toBe("live");
+    expect(resolveVideoSource(alpha, false)).toBe("mv");
+    expect(resolveVideoSource(alpha, true, "mv")).toBe("mv");
+    expect(resolveVideoSource(alpha, false, "live")).toBe("live");
+    expect(resolveVideoSource(alpha, true, null)).toBe("live");
+    expect(resolveVideoSource(beta, true)).toBe("mv");
+    expect(resolveVideoSource(beta, false, "live")).toBe("mv");
+    expect(resolveVideoSource(null, true, "live")).toBe("mv");
   });
 
   test("converts live times to line rows that end at the next row, with no words", () => {

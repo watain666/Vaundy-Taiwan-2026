@@ -81,6 +81,22 @@ export function bundledKaraokeTiming(song: Song | null | undefined): AlignedKara
 /** Seconds a live row is assumed to run when no later row bounds it. */
 const LIVE_LAST_ROW_SEC = 4;
 
+/**
+ * The video source a song opens with: its live video when the viewer prefers
+ * live and the song has one, else the MV. `override` is the viewer's choice
+ * for this song only (inline MV / live toggle); it wins over the preference,
+ * but a song without a live video is always "mv".
+ */
+export function resolveVideoSource(
+  song: { live?: unknown } | null | undefined,
+  preferLive: boolean,
+  override?: "mv" | "live" | null,
+): "mv" | "live" {
+  if (!song || !song.live) return "mv";
+  if (override === "mv" || override === "live") return override;
+  return preferLive ? "live" : "mv";
+}
+
 /** The preferred video of a song: its live video when `source` is "live" and the song has one, else the MV. */
 export function activeVideoId(song: { youtubeId: string; live?: { youtubeId: string } } | null | undefined, source: string): string {
   if (!song) return "";

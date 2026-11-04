@@ -51,6 +51,7 @@ import { loadKaraokeSources } from "./services/lazy-modules.js";
 import {
   activeVideoId,
   isLiveActive,
+  resolveVideoSource,
   liveKaraokeTiming,
   liveStatusText,
   loadSongKaraokeTiming
@@ -91,8 +92,10 @@ let karaokeEnabled = store("horo-karaoke") === "1";
 let autoplayEnabled = store("horo-autoplay") !== "0";
 // 單曲循環，預設關閉；開啟時影片播完從頭重播同一首，不跳下一首。
 let repeatOneEnabled = store("horo-repeat-one") === "1";
-// 影片來源偏好："mv"（預設）或 "live"（有官方現場版的歌改看現場版，歌詞改用現場時間）。
-let videoSource = store("horo-video-source") === "live" ? "live" : "mv";
+// 優先播放現場版，預設開啟；有官方現場版的歌預設看現場版（歌詞改用現場時間）。
+let preferLive = store("horo-prefer-live") !== "0";
+// 目前這首歌在歌曲頁用 MV／現場版切換鈕選的來源；不保存，換歌就回到設定的預設。
+let videoSourceOverride = null;   // { songId, source } | null
 let lastActiveIdx = -1;
 let karaokeTiming = null;       // 對齊到目前 YouTube 影片的真實逐字時間
 let karaokeLoadSeq = 0;         // 換歌時忽略上一首尚未完成的網路回應
@@ -2037,6 +2040,10 @@ function buildSongShell(){
           <div class="lyrics-note">
             <span class="dot">●</span>
             <span class="lyrics-note-copy">點選歌詞跳至影片位置，歌詞隨影片同步</span>
+            <div class="chant-version-segment video-source-segment" id="video-source-segment" role="group" aria-label="影片來源" hidden>
+              <button type="button" class="chant-version-option" data-video-source="mv" aria-pressed="true">MV</button>
+              <button type="button" class="chant-version-option" data-video-source="live" aria-pressed="false">現場版</button>
+            </div>
           </div>
 
           <div class="lyrics-legend">
@@ -2102,9 +2109,6 @@ function buildSongShell(){
         <button class="venue-toggle bar-chip repeat-one-toggle${repeatOneEnabled ? " active" : ""}" id="repeat-one-btn" type="button" aria-pressed="${repeatOneEnabled ? "true" : "false"}" aria-label="單曲循環" title="單曲循環：播完重播這首">
           ${REPEAT_ONE_SVG}
         </button>
-        <button class="venue-toggle bar-chip video-source-toggle" id="video-source-btn" type="button" aria-pressed="false" aria-label="現場版影片" title="切換為官方現場版影片" hidden>
-          <span class="venue-label">現場版</span>
-        </button>
         <button class="venue-toggle bar-chip settings-toggle" id="settings-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="settings-sheet" aria-label="顯示設定" title="顯示設定">
           ${SLIDERS_SVG}
           <span class="venue-label settings-label">設定</span>
@@ -2161,6 +2165,15 @@ function buildSongShell(){
             <div class="settings-row">
               <span class="settings-label" id="autoplay-label">進入歌曲時自動播放</span>
               <button class="settings-switch${autoplayEnabled ? " active" : ""}" id="autoplay-btn" type="button" aria-pressed="${autoplayEnabled ? "true" : "false"}" aria-labelledby="autoplay-label">
+                <span class="venue-switch"><span class="venue-knob"></span></span>
+              </button>
+            </div>
+            <div class="settings-row">
+              <span class="settings-copy">
+                <span class="settings-label" id="prefer-live-label">優先播放現場版</span>
+                <span class="settings-hint">有官方現場版的歌曲預設播放現場版</span>
+              </span>
+              <button class="settings-switch${preferLive ? " active" : ""}" id="prefer-live-btn" type="button" aria-pressed="${preferLive ? "true" : "false"}" aria-labelledby="prefer-live-label">
                 <span class="venue-switch"><span class="venue-knob"></span></span>
               </button>
             </div>
@@ -2406,11 +2419,26 @@ function buildSongShell(){
     e.currentTarget.setAttribute("aria-pressed", repeatOneEnabled ? "true" : "false");
   });
 
-  document.getElementById("video-source-btn").addEventListener("click", ()=>{
+  document.getElementById("prefer-live-btn").addEventListener("click", (e)=>{
+    const before = liveActive(currentSong);
+    preferLive = !preferLive;
+    store("horo-prefer-live", preferLive ? "1" : "0");
+    e.currentTarget.classList.toggle("active", preferLive);
+    e.currentTarget.setAttribute("aria-pressed", preferLive ? "true" : "false");
+    // 設定立刻套用到目前這首（取代這首歌上暫時選的來源）。
     if (!currentSong || !currentSong.live) return;
-    videoSource = videoSource === "live" ? "mv" : "live";
-    store("horo-video-source", videoSource);
-    switchVideoSource();
+    videoSourceOverride = null;
+    if (liveActive(currentSong) !== before) switchVideoSource();
+  });
+
+  document.querySelectorAll("[data-video-source]").forEach(button => {
+    button.addEventListener("click", ()=>{
+      if (!currentSong || !currentSong.live) return;
+      const source = button.dataset.videoSource === "live" ? "live" : "mv";
+      if (liveActive(currentSong) === (source === "live")) return;
+      videoSourceOverride = { songId: currentSong.id, source };
+      switchVideoSource();
+    });
   });
 
   document.getElementById("autoscroll-btn").addEventListener("click", (e)=>{
@@ -2739,6 +2767,7 @@ function renderSong(song){
     updateLyricsSync(true);
   });
 
+  if (videoSourceOverride && videoSourceOverride.songId !== song.id) videoSourceOverride = null;
   currentSong = song;
   resetPlaybackProgress();
   lastActiveIdx = -1;
@@ -3380,24 +3409,32 @@ function playbackTimeForLine(song, index){
   return timed && Number.isFinite(Number(timed.start)) ? Number(timed.start) : Number(local && local.time) || 0;
 }
 
-function videoIdOf(song){ return activeVideoId(song, videoSource); }
-function liveActive(song){ return isLiveActive(song, videoSource); }
+/* 這首歌現在用哪個影片來源：只有目前這首才吃得到暫時選的來源。 */
+function sourceOf(song){
+  const override = song && videoSourceOverride && videoSourceOverride.songId === song.id
+    ? videoSourceOverride.source : null;
+  return resolveVideoSource(song, preferLive, override);
+}
+function videoIdOf(song){ return activeVideoId(song, sourceOf(song)); }
+function liveActive(song){ return isLiveActive(song, sourceOf(song)); }
 /* 現場大合唱的行：只在現場版顯示；MV 模式與沒有標記的歌回傳 null。 */
 function liveSingAlong(song){
   return liveActive(song) && song.live.singAlong && song.live.singAlong.length ? song.live.singAlong : null;
 }
 
-/* 現場版開關：只在目前這首有 live 時顯示；狀態以 aria-pressed 表示。 */
+/* MV／現場版切換：只在目前這首有 live 時顯示；狀態以 aria-pressed 表示。 */
 function applyVideoSourceUi(){
-  const btn = document.getElementById("video-source-btn");
-  if (!btn) return;
+  const group = document.getElementById("video-source-segment");
+  if (!group) return;
   const has = Boolean(currentSong && currentSong.live);
   const on = liveActive(currentSong);
-  btn.hidden = !has;
-  btn.classList.toggle("active", on);
-  btn.setAttribute("aria-pressed", on ? "true" : "false");
-  btn.setAttribute("aria-label", `現場版影片${has ? `（${currentSong.live.label}）` : ""}：目前${on ? "開啟" : "關閉"}`);
-  btn.title = on ? "改看 MV（歌詞回到錄音室時間）" : "改看官方現場版影片（歌詞改用現場時間）";
+  group.hidden = !has;
+  group.querySelectorAll("[data-video-source]").forEach(button => {
+    const isLive = button.dataset.videoSource === "live";
+    button.classList.toggle("active", isLive === on);
+    button.setAttribute("aria-pressed", isLive === on ? "true" : "false");
+    if (isLive) button.title = has ? currentSong.live.label : "";
+  });
 }
 
 /* 換影片來源：影片、歌詞行時間、逐字時間與應援索引一起換。 */

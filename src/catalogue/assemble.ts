@@ -167,7 +167,7 @@ export type WordTimingEntry = {
 /** One song's entry in src/live-timing.js: a live video and one start time per lyric row. */
 export type LiveTimingEntry = {
   youtubeId: string;
-  /** Short name shown to fans, e.g. "Dome Tour 2026". */
+  /** Short name shown to fans, e.g. "HORO 首爾". */
   label: string;
   /** Seconds in the live video, parallel to the song's lyric rows (cue-only rows included). */
   times: readonly number[];

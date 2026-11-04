@@ -18,7 +18,12 @@ import { wrapChantMarkup } from "./chant-markup";
 export type ReadingMode = "kana" | "romaji" | "both";
 
 /** The view options that change the row markup. */
-export type LyricViewOptions = { readingMode: ReadingMode; chantVersion: ChantVersion };
+export type LyricViewOptions = {
+  readingMode: ReadingMode;
+  chantVersion: ChantVersion;
+  /** Live mode only: row indices where the audience sings in the live video (marked 現場大合唱). */
+  singAlong?: readonly number[] | null;
+};
 
 export type RowRenderOptions = LyricViewOptions & {
   /** Interactive rows are buttons (click to seek); others are divs. */
@@ -115,6 +120,10 @@ function backingChantHtml(line: LyricLine, options: LyricViewOptions): string {
   }).join("");
 }
 
+/* 現場版專用：影片裡這一行交給台下大合唱。這是現場實況的記錄，不是應援指引，
+   所以不沿用 .is-chant／.lyric-bg 的橘色，另用文字標籤與左側細線標示。 */
+const SING_ALONG_HTML = `<span class="lyric-crowd" lang="zh-Hant-TW">現場大合唱</span>`;
+
 /* ---------- lines ---------- */
 
 function renderJapaneseLyricLine(line: LyricLine, options: LyricViewOptions): string {
@@ -137,14 +146,15 @@ export function renderKanaReference(line: LyricLine, chantVersion: ChantVersion)
 /** The `<li>` rows of a song's lyrics, before seg-chant marking and karaoke units. */
 export function renderLyricRows(song: Song, options: RowRenderOptions): string {
   const tag = options.interactive ? "button" : "div";
+  const crowd = options.singAlong && options.singAlong.length ? new Set(options.singAlong) : null;
   return song.lyrics.map((l, i) => `
     <li>
-      <${tag} class="lyric-line ${chantLineClass(l, song, options.chantVersion)}" data-time="${l.time}" data-idx="${i}">
+      <${tag} class="lyric-line ${chantLineClass(l, song, options.chantVersion)}${crowd && crowd.has(i) ? " live-sing-along" : ""}" data-time="${l.time}" data-idx="${i}">
         <span class="lyric-icons">${lyricIconsHtml(l, song, options.chantVersion)}</span>
         <span class="lyric-body">
           <span class="lyric-jp" lang="ja">${renderJapaneseLyricLine(l, options)}</span>
           <span class="lyric-romaji" lang="ja-Latn">${options.readingMode === "both" ? renderRomajiLyricLine(l, options.chantVersion) : ""}</span>
-          <span class="lyric-zh">${withIcons(l.tr || "")}</span>
+          <span class="lyric-zh">${withIcons(l.tr || "")}</span>${crowd && crowd.has(i) ? SING_ALONG_HTML : ""}
           ${backingChantHtml(l, options)}
         </span>
       </${tag}>

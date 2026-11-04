@@ -116,7 +116,8 @@ export function createDocumentPip({
       readingMode: view.readingMode,
       chantVersion: view.chantVersion,
       karaokeTiming: view.karaokeTiming || null,
-      karaokeSources: view.karaokeSources || null
+      karaokeSources: view.karaokeSources || null,
+      singAlong: view.singAlong || null
     };
     const changed = !renderedLyrics
       || Object.keys(inputs).some(key => inputs[key] !== renderedLyrics[key]);

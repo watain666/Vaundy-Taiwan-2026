@@ -355,7 +355,7 @@ describe("bundled word timing", () => {
 
 describe("live timing", () => {
   /* Alpha has three rows (0, 10, 20.5). */
-  function withLive(entry: Partial<{ youtubeId: string; label: string; times: number[] }>) {
+  function withLive(entry: Partial<{ youtubeId: string; label: string; times: number[]; singAlong: number[] }>) {
     const sources = makeSources();
     sources.liveTiming = { Alpha: { youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22], ...entry } };
     return sources;
@@ -364,7 +364,7 @@ describe("live timing", () => {
   test("attaches the live video and times to the song, and its video only to the summary", () => {
     const catalogue = assembleCatalogue(withLive({}));
     const [a, b] = catalogue.songs;
-    expect(a.live).toEqual({ youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22] });
+    expect(a.live).toEqual({ youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22], singAlong: [] });
     expect(a.youtubeId).toBe("yt-alpha");
     expect(b.live).toBeUndefined();
     expect(catalogue.summaries[0].live).toEqual({ youtubeId: "abcDEF_-123", label: "Dome Tour" });
@@ -392,6 +392,30 @@ describe("live timing", () => {
 
   test.each([[[1, 11]], [[1, 11, 22, 30]], [[]]])("live-timing-row-count rejects %j", times => {
     expectRejected(withLive({ times }), "live-timing-row-count", "Alpha");
+  });
+
+  test("singAlong is carried on the song and stays off the summary", () => {
+    const catalogue = assembleCatalogue(withLive({ singAlong: [0, 2] }));
+    expect(catalogue.songs[0].live!.singAlong).toEqual([0, 2]);
+    expect(catalogue.summaries[0].live).toEqual({ youtubeId: "abcDEF_-123", label: "Dome Tour" });
+  });
+
+  test.each([[[1.5]], [["1"]], [[null]]])("live-timing-sing-along rejects non-integer %j", singAlong => {
+    expectRejected(withLive({ singAlong } as never), "live-timing-sing-along", "Alpha", 0);
+  });
+
+  test("live-timing-sing-along rejects out-of-range rows and names the index", () => {
+    expectRejected(withLive({ singAlong: [0, 3] }), "live-timing-sing-along", "Alpha", 1);
+    expectRejected(withLive({ singAlong: [-1] }), "live-timing-sing-along", "Alpha", 0);
+  });
+
+  test("live-timing-sing-along rejects duplicate and unsorted rows", () => {
+    expectRejected(withLive({ singAlong: [1, 1] }), "live-timing-sing-along", "Alpha", 1);
+    expectRejected(withLive({ singAlong: [2, 1] }), "live-timing-sing-along", "Alpha", 1);
+  });
+
+  test("live-timing-sing-along rejects a non-array", () => {
+    expectRejected(withLive({ singAlong: 1 } as never), "live-timing-sing-along", "Alpha");
   });
 
   test("live-timing-order rejects a repeated time and names the row", () => {

@@ -2860,7 +2860,8 @@ function renderSongLyrics(){
     readingMode,
     chantVersion,
     karaokeTiming,
-    karaokeSources: window.KARAOKE_SOURCES || null
+    karaokeSources: window.KARAOKE_SOURCES || null,
+    singAlong: liveSingAlong(currentSong)
   });
 }
 
@@ -3331,7 +3332,8 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
       readingMode,
       chantVersion,
       karaokeTiming,
-      karaokeSources: window.KARAOKE_SOURCES || null
+      karaokeSources: window.KARAOKE_SOURCES || null,
+      singAlong: liveSingAlong(song)
     },
     playhead: { activeIdx: hasLine ? currentIndex : -1, time: playheadTime, karaokeEnabled },
     container: lyricContainerSettings(),
@@ -3380,6 +3382,10 @@ function playbackTimeForLine(song, index){
 
 function videoIdOf(song){ return activeVideoId(song, videoSource); }
 function liveActive(song){ return isLiveActive(song, videoSource); }
+/* 現場大合唱的行：只在現場版顯示；MV 模式與沒有標記的歌回傳 null。 */
+function liveSingAlong(song){
+  return liveActive(song) && song.live.singAlong && song.live.singAlong.length ? song.live.singAlong : null;
+}
 
 /* 現場版開關：只在目前這首有 live 時顯示；狀態以 aria-pressed 表示。 */
 function applyVideoSourceUi(){

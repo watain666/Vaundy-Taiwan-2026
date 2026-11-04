@@ -132,6 +132,34 @@ describe("live timing override", () => {
   });
 });
 
+describe("live sing-along marks", () => {
+  const crowdRows = (list: HTMLElement) =>
+    [...list.querySelectorAll<HTMLElement>(".lyric-line.live-sing-along")].map(row => Number(row.dataset.idx));
+
+  test("marks only the listed rows, with text, when singAlong is given", () => {
+    const song = songs.find(item => item.id === "Tokimeki")!;
+    const { list, mount } = setup();
+    mount.render(song, { readingMode: "both", chantVersion: "jp", singAlong: [1, 3], karaokeSources: sources });
+    expect(crowdRows(list)).toEqual([1, 3]);
+    const labels = [...list.querySelectorAll(".lyric-crowd")];
+    expect(labels.map(label => label.textContent)).toEqual(["現場大合唱", "現場大合唱"]);
+    mount.destroy();
+  });
+
+  test("renders nothing extra without singAlong, and identical markup for an empty list", () => {
+    const song = songs.find(item => item.id === "Tokimeki")!;
+    const plain = setup();
+    plain.mount.render(song, { readingMode: "both", chantVersion: "jp", karaokeSources: sources });
+    const html = plain.list.innerHTML;
+    expect(html).not.toContain("lyric-crowd");
+    plain.mount.render(song, { readingMode: "both", chantVersion: "jp", singAlong: [], karaokeSources: sources });
+    expect(plain.list.innerHTML).toBe(html);
+    plain.mount.render(song, { readingMode: "both", chantVersion: "jp", singAlong: null, karaokeSources: sources });
+    expect(plain.list.innerHTML).toBe(html);
+    plain.mount.destroy();
+  });
+});
+
 describe("playhead", () => {
   let ctx: ReturnType<typeof setup>;
   let song: Song;

@@ -117,7 +117,7 @@ export type Song = Omit<SongSummary, "live"> & {
   /** Present when the song has bundled word timing; its lines then carry `words`. */
   wordTiming?: SongWordTiming;
   /** Present when the song has an official live video; `times[i]` is lyric row i's start in that video. */
-  live?: SongLiveVideo & { times: number[] };
+  live?: SongLiveVideo & { times: number[]; singAlong: number[] };
 };
 
 /* ---------- authoring input shapes ---------- */
@@ -171,6 +171,8 @@ export type LiveTimingEntry = {
   label: string;
   /** Seconds in the live video, parallel to the song's lyric rows (cue-only rows included). */
   times: readonly number[];
+  /** Optional lyric row indices where the audience sings in this live video, strictly increasing. */
+  singAlong?: readonly number[];
 };
 
 /** The two karaoke helpers the alignment invariant needs (karaoke-sources.js). */
@@ -234,6 +236,7 @@ export const RULE_SEVERITY = {
   "live-timing-label": "error",
   "live-timing-row-count": "error",
   "live-timing-order": "error",
+  "live-timing-sing-along": "error",
 } as const;
 
 export type RuleName = keyof typeof RULE_SEVERITY;
@@ -692,7 +695,29 @@ function attachLiveTiming(id: string, lines: LyricLine[], sources: CatalogueSour
     log.add("live-timing-label", "label must be a non-empty string", id);
     valid = false;
   }
-  return valid ? { youtubeId: entry.youtubeId, label: entry.label, times: [...times] } : null;
+  const singAlong: number[] = [];
+  if (entry.singAlong !== undefined) {
+    if (!Array.isArray(entry.singAlong)) {
+      log.add("live-timing-sing-along", "singAlong must be an array of lyric row indices", id);
+      valid = false;
+    } else {
+      entry.singAlong.forEach((value, position) => {
+        if (typeof value !== "number" || !Number.isInteger(value)) {
+          log.add("live-timing-sing-along", `sing-along index ${JSON.stringify(value)} is not an integer`, id, position);
+          valid = false;
+        } else if (value < 0 || value >= lines.length) {
+          log.add("live-timing-sing-along", `sing-along row ${value} is outside the song's ${lines.length} lyric rows`, id, position);
+          valid = false;
+        } else if (position > 0 && typeof entry.singAlong![position - 1] === "number" && value <= entry.singAlong![position - 1]) {
+          log.add("live-timing-sing-along", `sing-along row ${value} is not after the previous index ${entry.singAlong![position - 1]} (must be strictly increasing, no duplicates)`, id, position);
+          valid = false;
+        } else {
+          singAlong.push(value);
+        }
+      });
+    }
+  }
+  return valid ? { youtubeId: entry.youtubeId, label: entry.label, times: [...times], singAlong } : null;
 }
 
 /* Same counting rule as the song list badges: a Japanese-version chant line

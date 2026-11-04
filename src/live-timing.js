@@ -6,6 +6,8 @@
  *     youtubeId: "11charVidId",   // the live video: 11 characters of A-Z a-z 0-9 _ -
  *     label: "Dome Tour 2026",    // short name shown on the switch
  *     times: [0, 12.4, ...],      // seconds in the LIVE video; one start time per lyric row
+ *     singAlong: [20, 21, 22],    // optional: lyric row indices (0-based) where Vaundy hands the line
+ *                                 // to the crowd in this live video; shown as 現場大合唱 in live mode only
  *   }
  *
  * `times` is parallel to the song's lyric rows in src/song-lyrics.js: same
@@ -13,6 +15,11 @@
  * arrangement differs from the studio one, so these times replace the row
  * times in live mode; the studio per-word timing is never applied to a live
  * video. A mismatch fails the build (live-timing-* rules).
+ *
+ * `singAlong` lists row indices, each an integer in
+ * [0, row count), strictly increasing (no duplicates). It records what happened
+ * in this video, so it is independent of the chant-guide fan guidance. A bad
+ * index fails the build (live-timing-sing-along).
  */
 export const LIVE_TIMING = {
   // Vaundy Dome Tour 2026 (official upload). Aligned to the MV row times with

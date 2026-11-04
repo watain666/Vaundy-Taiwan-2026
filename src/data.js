@@ -75,7 +75,7 @@ export const PICS = {
   "wave_jump":  { video: "./images/tips/wave_jump.webm",  src: "./images/tips/wave_jump.webp",  fallback: "./images/tips/wave_jump.gif",  caption: "jump" },
   "wave_chain":  { video: "./images/tips/wave_chain.webm",  src: "./images/tips/wave_chain.webp",  fallback: "./images/tips/wave_chain.gif",  caption: "跟著 Hu Hu Hu Hu" },
   "wave_dada":  { video: "./images/tips/wave_dada.webm",  src: "./images/tips/wave_dada.webp",  fallback: "./images/tips/wave_dada.gif",  caption: "跟著 DA-DADADADA" },
-  "wave_turn":  { video: "./images/tips/wave_turn.webm",  src: "./images/tips/wave_turn.webp",  fallback: "./images/tips/wave_turn.gif",  caption: "旋轉雙手" },
+  "wave_turn":  { video: "./images/tips/wave_turn.webm",  src: "./images/tips/wave_turn.webp",  fallback: "./images/tips/wave_turn.gif",  caption: "舉起食指逆時針旋轉" },
   "wave_rl":  { video: "./images/tips/wave_rl.webm",  src: "./images/tips/wave_rl.webp",  fallback: "./images/tips/wave_rl.gif",  caption: "向左右大幅揮動" },
   "wave-basic":  { video: "./images/tips/wave-basic.webm",  src: "./images/tips/wave-basic.webp",  fallback: "./images/tips/wave-basic.gif",  caption: "雙手舉過頭頂・向左右大幅揮動" },
   "wave-slow":   { src: "./images/tips/wave-slow.gif",   caption: "單手慢慢揮動" },

@@ -23,7 +23,7 @@ export const INLINE_ICONS = {
   clap: `<span class="ico ico-clap" title="拍手"><span class="hand l">${useSvg("i-hand")}</span><span class="hand r">${useSvg("i-hand")}</span><span class="spark">${useSvg("i-spark")}</span></span>`,
   mic:  `<span class="ico ico-mic" title="大合唱">${useSvg("i-mic")}</span>`,
   jump: `<span class="ico ico-jump" title="跳躍">${useSvg("i-jump")}<span class="ground"></span></span>`,
-  spin: `<span class="ico ico-spin" title="轉臂">
+  spin: `<span class="ico ico-spin" title="舉起食指逆時針旋轉">
            <svg class="body" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cheer"/></svg>
            <svg class="arm" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cheer-arm"/></svg>
          </span>`

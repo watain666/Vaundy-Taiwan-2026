@@ -50,6 +50,7 @@ import { chantBlocks, songMarks, withSingAlongChant } from "./chant/index.ts";
 import { loadKaraokeSources } from "./services/lazy-modules.js";
 import {
   activeVideoId,
+  pickLiveVideo,
   isLiveActive,
   resolveVideoSource,
   liveKaraokeTiming,
@@ -2506,6 +2507,7 @@ function setChantVersion(next){
     return;
   }
 
+  const videoBefore = currentSong && liveActive(currentSong) ? videoIdOf(currentSong) : null;
   chantVersion = next;
   store("horo-chant-version", chantVersion);
   chantIdx = -1;
@@ -2515,7 +2517,12 @@ function setChantVersion(next){
   applyChantVersionUi();
 
   if (currentSong) {
-    renderSongLyrics();
+    // 現場版：影片、行時間與合唱行跟著應援版本換；MV 模式維持原樣。
+    if (videoBefore && videoIdOf(currentSong) !== videoBefore) switchVideoSource();
+    else {
+      if (videoBefore) karaokeTiming = liveKaraokeTiming(currentSong, chantVersion);
+      renderSongLyrics();
+    }
     renderChantVersionNote(currentSong);
     renderChantNotes(currentSong);
     syncChantUi();
@@ -2773,7 +2780,7 @@ function renderSong(song){
   lastActiveIdx = -1;
   playheadTime = null;
   // 現場版：歌詞行時間直接用現場時間，第一次 render 就要套用。
-  karaokeTiming = liveActive(song) ? liveKaraokeTiming(song) : null;
+  karaokeTiming = liveActive(song) ? liveKaraokeTiming(song, chantVersion) : null;
   // 떼창만 듣기는 곡을 옮겨도 켜진 채로 — 구간 번호만 새 곡 기준으로 다시
   chantIdx = -1; chantDone = false; chantWantSec = null; chantWaitUntil = 0;
   // 每首歌一個新的歌詞 view mount：它負責目前句、逐字高亮、可見範圍與捲動，
@@ -3413,13 +3420,15 @@ function sourceOf(song){
     ? videoSourceOverride.source : null;
   return resolveVideoSource(song, preferLive, override);
 }
-function videoIdOf(song){ return activeVideoId(song, sourceOf(song)); }
+function videoIdOf(song){ return activeVideoId(song, sourceOf(song), chantVersion); }
 function liveActive(song){ return isLiveActive(song, sourceOf(song)); }
 /* 歌詞 view、只練合唱與 PiP 看到的歌：現場版時，live.singAlong 的行也算大合唱應援
    （其餘一律是原本的 song）。MV 模式與沒有標記的歌回傳同一個物件。 */
 function viewSong(song){
-  return song && liveActive(song) ? withSingAlongChant(song, song.live.singAlong) : song;
+  return song && liveActive(song) ? withSingAlongChant(song, liveVideoOf(song).singAlong) : song;
 }
+/* 目前應援版本對應的現場影片；該版本沒有時退用另一個版本的影片（影片、時間與它的 singAlong 照用）。 */
+function liveVideoOf(song){ return pickLiveVideo(song, chantVersion); }
 
 /* MV／現場版切換：只在目前這首有 live 時顯示；狀態以 aria-pressed 表示。 */
 function applyVideoSourceUi(){
@@ -3432,7 +3441,7 @@ function applyVideoSourceUi(){
     const isLive = button.dataset.videoSource === "live";
     button.classList.toggle("active", isLive === on);
     button.setAttribute("aria-pressed", isLive === on ? "true" : "false");
-    if (isLive) button.title = has ? currentSong.live.label : "";
+    if (isLive) button.title = has ? liveVideoOf(currentSong).label : "";
   });
 }
 
@@ -3442,12 +3451,12 @@ function switchVideoSource(){
   if (!song) return;
   applyVideoSourceUi();
   karaokeLoadSeq++;                       // 丟掉尚未完成的網路逐字回應
-  karaokeTiming = liveActive(song) ? liveKaraokeTiming(song) : null;
+  karaokeTiming = liveActive(song) ? liveKaraokeTiming(song, chantVersion) : null;
   chantIdx = -1; chantDone = false; chantWantSec = null; chantWaitUntil = 0;
   lastActiveIdx = -1;
   playheadTime = null;
   openSongVideo(videoIdOf(song));
-  if (liveActive(song)) setKaraokeSourceStatus("ready", liveStatusText(song.live.label));
+  if (liveActive(song)) setKaraokeSourceStatus("ready", liveStatusText(liveVideoOf(song).label));
   else loadKaraokeTiming(song);
   renderSongLyrics();
   syncChantUi();
@@ -3461,8 +3470,8 @@ async function loadKaraokeTiming(song){
   const seq = ++karaokeLoadSeq;
   if (liveActive(song)){
     // 現場版只有逐行時間；錄音室的逐字時間與網路來源都不能套在現場影片上。
-    karaokeTiming = liveKaraokeTiming(song);
-    setKaraokeSourceStatus("ready", liveStatusText(song.live.label));
+    karaokeTiming = liveKaraokeTiming(song, chantVersion);
+    setKaraokeSourceStatus("ready", liveStatusText(liveVideoOf(song).label));
     return;
   }
   karaokeTiming = null;

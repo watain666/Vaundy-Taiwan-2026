@@ -35,8 +35,8 @@ export type SongSummary = {
   translationLicenseUrl?: string;
   bpm: number;
   marks: SongMarks;
-  /** Present when the song has an official live video (the row times load with the full song). */
-  live?: SongLiveVideo;
+  /** Present when the song has official live videos, one per chant version at most (the row times load with the full song). */
+  live?: SongLiveVideo[];
 };
 
 /** A part of a split lyric line, as written in the lyrics file. */
@@ -101,8 +101,8 @@ export type SongWordTiming = {
   offset: number;
 };
 
-/** An official live video of a song, with its own lyric row start times (src/live-timing.js). */
-export type SongLiveVideo = { youtubeId: string; label: string };
+/** An official live video of a song, with its own lyric row start times (src/live-timing.js). It belongs to the chant version whose crowd it shows. */
+export type SongLiveVideo = { chantVersion: "jp" | "kr"; youtubeId: string; label: string };
 
 export type Song = Omit<SongSummary, "live"> & {
   /** Named `lyrics` because the karaoke adapter reads `song.lyrics`. */
@@ -116,8 +116,8 @@ export type Song = Omit<SongSummary, "live"> & {
   };
   /** Present when the song has bundled word timing; its lines then carry `words`. */
   wordTiming?: SongWordTiming;
-  /** Present when the song has an official live video; `times[i]` is lyric row i's start in that video. */
-  live?: SongLiveVideo & { times: number[]; singAlong: number[] };
+  /** Present when the song has official live videos (one per chant version at most); `times[i]` is lyric row i's start in that video. */
+  live?: (SongLiveVideo & { times: number[]; singAlong: number[] })[];
 };
 
 /* ---------- authoring input shapes ---------- */
@@ -164,8 +164,10 @@ export type WordTimingEntry = {
   lines: Readonly<Record<string, readonly (readonly [string, number, number])[]>>;
 };
 
-/** One song's entry in src/live-timing.js: a live video and one start time per lyric row. */
+/** One live video in a song's list in src/live-timing.js: a video and one start time per lyric row. */
 export type LiveTimingEntry = {
+  /** The chant version whose crowd the video shows: "jp" or "kr". At most one video per version per song. */
+  chantVersion: "jp" | "kr";
   youtubeId: string;
   /** Short name shown to fans, e.g. "HORO 首爾". */
   label: string;
@@ -202,7 +204,7 @@ export type CatalogueSources = {
   /** Bundled per-word karaoke timing by song id (src/word-timing.js). */
   wordTiming: Readonly<Record<string, WordTimingEntry>>;
   /** Official live videos with their own row times by song id (src/live-timing.js). */
-  liveTiming: Readonly<Record<string, LiveTimingEntry>>;
+  liveTiming: Readonly<Record<string, readonly LiveTimingEntry[]>>;
   /** Used when a metadata entry leaves `translationCreditUrl` unset. */
   defaultTranslationCreditUrl: string;
 };
@@ -234,6 +236,7 @@ export const RULE_SEVERITY = {
   "live-timing-unknown-song": "error",
   "live-timing-youtube-id": "error",
   "live-timing-label": "error",
+  "live-timing-chant-version": "error",
   "live-timing-row-count": "error",
   "live-timing-order": "error",
   "live-timing-sing-along": "error",
@@ -666,11 +669,35 @@ function attachWordTiming(id: string, lines: LyricLine[], sources: CatalogueSour
 
 /* A live video carries one start time per lyric row, parallel to the rows.
    The times are the live performance's own, so they are never mixed with the
-   studio row times or the studio word timing. */
+   studio row times or the studio word timing. A song lists its videos, each
+   belonging to one chant version (at most one per version). */
 function attachLiveTiming(id: string, lines: LyricLine[], sources: CatalogueSources, log: IssueLog): Song["live"] | null {
-  const entry = Object.prototype.hasOwnProperty.call(sources.liveTiming, id) ? sources.liveTiming[id] : undefined;
-  if (!entry) return null;
+  const entries = Object.prototype.hasOwnProperty.call(sources.liveTiming, id) ? sources.liveTiming[id] : undefined;
+  if (entries === undefined) return null;
+  if (!Array.isArray(entries)) {
+    log.add("live-timing-chant-version", "a song's live entry must be a list of videos, each with a chantVersion", id);
+    return null;
+  }
+  const videos: NonNullable<Song["live"]> = [];
+  const seen = new Set<string>();
+  entries.forEach(entry => {
+    const video = attachLiveVideo(id, entry, lines, seen, log);
+    if (video) videos.push(video);
+  });
+  return videos.length ? videos : null;
+}
+
+function attachLiveVideo(id: string, entry: LiveTimingEntry, lines: LyricLine[], seen: Set<string>, log: IssueLog): NonNullable<Song["live"]>[number] | null {
   let valid = true;
+  if (entry.chantVersion !== "jp" && entry.chantVersion !== "kr") {
+    log.add("live-timing-chant-version", `chantVersion ${JSON.stringify(entry.chantVersion)} must be "jp" or "kr"`, id);
+    valid = false;
+  } else if (seen.has(entry.chantVersion)) {
+    log.add("live-timing-chant-version", `more than one live video for chantVersion "${entry.chantVersion}" (at most one per chant version)`, id);
+    valid = false;
+  } else {
+    seen.add(entry.chantVersion);
+  }
   if (typeof entry.youtubeId !== "string" || !YOUTUBE_ID_RE.test(entry.youtubeId)) {
     log.add("live-timing-youtube-id", `youtubeId ${JSON.stringify(entry.youtubeId)} is not 11 characters of A-Z a-z 0-9 _ -`, id);
     valid = false;
@@ -717,7 +744,7 @@ function attachLiveTiming(id: string, lines: LyricLine[], sources: CatalogueSour
       });
     }
   }
-  return valid ? { youtubeId: entry.youtubeId, label: entry.label, times: [...times], singAlong } : null;
+  return valid ? { chantVersion: entry.chantVersion, youtubeId: entry.youtubeId, label: entry.label, times: [...times], singAlong } : null;
 }
 
 /* Same counting rule as the song list badges: a Japanese-version chant line
@@ -837,7 +864,7 @@ export function assembleCatalogue(sources: CatalogueSources): AssembledCatalogue
   return {
     songs,
     summaries: songs.map(({ lyrics: _lyrics, chant: _chant, wordTiming: _wordTiming, live: _live, ...summary }) => {
-      const live = _live ? { youtubeId: _live.youtubeId, label: _live.label } : undefined;
+      const live = _live ? _live.map(({ chantVersion, youtubeId, label }) => ({ chantVersion, youtubeId, label })) : undefined;
       return live ? { ...summary, live } : summary;
     }),
     warnings: log.warnings,

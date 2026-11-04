@@ -355,19 +355,19 @@ describe("bundled word timing", () => {
 
 describe("live timing", () => {
   /* Alpha has three rows (0, 10, 20.5). */
-  function withLive(entry: Partial<{ youtubeId: string; label: string; times: number[]; singAlong: number[] }>) {
+  function withLive(entry: Partial<{ chantVersion: "jp" | "kr"; youtubeId: string; label: string; times: number[]; singAlong: number[] }>) {
     const sources = makeSources();
-    sources.liveTiming = { Alpha: { youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22], ...entry } };
+    sources.liveTiming = { Alpha: [{ chantVersion: "jp", youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22], ...entry }] };
     return sources;
   }
 
   test("attaches the live video and times to the song, and its video only to the summary", () => {
     const catalogue = assembleCatalogue(withLive({}));
     const [a, b] = catalogue.songs;
-    expect(a.live).toEqual({ youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22], singAlong: [] });
+    expect(a.live).toEqual([{ chantVersion: "jp", youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22], singAlong: [] }]);
     expect(a.youtubeId).toBe("yt-alpha");
     expect(b.live).toBeUndefined();
-    expect(catalogue.summaries[0].live).toEqual({ youtubeId: "abcDEF_-123", label: "Dome Tour" });
+    expect(catalogue.summaries[0].live).toEqual([{ chantVersion: "jp", youtubeId: "abcDEF_-123", label: "Dome Tour" }]);
     expect(catalogue.summaries[1]).not.toHaveProperty("live");
   });
 
@@ -378,12 +378,30 @@ describe("live timing", () => {
 
   test("live-timing-unknown-song", () => {
     const sources = makeSources();
-    sources.liveTiming = { Ghost: { youtubeId: "abcDEF_-123", label: "x", times: [] } };
+    sources.liveTiming = { Ghost: [{ chantVersion: "jp", youtubeId: "abcDEF_-123", label: "x", times: [] }] };
     expectRejected(sources, "live-timing-unknown-song", "Ghost");
   });
 
   test.each(["short", "abcDEF_-1234", "abcDEF!-123", ""])("live-timing-youtube-id rejects %j", youtubeId => {
     expectRejected(withLive({ youtubeId }), "live-timing-youtube-id", "Alpha");
+  });
+
+  test("live-timing-chant-version rejects an unknown version", () => {
+    expectRejected(withLive({ chantVersion: "us" as never }), "live-timing-chant-version", "Alpha");
+  });
+
+  test("live-timing-chant-version rejects a second video for the same version", () => {
+    const sources = withLive({});
+    (sources.liveTiming as Record<string, unknown>).Alpha = [...sources.liveTiming.Alpha, { ...sources.liveTiming.Alpha[0], youtubeId: "zzzDEF_-123" }];
+    expectRejected(sources, "live-timing-chant-version", "Alpha");
+  });
+
+  test("two videos with different chant versions are both kept, in order", () => {
+    const sources = withLive({});
+    (sources.liveTiming as Record<string, unknown>).Alpha = [...sources.liveTiming.Alpha, { ...sources.liveTiming.Alpha[0], chantVersion: "kr", youtubeId: "zzzDEF_-123", label: "Seoul" }];
+    const catalogue = assembleCatalogue(sources);
+    expect(catalogue.songs[0].live!.map(video => video.chantVersion)).toEqual(["jp", "kr"]);
+    expect(catalogue.summaries[0].live!.map(video => video.label)).toEqual(["Dome Tour", "Seoul"]);
   });
 
   test("live-timing-label rejects an empty label", () => {
@@ -396,8 +414,8 @@ describe("live timing", () => {
 
   test("singAlong is carried on the song and stays off the summary", () => {
     const catalogue = assembleCatalogue(withLive({ singAlong: [0, 2] }));
-    expect(catalogue.songs[0].live!.singAlong).toEqual([0, 2]);
-    expect(catalogue.summaries[0].live).toEqual({ youtubeId: "abcDEF_-123", label: "Dome Tour" });
+    expect(catalogue.songs[0].live![0].singAlong).toEqual([0, 2]);
+    expect(catalogue.summaries[0].live).toEqual([{ chantVersion: "jp", youtubeId: "abcDEF_-123", label: "Dome Tour" }]);
   });
 
   test.each([[[1.5]], [["1"]], [[null]]])("live-timing-sing-along rejects non-integer %j", singAlong => {

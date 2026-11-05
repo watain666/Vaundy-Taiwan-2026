@@ -2037,7 +2037,7 @@ function buildSongShell(){
                 </span>
               </details>
               <div class="video-status" id="video-status" role="status">正在載入影片…</div>
-              <button class="unmute-prompt" id="unmute-prompt" type="button" hidden><b>目前為靜音播放</b><span>瀏覽器限制自動播放聲音，點一下畫面任意處即可開啟</span></button>
+              <button class="unmute-prompt" id="unmute-prompt" type="button" hidden><b>目前為靜音播放</b><span>直接開啟網址時，瀏覽器不允許影片自動播放聲音。點一下畫面任意處即可開啟聲音。</span></button>
             </div>
           </div>
 

@@ -63,6 +63,7 @@ import { store } from "./services/storage.js";
 import { createDocumentPip } from "./document-pip.js";
 import { createVideoPip } from "./video-pip.js";
 import { escapeHtml } from "./ui/text.ts";
+import { parseSongRoute } from "./services/song-link.ts";
 import {
   applyLyricContainerClasses,
   createLyricMount,
@@ -97,6 +98,7 @@ let repeatOneEnabled = store("horo-repeat-one") === "1";
 let preferLive = store("horo-prefer-live") !== "0";
 // 目前這首歌在歌曲頁用 MV／現場版切換鈕選的來源；不保存，換歌就回到設定的預設。
 let videoSourceOverride = null;   // { songId, source } | null
+let linkStart = null;             // { songId, seconds }：網址 ?t= 指定的開始秒數，播放器用掉一次就清掉
 let lastActiveIdx = -1;
 let karaokeTiming = null;       // 對齊到目前 YouTube 影片的真實逐字時間
 let karaokeLoadSeq = 0;         // 換歌時忽略上一首尚未完成的網路回應
@@ -447,11 +449,11 @@ function router({ resetScroll = true } = {}){
   const hash = location.hash.replace(/^#\/?/, "");
   let song = null;
   if (hash.startsWith("song/")) {
-    const raw = hash.slice(5);
-    // 곡 id에 따옴표 등이 들어가면 브라우저가 %27 처럼 인코딩할 수 있으므로 되돌려서 비교
-    let id = raw;
-    try { id = decodeURIComponent(raw); } catch(e) { /* 잘못된 인코딩이면 원문 그대로 */ }
-    song = getSong(id) || getSong(raw) || null;
+    // 歌曲 id 後面可以接 ?t=秒數&src=live|mv（見 services/song-link.ts）；
+    // id 若被瀏覽器編碼成 %27 之類，parseSongRoute 會先解回來再比對。
+    const route = parseSongRoute(hash.slice(5));
+    song = getSong(route.id) || null;
+    if (song) applySongLink(song, route);
   }
 
   if (song) {
@@ -3424,6 +3426,18 @@ function videoIdOf(song){ return activeVideoId(song, sourceOf(song), chantVersio
 function liveActive(song){ return isLiveActive(song, sourceOf(song)); }
 /* 歌詞 view、只練合唱與 PiP 看到的歌：現場版時，live.singAlong 的行也算大合唱應援
    （其餘一律是原本的 song）。MV 模式與沒有標記的歌回傳同一個物件。 */
+/* 網址帶的 src 與 t：src 只對這首歌生效（同 MV／Live 切換鈕），t 交給下一次開影片使用。 */
+function applySongLink(song, route){
+  if (route.source && (route.source === "mv" || song.live)) videoSourceOverride = { songId: song.id, source: route.source };
+  linkStart = route.startSeconds === null ? null : { songId: song.id, seconds: route.startSeconds };
+}
+/* 這支影片若正是網址指定的那首歌目前的影片，取出開始秒數（只用一次）。 */
+function takeLinkStart(videoId){
+  if (!linkStart || !currentSong || linkStart.songId !== currentSong.id || videoIdOf(currentSong) !== videoId) return null;
+  const seconds = linkStart.seconds;
+  linkStart = null;
+  return seconds;
+}
 function viewSong(song){
   return song && liveActive(song) ? withSingAlongChant(song, liveVideoOf(song).singAlong) : song;
 }
@@ -3763,15 +3777,16 @@ function playVideoFor(videoId){
     if (userMuted) player.mute();         // 사용자가 꺼 뒀으면 계속 꺼 둠
     else           player.unMute();
     player.setVolume(userVolume);         // 100 으로 되돌리지 않음
+    const start = takeLinkStart(videoId) ?? 0;
     if (currentVideoId === videoId) {
-      player.seekTo(0, true);
+      player.seekTo(start, true);
       player.playVideo();
     } else {
       currentVideoId = videoId;
       availablePlaybackRates = [];
       playbackRateRestorePending = true;
       updatePlaybackRateUi();
-      player.loadVideoById(videoId);      // loadVideoById 는 바로 재생까지 함
+      player.loadVideoById({ videoId, startSeconds: start });   // loadVideoById 는 바로 재생까지 함
     }
   } catch(e){}
 }
@@ -3780,7 +3795,8 @@ function playVideoFor(videoId){
    (곡을 탭 → 이미 playVideoFor 가 돌았으므로 여기서 다시 끊기지 않게) */
 function ensurePlaying(videoId){
   if (!player || !playerReady) { pendingVideoId = videoId; return; }
-  if (currentVideoId === videoId) {
+  // 網址帶了這首歌的開始秒數時，就算影片已在播也要跳到那裡
+  if (currentVideoId === videoId && linkStart?.songId !== currentSong?.id) {
     let st = -1;
     try { st = player.getPlayerState(); } catch(e){}
     if (st === YT.PlayerState.PLAYING || st === YT.PlayerState.BUFFERING) return;
@@ -3806,6 +3822,18 @@ function isPlayerPlayingOrEnded(){
 function cueVideoFor(videoId){
   if (!player || !playerReady) { pendingVideoId = videoId; return; }
   try {
+    const start = takeLinkStart(videoId);
+    if (start !== null) {
+      // 網址指定了開始秒數：載入到那個位置，不播放
+      if (currentVideoId !== videoId) {
+        currentVideoId = videoId;
+        availablePlaybackRates = [];
+        playbackRateRestorePending = true;
+        updatePlaybackRateUi();
+      }
+      player.cueVideoById({ videoId, startSeconds: start });
+      return;
+    }
     if (currentVideoId === videoId) {
       const st = player.getPlayerState();
       // 剛建立的播放器已經停在這支影片開頭，不必重新載入

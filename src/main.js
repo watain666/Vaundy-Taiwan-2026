@@ -2036,28 +2036,32 @@ function buildSongShell(){
               </details>
               <div class="video-status" id="video-status" role="status">正在載入影片…</div>
             </div>
-          </div>
 
-          <div class="lyrics-note">
-            <span class="dot">●</span>
-            <span class="lyrics-note-copy">點選歌詞跳至影片位置，歌詞隨影片同步</span>
-            <div class="chant-version-segment video-source-segment" id="video-source-segment" role="group" aria-label="影片來源" hidden>
-              <button type="button" class="chant-version-option" data-video-source="mv" aria-pressed="true">MV</button>
-              <button type="button" class="chant-version-option" data-video-source="live" aria-pressed="false">Live</button>
+            <!-- Hint, legend and MV/Live switch share the video's width: one row when it fits, the legend wraps below otherwise. -->
+            <div class="video-meta">
+              <div class="video-meta-row">
+                <div class="lyrics-note">
+                  <span class="dot">●</span>
+                  <span class="lyrics-note-copy">點選歌詞跳至影片位置，歌詞隨影片同步</span>
+                </div>
+                <div class="chant-version-segment video-source-segment" id="video-source-segment" role="group" aria-label="影片來源" hidden>
+                  <button type="button" class="chant-version-option" data-video-source="mv" aria-pressed="true">MV</button>
+                  <button type="button" class="chant-version-option" data-video-source="live" aria-pressed="false">Live</button>
+                </div>
+                <div class="lyrics-legend">
+                  <span class="legend-item"><span class="legend-icon chant">${INLINE_ICONS.mic}</span>大合唱</span>
+                  <span class="legend-item"><span class="legend-icon clap">${INLINE_ICONS.clap}</span>拍手</span>
+                  <span class="legend-item"><span class="legend-icon wave">${INLINE_ICONS.wave}</span>揮手</span>
+                  <button type="button" class="chant-notes-toggle" id="chant-notes-toggle" aria-expanded="false" aria-controls="chant-notes" title="查看這首歌的日本版應援提示" hidden>
+                    <span class="chant-notes-label">應援說明</span><span class="chant-notes-chevron" aria-hidden="true">${CHEVRON_SVG}</span>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div class="lyrics-legend">
-            <span class="legend-item"><span class="legend-icon chant">${INLINE_ICONS.mic}</span>大合唱</span>
-            <span class="legend-item"><span class="legend-icon clap">${INLINE_ICONS.clap}</span>拍手</span>
-            <span class="legend-item"><span class="legend-icon wave">${INLINE_ICONS.wave}</span>揮手</span>
-            <button type="button" class="chant-notes-toggle" id="chant-notes-toggle" aria-expanded="false" aria-controls="chant-notes" title="查看這首歌的日本版應援提示" hidden>
-              <span class="chant-notes-label">應援說明</span><span class="chant-notes-chevron" aria-hidden="true">${CHEVRON_SVG}</span>
-            </button>
-          </div>
-          <div class="chant-notes-panel" id="chant-notes" hidden>
-            <ul class="chant-notes-list" id="chant-notes-list"></ul>
-            <a href="${CHANT_REFERENCE_URL}" target="_blank" rel="noopener">Canva《VAUNDY 應援教學》↗</a>
+            <div class="chant-notes-panel" id="chant-notes" hidden>
+              <ul class="chant-notes-list" id="chant-notes-list"></ul>
+              <a href="${CHANT_REFERENCE_URL}" target="_blank" rel="noopener">Canva《VAUNDY 應援教學》↗</a>
+            </div>
           </div>
         </div>
 

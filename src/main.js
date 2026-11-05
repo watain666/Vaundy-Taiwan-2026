@@ -3594,7 +3594,8 @@ let currentVideoId = null;    // 플레이어에 올라가 있는 영상
 let pendingVideoId = null;    // 플레이어 준비 전에 눌린 곡
 let userVolume     = 100;     // 사용자가 마지막으로 맞춰 둔 볼륨(곡이 바뀌어도 유지)
 let userMuted      = false;   // 사용자가 직접 음소거해 뒀는지
-let autoplayMuted  = false;   // 頁面還沒被點過（直接開網址）時，為了能自動播放而暫時靜音
+let autoplayMuted  = false;   // 瀏覽器擋下有聲自動播放時，改用靜音播放（等使用者點一下再開聲音）
+let autoplayCheckTimer = null;
 let volumeWatchTimer = null;
 let playbackRateRestorePending = false;
 
@@ -3777,12 +3778,9 @@ function startVolumeWatch(){
 function playVideoFor(videoId){
   if (!player || !playerReady) { pendingVideoId = videoId; return; }
   try {
-    // 瀏覽器只讓「頁面被點過之後」的影片有聲音自動播放；直接開網址時先靜音播放，
-    // 等第一次點擊或按鍵再開聲音（從列表點歌時那一下點擊就算數，不會走到這裡）。
-    autoplayMuted = !userMuted && !pageHasBeenActive();
-    if (userMuted || autoplayMuted) player.mute();   // 사용자가 꺼 뒀으면 계속 꺼 둠
+    if (userMuted) player.mute();         // 사용자가 꺼 뒀으면 계속 꺼 둠
     else           player.unMute();
-    showUnmutePrompt(autoplayMuted);
+    watchBlockedAutoplay(videoId);
     player.setVolume(userVolume);         // 100 으로 되돌리지 않음
     const start = takeLinkStart(videoId) ?? 0;
     if (currentVideoId === videoId) {
@@ -3796,6 +3794,23 @@ function playVideoFor(videoId){
       player.loadVideoById({ videoId, startSeconds: start });   // loadVideoById 는 바로 재생까지 함
     }
   } catch(e){}
+}
+
+/* 頁面還沒被點過（直接開網址）時，瀏覽器可能擋下有聲自動播放；常來的網站通常會放行
+   （媒體互動分數高）。所以先照常有聲播放，過一會兒還沒開始播才改成靜音播放並顯示提示。 */
+const AUTOPLAY_CHECK_MS = 2000;
+function watchBlockedAutoplay(videoId){
+  clearTimeout(autoplayCheckTimer);
+  if (userMuted || pageHasBeenActive()) return;
+  autoplayCheckTimer = setTimeout(()=>{
+    if (!player || !playerReady || currentVideoId !== videoId || pageHasBeenActive()) return;
+    let st = -1;
+    try { st = player.getPlayerState(); } catch(e){}
+    if (st === YT.PlayerState.PLAYING || st === YT.PlayerState.BUFFERING) return;
+    autoplayMuted = true;
+    showUnmutePrompt(true);
+    try { player.mute(); player.playVideo(); } catch(e){}
+  }, AUTOPLAY_CHECK_MS);
 }
 
 function pageHasBeenActive(){

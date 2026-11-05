@@ -2037,7 +2037,7 @@ function buildSongShell(){
                 </span>
               </details>
               <div class="video-status" id="video-status" role="status">正在載入影片…</div>
-              <button class="unmute-prompt" id="unmute-prompt" type="button" hidden>點一下開啟聲音</button>
+              <button class="unmute-prompt" id="unmute-prompt" type="button" hidden><b>目前為靜音播放</b><span>瀏覽器限制自動播放聲音，點一下畫面任意處即可開啟</span></button>
             </div>
           </div>
 
@@ -3816,7 +3816,7 @@ function endAutoplayMute(unmute){
   if (!unmute || !player || !playerReady) return;
   try { player.unMute(); player.setVolume(userVolume); } catch(e){}
 }
-// 頁面上第一次點擊或按鍵（包含「點一下開啟聲音」本身）就開回聲音
+// 頁面上第一次點擊或按鍵（包含靜音提示本身）就開回聲音
 ["click", "keydown"].forEach(type => document.addEventListener(type, ()=> endAutoplayMute(true), true));
 
 /* 이미 그 곡이 재생 중이면 건드리지 않고, 아니면 재생시킨다.

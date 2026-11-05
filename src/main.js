@@ -2037,6 +2037,7 @@ function buildSongShell(){
                 </span>
               </details>
               <div class="video-status" id="video-status" role="status">正在載入影片…</div>
+              <button class="unmute-prompt" id="unmute-prompt" type="button" hidden>點一下開啟聲音</button>
             </div>
           </div>
 
@@ -3593,6 +3594,7 @@ let currentVideoId = null;    // 플레이어에 올라가 있는 영상
 let pendingVideoId = null;    // 플레이어 준비 전에 눌린 곡
 let userVolume     = 100;     // 사용자가 마지막으로 맞춰 둔 볼륨(곡이 바뀌어도 유지)
 let userMuted      = false;   // 사용자가 직접 음소거해 뒀는지
+let autoplayMuted  = false;   // 頁面還沒被點過（直接開網址）時，為了能自動播放而暫時靜音
 let volumeWatchTimer = null;
 let playbackRateRestorePending = false;
 
@@ -3764,7 +3766,8 @@ function startVolumeWatch(){
       const v = player.getVolume();
       const m = player.isMuted();
       if (typeof v === "number" && v > 0) userVolume = v;   // 0 은 음소거로 취급
-      userMuted = !!m;
+      if (!autoplayMuted) userMuted = !!m;
+      else if (!m) endAutoplayMute(false);   // 使用者用 YouTube 自己的按鈕開了聲音
     } catch(e){}
   }, 800);
 }
@@ -3774,8 +3777,12 @@ function startVolumeWatch(){
 function playVideoFor(videoId){
   if (!player || !playerReady) { pendingVideoId = videoId; return; }
   try {
-    if (userMuted) player.mute();         // 사용자가 꺼 뒀으면 계속 꺼 둠
+    // 瀏覽器只讓「頁面被點過之後」的影片有聲音自動播放；直接開網址時先靜音播放，
+    // 等第一次點擊或按鍵再開聲音（從列表點歌時那一下點擊就算數，不會走到這裡）。
+    autoplayMuted = !userMuted && !pageHasBeenActive();
+    if (userMuted || autoplayMuted) player.mute();   // 사용자가 꺼 뒀으면 계속 꺼 둠
     else           player.unMute();
+    showUnmutePrompt(autoplayMuted);
     player.setVolume(userVolume);         // 100 으로 되돌리지 않음
     const start = takeLinkStart(videoId) ?? 0;
     if (currentVideoId === videoId) {
@@ -3790,6 +3797,27 @@ function playVideoFor(videoId){
     }
   } catch(e){}
 }
+
+function pageHasBeenActive(){
+  const activation = navigator.userActivation;
+  return !activation || activation.hasBeenActive;   // 不支援的瀏覽器照舊直接開聲音
+}
+
+function showUnmutePrompt(show){
+  const prompt = document.getElementById("unmute-prompt");
+  if (prompt) prompt.hidden = !show;
+}
+
+/* 結束自動播放的暫時靜音；unmute 為 true 時同時把聲音開回使用者的音量。 */
+function endAutoplayMute(unmute){
+  if (!autoplayMuted) return;
+  autoplayMuted = false;
+  showUnmutePrompt(false);
+  if (!unmute || !player || !playerReady) return;
+  try { player.unMute(); player.setVolume(userVolume); } catch(e){}
+}
+// 頁面上第一次點擊或按鍵（包含「點一下開啟聲音」本身）就開回聲音
+["click", "keydown"].forEach(type => document.addEventListener(type, ()=> endAutoplayMute(true), true));
 
 /* 이미 그 곡이 재생 중이면 건드리지 않고, 아니면 재생시킨다.
    (곡을 탭 → 이미 playVideoFor 가 돌았으므로 여기서 다시 끊기지 않게) */

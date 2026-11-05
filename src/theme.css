@@ -268,6 +268,25 @@ button{touch-action:manipulation;}
 }
 .song-page .video-status[hidden]{display:none;}
 .song-page .video-status a{color:var(--ui-accent);}
+.song-page .video-frame .unmute-prompt{
+  position:absolute;
+  left:12px;
+  bottom:12px;
+  z-index:3;
+  min-height:36px;
+  padding:0 14px;
+  border:0;
+  border-radius:999px;
+  background:var(--cream);
+  color:var(--stage);
+  font-size:14px;
+  font-weight:700;
+  box-shadow:0 2px 8px rgb(0 0 0 / .35);
+  cursor:pointer;
+}
+.song-page .video-frame .unmute-prompt:hover{filter:brightness(.92);}
+.song-page .video-frame .unmute-prompt:focus-visible{outline:2px solid var(--cream);outline-offset:2px;}
+.song-page .video-frame .unmute-prompt[hidden]{display:none;}
 .song-page .player-controls{
   position:relative;
   right:auto;

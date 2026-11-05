@@ -82,7 +82,8 @@ let autoScrollEnabled = true;
 let venueMode = false;          // 단축모드 (첫 실행 때 저장값을 읽어 옴)
 const READING_MODES = ["kana", "romaji", "both"];
 const storedReadingMode = store("horo-reading");
-let readingMode = READING_MODES.includes(storedReadingMode) ? storedReadingMode : "kana";
+// 日文讀音預設同時顯示假名與羅馬字；使用者選過就沿用保存的設定。
+let readingMode = READING_MODES.includes(storedReadingMode) ? storedReadingMode : "both";
 let showJapanese = store("horo-show-japanese") !== "0";
 let showChinese = store("horo-show-chinese") !== "0";
 const storedChantVersion = store("horo-chant-version");
@@ -96,6 +97,8 @@ let autoplayEnabled = store("horo-autoplay") !== "0";
 let repeatOneEnabled = store("horo-repeat-one") === "1";
 // 優先播放 Live 版，預設開啟；有官方現場版的歌預設看現場版（歌詞改用現場時間）。
 let preferLive = store("horo-prefer-live") !== "0";
+// 應援動作示範動畫，預設開啟；關閉時歌詞同步不再顯示動作示範。
+let tipPicEnabled = store("horo-tip-pic") !== "0";
 // 目前這首歌在歌曲頁用 MV／現場版切換鈕選的來源；不保存，換歌就回到設定的預設。
 let videoSourceOverride = null;   // { songId, source } | null
 let linkStart = null;             // { songId, seconds }：網址 ?t= 指定的開始秒數，播放器用掉一次就清掉
@@ -2082,10 +2085,11 @@ function buildSongShell(){
 
           <!-- 짤방(동작 사진) — 지정한 가사에서만 떴다가 사라집니다 -->
           <div class="tip-pic at-below-video" id="tip-pic" aria-live="polite">
-            <figure class="tip-pic-card" id="tip-pic-card" title="點選即可放大">
+            <figure class="tip-pic-card" id="tip-pic-card" title="拖曳可移動位置">
               <video id="tip-pic-video" muted loop playsinline preload="none" aria-hidden="true" hidden></video>
               <img id="tip-pic-img" alt="" decoding="async" hidden>
               <figcaption class="tip-pic-cap" id="tip-pic-cap"></figcaption>
+              <button type="button" class="tip-pic-resize" id="tip-pic-resize" aria-label="調整應援動作視窗大小（拖曳，或用方向鍵）" title="拖曳調整大小"></button>
             </figure>
           </div>
 
@@ -2182,6 +2186,12 @@ function buildSongShell(){
                 <span class="settings-hint">有官方 Live 版的歌曲預設播放 Live 版</span>
               </span>
               <button class="settings-switch${preferLive ? " active" : ""}" id="prefer-live-btn" type="button" aria-pressed="${preferLive ? "true" : "false"}" aria-labelledby="prefer-live-label">
+                <span class="venue-switch"><span class="venue-knob"></span></span>
+              </button>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label" id="tip-pic-label">顯示應援動作示範</span>
+              <button class="settings-switch${tipPicEnabled ? " active" : ""}" id="tip-pic-btn" type="button" aria-pressed="${tipPicEnabled ? "true" : "false"}" aria-labelledby="tip-pic-label">
                 <span class="venue-switch"><span class="venue-knob"></span></span>
               </button>
             </div>
@@ -2283,11 +2293,14 @@ function buildSongShell(){
     });
   }
 
-  // 짤방 탭 → 크게 보기 / 원래대로
+  // 應援動作視窗：拖曳本體移動位置，拖曳左下角把手調整大小
   const tipCard = document.getElementById("tip-pic-card");
   if (tipCard){
-    tipCard.addEventListener("click", ()=>{
-      document.getElementById("tip-pic").classList.toggle("big");
+    setupTipPicDrag(tipCard);
+    setupTipPicResize(tipCard, document.getElementById("tip-pic-resize"));
+    // 出現動畫（縮放）結束後再夾一次，避免用動畫中的尺寸算邊界
+    document.getElementById("tip-pic").addEventListener("transitionend", (e)=>{
+      if (e.target === e.currentTarget && e.propertyName === "transform") applyTipPicOffset();
     });
   }
 
@@ -2447,6 +2460,14 @@ function buildSongShell(){
       videoSourceOverride = { songId: currentSong.id, source };
       switchVideoSource();
     });
+  });
+
+  document.getElementById("tip-pic-btn").addEventListener("click", (e)=>{
+    tipPicEnabled = !tipPicEnabled;
+    store("horo-tip-pic", tipPicEnabled ? "1" : "0");
+    e.currentTarget.classList.toggle("active", tipPicEnabled);
+    e.currentTarget.setAttribute("aria-pressed", tipPicEnabled ? "true" : "false");
+    updateTipPic(lastActiveIdx);   // 立刻套用到目前這一句
   });
 
   document.getElementById("autoscroll-btn").addEventListener("click", (e)=>{
@@ -3065,7 +3086,7 @@ function hideTipPic(){
     video.setAttribute("aria-hidden", "true");
   }
   if (img) img.hidden = true;
-  box.classList.remove("show", "big");
+  box.classList.remove("show");
   currentPicKey = null;
 }
 
@@ -3089,10 +3110,208 @@ function placeTipPic(){
   const host = (mode === "at-below-video") ? topHost : lyricsHost;
 
   if (!box.classList.contains(mode)){
-    box.classList.remove("at-below-video", "at-lyrics", "at-lyrics-right", "big");
+    box.classList.remove("at-below-video", "at-lyrics", "at-lyrics-right");
     box.classList.add(mode);
   }
   if (box.parentElement !== host) host.appendChild(box);
+  applyTipPicOffset();
+}
+
+/* 應援動作視窗可以拖曳移動、拖曳左下角把手縮放。
+   位移疊在各版面的預設位置上（CSS translate），寬度寫在卡片上；兩者依版面
+   （手機／PC 2 欄／簡潔模式）分開保存，並夾在畫面內。 */
+const TIP_PIC_LAYOUT_STORAGE_KEY = "horo-tip-pic-layout";
+const TIP_PIC_DRAG_THRESHOLD = 6;     // 移動超過這個距離才算拖曳
+const TIP_PIC_EDGE = 8;               // 視窗離畫面邊緣至少留的距離
+const TIP_PIC_MIN_WIDTH = 120;
+const TIP_PIC_MAX_WIDTH = 560;
+const TIP_PIC_KEY_STEP = 16;          // 把手用方向鍵縮放的每步寬度
+let tipPicLayouts = (()=>{
+  try {
+    const parsed = JSON.parse(store(TIP_PIC_LAYOUT_STORAGE_KEY) || "{}");
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch(e){ return {}; }
+})();
+
+function tipPicMode(){
+  const box = document.getElementById("tip-pic");
+  if (!box) return "";
+  return ["at-below-video", "at-lyrics-right", "at-lyrics"].find(mode => box.classList.contains(mode)) || "";
+}
+
+function finiteOr(value, fallback){
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function tipPicStoredLayout(mode = tipPicMode()){
+  const layout = tipPicLayouts[mode] || {};
+  const w = finiteOr(layout.w, 0);
+  return { x: finiteOr(layout.x, 0), y: finiteOr(layout.y, 0), w: w > 0 ? w : 0 };
+}
+
+function saveTipPicLayout(card){
+  const mode = tipPicMode();
+  if (!mode) return;
+  const { x, y } = tipPicCurrentOffset(card);
+  const w = finiteOr(card.dataset.width, 0);
+  tipPicLayouts = { ...tipPicLayouts, [mode]: w > 0 ? { x, y, w } : { x, y } };
+  store(TIP_PIC_LAYOUT_STORAGE_KEY, JSON.stringify(tipPicLayouts));
+}
+
+function tipPicViewport(){
+  return {
+    width: document.documentElement.clientWidth || window.innerWidth,
+    height: window.innerHeight,
+  };
+}
+
+/* 把位移夾在畫面內：以目前位移推回沒有位移時的位置，再算出允許範圍。 */
+function clampTipPicOffset(card, x, y){
+  const rect = card.getBoundingClientRect();
+  if (!rect.width || !rect.height) return { x, y };
+  const current = tipPicCurrentOffset(card);
+  const baseLeft = rect.left - current.x;
+  const baseTop = rect.top - current.y;
+  const view = tipPicViewport();
+  const minX = TIP_PIC_EDGE - baseLeft;
+  const maxX = view.width - TIP_PIC_EDGE - rect.width - baseLeft;
+  const minY = TIP_PIC_EDGE - baseTop;
+  const maxY = view.height - TIP_PIC_EDGE - rect.height - baseTop;
+  return {
+    x: Math.round(maxX < minX ? minX : Math.min(maxX, Math.max(minX, x))),
+    y: Math.round(maxY < minY ? minY : Math.min(maxY, Math.max(minY, y))),
+  };
+}
+
+function tipPicCurrentOffset(card){
+  return { x: finiteOr(card.dataset.offsetX, 0), y: finiteOr(card.dataset.offsetY, 0) };
+}
+
+function setTipPicTranslate(card, x, y){
+  card.dataset.offsetX = String(x);
+  card.dataset.offsetY = String(y);
+  card.style.translate = x || y ? `${x}px ${y}px` : "";
+}
+
+/* 寬度夾在最小值與畫面可容納的範圍內；0 表示沿用版面預設大小。 */
+function setTipPicWidth(card, width){
+  if (!width){
+    delete card.dataset.width;
+    card.classList.remove("sized");
+    card.style.removeProperty("--tip-pic-card-w");
+    return;
+  }
+  const view = tipPicViewport();
+  const max = Math.max(TIP_PIC_MIN_WIDTH, Math.min(TIP_PIC_MAX_WIDTH, view.width - TIP_PIC_EDGE * 2));
+  let next = Math.round(Math.min(max, Math.max(TIP_PIC_MIN_WIDTH, width)));
+  card.dataset.width = String(next);
+  card.classList.add("sized");
+  card.style.setProperty("--tip-pic-card-w", `${next}px`);
+  // 太高放不進畫面時，依比例縮回去
+  const height = card.getBoundingClientRect().height;
+  const room = view.height - TIP_PIC_EDGE * 2;
+  if (height > room && height > 0){
+    next = Math.max(TIP_PIC_MIN_WIDTH, Math.floor(next * room / height));
+    card.dataset.width = String(next);
+    card.style.setProperty("--tip-pic-card-w", `${next}px`);
+  }
+}
+
+/* 套用目前版面保存的位置與大小（出現、版面切換、視窗大小改變時呼叫）。 */
+function applyTipPicOffset(){
+  const card = document.getElementById("tip-pic-card");
+  if (!card) return;
+  const stored = tipPicStoredLayout();
+  setTipPicWidth(card, stored.w);
+  setTipPicTranslate(card, stored.x, stored.y);
+  const box = document.getElementById("tip-pic");
+  if (!box || !box.classList.contains("show")) return;
+  const clamped = clampTipPicOffset(card, stored.x, stored.y);
+  setTipPicTranslate(card, clamped.x, clamped.y);
+}
+
+function setupTipPicDrag(card){
+  let drag = null;
+  card.addEventListener("pointerdown", (e)=>{
+    if (e.button !== 0 || e.target.closest(".tip-pic-resize")) return;
+    const start = tipPicCurrentOffset(card);
+    drag = { id: e.pointerId, startX: e.clientX, startY: e.clientY, x: start.x, y: start.y, moved: false };
+  });
+  card.addEventListener("pointermove", (e)=>{
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.startX, dy = e.clientY - drag.startY;
+    if (!drag.moved){
+      if (Math.hypot(dx, dy) < TIP_PIC_DRAG_THRESHOLD) return;
+      drag.moved = true;
+      try { card.setPointerCapture(e.pointerId); } catch(err){}
+      card.classList.add("dragging");
+    }
+    e.preventDefault();
+    const next = clampTipPicOffset(card, drag.x + dx, drag.y + dy);
+    setTipPicTranslate(card, next.x, next.y);
+  });
+  const finish = (e)=>{
+    if (!drag || e.pointerId !== drag.id) return;
+    if (drag.moved){
+      card.classList.remove("dragging");
+      saveTipPicLayout(card);
+    }
+    drag = null;
+  };
+  card.addEventListener("pointerup", finish);
+  card.addEventListener("pointercancel", finish);
+  card.addEventListener("lostpointercapture", finish);
+}
+
+/* 縮放時固定右上角：寬度改變後，把位移補回去，讓右上角留在原處。 */
+function resizeTipPicKeepingTopRight(card, width){
+  const before = card.getBoundingClientRect();
+  setTipPicWidth(card, width);
+  const after = card.getBoundingClientRect();
+  const offset = tipPicCurrentOffset(card);
+  const shifted = { x: offset.x + (before.right - after.right), y: offset.y + (before.top - after.top) };
+  const clamped = clampTipPicOffset(card, shifted.x, shifted.y);
+  setTipPicTranslate(card, clamped.x, clamped.y);
+}
+
+function setupTipPicResize(card, handle){
+  if (!handle) return;
+  let resize = null;
+  handle.addEventListener("pointerdown", (e)=>{
+    if (e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    resize = { id: e.pointerId, startX: e.clientX, startY: e.clientY, width: card.getBoundingClientRect().width };
+    try { handle.setPointerCapture(e.pointerId); } catch(err){}
+    card.classList.add("resizing");
+  });
+  handle.addEventListener("pointermove", (e)=>{
+    if (!resize || e.pointerId !== resize.id) return;
+    e.preventDefault();
+    // 把手在左下角：往左、往下拉都是放大，取兩個方向中拉得比較多的那個
+    const grow = Math.max(resize.startX - e.clientX, e.clientY - resize.startY);
+    const shrink = Math.min(resize.startX - e.clientX, e.clientY - resize.startY);
+    const delta = Math.abs(grow) >= Math.abs(shrink) ? grow : shrink;
+    resizeTipPicKeepingTopRight(card, resize.width + delta);
+  });
+  const finish = (e)=>{
+    if (!resize || e.pointerId !== resize.id) return;
+    resize = null;
+    card.classList.remove("resizing");
+    saveTipPicLayout(card);
+  };
+  handle.addEventListener("pointerup", finish);
+  handle.addEventListener("pointercancel", finish);
+  handle.addEventListener("lostpointercapture", finish);   // 放開事件沒送到時也要解除縮放狀態
+  handle.addEventListener("keydown", (e)=>{
+    const step = { ArrowLeft: 1, ArrowDown: 1, ArrowRight: -1, ArrowUp: -1 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    e.stopPropagation();   // 不要觸發歌曲頁的 ← → 切歌快捷鍵
+    resizeTipPicKeepingTopRight(card, card.getBoundingClientRect().width + step * TIP_PIC_KEY_STEP);
+    saveTipPicLayout(card);
+  });
 }
 
 function showTipPic(pic){
@@ -3142,14 +3361,14 @@ function showTipPic(pic){
     showImageFallback();
   }
   if (cap) cap.textContent = pic.caption || "";
-  box.classList.remove("big");
   box.classList.add("show");
   currentPicKey = pic.key;
+  requestAnimationFrame(applyTipPicOffset);
 }
 
 /* 지금 활성화된 가사 줄에 맞춰 짤방을 갈아 끼운다 */
 function updateTipPic(activeIdx){
-  if (!currentSong) return hideTipPic();
+  if (!currentSong || !tipPicEnabled) return hideTipPic();
   const line = activeIdx >= 0 ? currentSong.lyrics[activeIdx] : null;
   const pic  = line ? resolvePic(line.pic) : null;
 

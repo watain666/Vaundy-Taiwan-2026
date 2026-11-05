@@ -3097,15 +3097,13 @@
   .tip-pic.at-below-video .tip-pic-card{
     max-width:min(54vw, 240px);
     padding:8px;
-    border-radius:16px;
+    --tip-card-r:16px;
+    border-radius:var(--tip-card-r);
     gap:4px;
   }
   .tip-pic.at-below-video .tip-pic-card img,
   .tip-pic.at-below-video .tip-pic-card video{ max-height:min(15svh, 128px); border-radius:10px; }
   .tip-pic.at-below-video .tip-pic-cap{ font-size:11px; padding:0 3px 1px; }
-  .tip-pic.at-below-video.big .tip-pic-card{ max-width:min(84vw, 360px); }
-  .tip-pic.at-below-video.big .tip-pic-card img,
-  .tip-pic.at-below-video.big .tip-pic-card video{ max-height:min(34svh, 280px); }
 
   /* ② PC 2단 — 가사 칸 오른쪽 위 모서리. 작게 두어 가사를 최소한만 덮는다 */
   .tip-pic.at-lyrics-right{
@@ -3118,9 +3116,6 @@
   .tip-pic.at-lyrics-right .tip-pic-card img,
   .tip-pic.at-lyrics-right .tip-pic-card video{ max-height:clamp(120px, 26svh, 228px); }
   .tip-pic.at-lyrics-right .tip-pic-cap{ font-size:12px; }
-  .tip-pic.at-lyrics-right.big .tip-pic-card{ max-width:min(100%, 460px); }
-  .tip-pic.at-lyrics-right.big .tip-pic-card img,
-  .tip-pic.at-lyrics-right.big .tip-pic-card video{ max-height:min(52svh, 400px); }
 
   /* ③ 단축모드 — 가사 위 가운데 (영상이 없는 화면이라 제일 크게) */
   .tip-pic.at-lyrics{
@@ -3140,7 +3135,8 @@
     pointer-events:auto;
     background:var(--surface-raised);
     border:1px solid var(--line);
-    border-radius:8px;
+    --tip-card-r:8px;
+    border-radius:var(--tip-card-r);
     padding:8px 8px 6px;
     box-shadow:0 10px 24px rgba(0,0,0,.25);
     max-width:min(100%, 420px);
@@ -3148,8 +3144,14 @@
     flex-direction:column;
     align-items:center;
     gap:6px;
-    cursor:zoom-in;
+    position:relative;
+    cursor:grab;
+    touch-action:none;            /* 拖曳移動位置，不讓手指拖動捲到歌詞 */
+    user-select:none;
+    -webkit-user-select:none;
   }
+  .tip-pic-card.dragging{ cursor:grabbing; }
+  .tip-pic-card img, .tip-pic-card video{ -webkit-user-drag:none; }
   .tip-pic-card img, .tip-pic-card video{
     display:block;
     max-width:100%;
@@ -3169,15 +3171,59 @@
   }
   .tip-pic-cap:empty{ display:none; }
 
-  /* 탭하면 크게 — 한 번 더 탭하면 원래대로 */
-  .tip-pic.at-lyrics.big, .tip-pic.at-lyrics-right.big{ padding-top:6px; }
-  .tip-pic.big .tip-pic-card{
-    cursor:zoom-out;
-    max-width:min(100%, 560px);
+  /* 拖曳左下角把手調整過大小：卡片用保存的寬度，圖片跟著卡片寬度縮放 */
+  .tip-pic .tip-pic-card.sized{
+    width:var(--tip-pic-card-w);
+    max-width:none;
   }
-  .tip-pic.big .tip-pic-card img, .tip-pic.big .tip-pic-card video{
-    max-height:min(52svh, 420px);
+  .tip-pic .tip-pic-card.sized img, .tip-pic .tip-pic-card.sized video{
+    width:100%;
+    max-height:none;
   }
+  /* 縮放把手：沿著卡片左下圓角內側的一段細弧（同 iPadOS 視窗角落）。
+     用次要文字的灰（--ui-muted），平常與卡片底約 3:1（深色 #77777c、淺色 #7f7f85），
+     滑過、聚焦或拖曳時才用滿灰色；可按範圍是角落 44px 見方。 */
+  .tip-pic-resize{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:44px;
+    height:44px;
+    padding:0;
+    border:0;
+    border-radius:0 0 0 var(--tip-card-r);
+    background:none;
+    color:var(--ui-muted, #a9a9af);
+    --tip-handle-a:.6;
+    cursor:nesw-resize;
+    touch-action:none;
+  }
+  .tip-pic-resize::after{
+    content:"";
+    position:absolute;
+    left:3px;
+    bottom:3px;
+    width:18px;
+    height:18px;
+    border:solid currentColor;
+    border-width:0 0 2.5px 2.5px;
+    border-bottom-left-radius:max(5px, calc(var(--tip-card-r) - 3px));
+    opacity:var(--tip-handle-a);
+    transition:opacity .15s ease;
+  }
+  .tip-pic-resize:hover::after,
+  .tip-pic-resize:focus-visible::after,
+  .tip-pic-card.resizing .tip-pic-resize::after{ opacity:1; }
+  :root[data-theme="light"] .tip-pic-resize{ --tip-handle-a:.8; }
+  /* 滑鼠操作時縮放區縮成 28px（桌面控制項大小），其他地方都是移動用的抓手 */
+  @media (pointer: fine){
+    .tip-pic-resize{ width:28px; height:28px; }
+    .tip-pic-resize::after{ width:14px; height:14px; }
+  }
+  @media (prefers-contrast: more){
+    .tip-pic-resize{ --tip-handle-a:1; }
+  }
+  .tip-pic-card.resizing{ cursor:nesw-resize; }
 
   /* 단축모드에서도 그대로 보인다 (오히려 이때 제일 쓸모 있음) */
   .song-page.venue .lyrics-pane{ flex:1; min-height:0; }

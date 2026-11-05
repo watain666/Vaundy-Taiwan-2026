@@ -82,7 +82,8 @@ let autoScrollEnabled = true;
 let venueMode = false;          // 단축모드 (첫 실행 때 저장값을 읽어 옴)
 const READING_MODES = ["kana", "romaji", "both"];
 const storedReadingMode = store("horo-reading");
-let readingMode = READING_MODES.includes(storedReadingMode) ? storedReadingMode : "kana";
+// 日文讀音預設同時顯示假名與羅馬字；使用者選過就沿用保存的設定。
+let readingMode = READING_MODES.includes(storedReadingMode) ? storedReadingMode : "both";
 let showJapanese = store("horo-show-japanese") !== "0";
 let showChinese = store("horo-show-chinese") !== "0";
 const storedChantVersion = store("horo-chant-version");

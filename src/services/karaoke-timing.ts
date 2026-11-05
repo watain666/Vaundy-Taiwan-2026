@@ -149,7 +149,7 @@ export function liveKaraokeTiming(song: Song | null | undefined, chantVersion: s
 }
 
 export function liveStatusText(label: string): string {
-  return `現場版（${label}）：使用現場逐行時間，不套用逐字時間`;
+  return `歌詞時間：現場版（${label}）逐行對時，卡拉 OK 在每行內平均推進`;
 }
 
 export function bundledStatusText(timing: AlignedKaraokeTiming): string {

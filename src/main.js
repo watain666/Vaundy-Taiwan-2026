@@ -96,6 +96,8 @@ let autoplayEnabled = store("horo-autoplay") !== "0";
 let repeatOneEnabled = store("horo-repeat-one") === "1";
 // 優先播放 Live 版，預設開啟；有官方現場版的歌預設看現場版（歌詞改用現場時間）。
 let preferLive = store("horo-prefer-live") !== "0";
+// 應援動作示範動畫，預設開啟；關閉時歌詞同步不再顯示動作示範。
+let tipPicEnabled = store("horo-tip-pic") !== "0";
 // 目前這首歌在歌曲頁用 MV／現場版切換鈕選的來源；不保存，換歌就回到設定的預設。
 let videoSourceOverride = null;   // { songId, source } | null
 let linkStart = null;             // { songId, seconds }：網址 ?t= 指定的開始秒數，播放器用掉一次就清掉
@@ -2186,6 +2188,12 @@ function buildSongShell(){
               </button>
             </div>
             <div class="settings-row">
+              <span class="settings-label" id="tip-pic-label">顯示應援動作示範</span>
+              <button class="settings-switch${tipPicEnabled ? " active" : ""}" id="tip-pic-btn" type="button" aria-pressed="${tipPicEnabled ? "true" : "false"}" aria-labelledby="tip-pic-label">
+                <span class="venue-switch"><span class="venue-knob"></span></span>
+              </button>
+            </div>
+            <div class="settings-row">
               <span class="settings-label" id="autoscroll-label">歌詞自動捲動</span>
               <button class="settings-switch${autoScrollEnabled ? " active" : ""}" id="autoscroll-btn" type="button" aria-pressed="${autoScrollEnabled ? "true" : "false"}" aria-labelledby="autoscroll-label">
                 <span class="venue-switch"><span class="venue-knob"></span></span>
@@ -2447,6 +2455,14 @@ function buildSongShell(){
       videoSourceOverride = { songId: currentSong.id, source };
       switchVideoSource();
     });
+  });
+
+  document.getElementById("tip-pic-btn").addEventListener("click", (e)=>{
+    tipPicEnabled = !tipPicEnabled;
+    store("horo-tip-pic", tipPicEnabled ? "1" : "0");
+    e.currentTarget.classList.toggle("active", tipPicEnabled);
+    e.currentTarget.setAttribute("aria-pressed", tipPicEnabled ? "true" : "false");
+    updateTipPic(lastActiveIdx);   // 立刻套用到目前這一句
   });
 
   document.getElementById("autoscroll-btn").addEventListener("click", (e)=>{
@@ -3149,7 +3165,7 @@ function showTipPic(pic){
 
 /* 지금 활성화된 가사 줄에 맞춰 짤방을 갈아 끼운다 */
 function updateTipPic(activeIdx){
-  if (!currentSong) return hideTipPic();
+  if (!currentSong || !tipPicEnabled) return hideTipPic();
   const line = activeIdx >= 0 ? currentSong.lyrics[activeIdx] : null;
   const pic  = line ? resolvePic(line.pic) : null;
 

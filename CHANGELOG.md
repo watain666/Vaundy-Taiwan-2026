@@ -2,7 +2,7 @@
 
 本檔案依 Git 歷史整理，使用版本提交作為每一段的邊界。
 
-## **v1.29.1**
+## [**v1.29.1**](https://github.com/watain666/Vaundy-Taiwan-2026/commit/6774a98813664fe0973f45b897463ee305cf53ad)
 
 - [PR #93](https://github.com/watain666/Vaundy-Taiwan-2026/pull/93)：首頁移除「Spotify 官方預熱歌單」卡片。
 

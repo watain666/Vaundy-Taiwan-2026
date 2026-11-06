@@ -37,20 +37,24 @@ function loadWaline(){
   return walinePromise;
 }
 
-// Warm the board before the first open: download the Waline chunk and open the
-// connection to the server, so opening the chat only waits for the list API.
-// Skipped when the visitor asked the browser to save data.
-let prefetched = false;
-export function prefetchSupportBoard(){
-  if (prefetched || !SUPPORT_BOARD_SERVER_URL) return;
-  prefetched = true;
-  if (navigator.connection?.saveData) return;
-  const link = document.createElement("link");
-  link.rel = "preconnect";
-  link.href = SUPPORT_BOARD_SERVER_URL;
-  link.crossOrigin = "anonymous";
-  document.head.append(link);
-  loadWaline().catch(() => { /* the open path shows its own error */ });
+// Warm the board before the first open: download the Waline chunk and, with
+// wakeServer, wake the comment server with a request that reads no database
+// (an anonymous token check), which also opens the connection. The server is a
+// serverless function whose cold start measured 4-5 s against about 0.5 s
+// warm, so the first open then only waits for the list API. Resolves true once
+// the chunk is ready. Skipped when the visitor asked the browser to save data.
+// Only the first call does any work, so wakeServer counts the first time only.
+let prefetched = null;
+export function prefetchSupportBoard({ wakeServer = true } = {}){
+  if (!SUPPORT_BOARD_SERVER_URL || navigator.connection?.saveData) return Promise.resolve(false);
+  if (!prefetched){
+    if (wakeServer) fetch(`${SUPPORT_BOARD_SERVER_URL}/api/token`, { cache: "no-store" }).catch(() => { /* warm-up only */ });
+    prefetched = loadWaline().then(() => true, () => {
+      prefetched = null; // a later call may try again; the open path loads the chunk itself and shows its own error
+      return false;
+    });
+  }
+  return prefetched;
 }
 
 function setStatus(host, text){
@@ -122,7 +126,7 @@ async function uploadImage(file){
   return url;
 }
 
-export function unmountSupportBoard(){
+function unmountSupportBoard(){
   boardInstance?.destroy();
   boardInstance = null;
 }

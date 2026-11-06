@@ -15,7 +15,9 @@
 | 伺服器版本 | `@waline/vercel` 1.43.4（官方 `example/` 範本） |
 | 資料表結構 | [`docs/waline.pgsql`](waline.pgsql)（官方結構＋取消置頂修正 trigger，見下方「取消置頂後留言卡在最下面」） |
 
-伺服器專案是用 Vercel CLI 直接部署，沒有連 Git。更新伺服器時，在伺服器專案目錄執行 `npx vercel deploy --prod`。
+伺服器專案是用 Vercel CLI 直接部署，沒有連 Git。更新伺服器時，在伺服器專案目錄執行 `npx vercel deploy --prod`；想先驗再切，用 `npx vercel deploy --prod --skip-domain` 建好部署、測過之後再 `npx vercel promote <部署網址>`。
+
+> **不要只靠 Redeploy 更新。** Vercel 後台與 CLI 的 Redeploy 會重建前一次部署，但不會帶上 `vercel.json` 裡 `env` 的 `NODE_OPTIONS`。Waline 1.43 用 `require()` 載入只有 ESM 的 `@mdit/*` 套件，Vercel 的 Node.js 執行環境預設關掉 `require(esm)`（`--no-experimental-require-module`），少了這個旗標函式一啟動就 `ERR_REQUIRE_ESM`，所有請求都回 500。2026-11-06 就因此停了約 4 分鐘，用 `npx vercel rollback` 救回。現在 `NODE_OPTIONS` 也設成專案的環境變數（見下表），Redeploy 不會再因此掛，但更新仍以 `vercel deploy --prod` 為準。
 
 參考文件：
 
@@ -29,7 +31,7 @@
 3. 進入新專案的 **Storage** → **Create Database** → 選 **Neon** → **Accept and Create**。
 4. 建立完成後點 **Open in Neon** → **SQL Editor**，貼上本 repo 的 [`docs/waline.pgsql`](waline.pgsql) 全部內容並執行，建立資料表。這份是官方 [`waline.pgsql`](https://github.com/walinejs/waline/blob/main/assets/waline.pgsql) 加上檔案最後的取消置頂修正，不要改貼官方原檔。
 5. 回到 Vercel，到 **Settings** → **Environment Variables** 加入下一節的變數。
-6. 到 **Deployments**，對最新一筆部署選 **Redeploy**。之後只要修改環境變數，都要再 Redeploy 一次才會生效。
+6. 到 **Deployments**，對最新一筆部署選 **Redeploy**。之後只要修改環境變數，都要再 Redeploy 一次才會生效。Redeploy 之前務必確認下一節的 `NODE_OPTIONS` 已經設成環境變數，否則重建出來的函式會啟動失敗（見上方「不要只靠 Redeploy 更新」）。
 7. 點 **Visit** 打開伺服器網址（例如 `https://xxxx.vercel.app`），這就是前端要填的 `serverURL`。
 
 如果留言時出現資料庫連線錯誤，請到 Neon 複製連線資訊，手動設定 `PG_HOST`、`PG_PORT`（通常是 `5432`）、`PG_DB`、`PG_USER`、`PG_PASSWORD`，再 Redeploy。
@@ -44,6 +46,8 @@
 | `IPQPS` | `10`（預設 60） | 同一個 IP 兩則留言之間至少要隔幾秒；60 秒對聊天來說太久，連續回覆會出現「Comment too fast!」 |
 | `DISABLE_USERAGENT` | `true` | 不顯示留言者的瀏覽器與作業系統 |
 | `DISABLE_REGION` | `true` | 不顯示留言者的所在地區 |
+| `GRAVATAR_STR` | `data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7` | 頭像網址樣板。聊天視窗用 CSS 藏了頭像，瀏覽器卻仍會向預設的 `seccdn.libravatar.org` 下載（從台灣約 0.7 秒）；改成這個 1×1 透明 GIF 的 data URI 後就沒有外部頭像請求（2026-11-06 已設定並部署）。見下方「速度」 |
+| `NODE_OPTIONS` | `--experimental-require-module` | 讓 Waline 能用 `require()` 載入只有 ESM 的 `@mdit/*` 套件。官方 `vercel.json` 的 `env` 也有這行，但 Redeploy 不會帶上它，所以要在這裡再設一次（三個環境都設，2026-11-06 已設定） |
 
 不要設定 `LOGIN=force`，否則訪客無法只填暱稱留言。
 
@@ -142,3 +146,21 @@ npx wrangler@4 r2 object delete "vaundy-chat-images/support-goods/2026/10/<uuid>
 ```
 
 也可以到 Cloudflare 後台 R2 → `vaundy-chat-images` 找到檔案刪除。刪除後 Cloudflare 與瀏覽器的快取可能還會短暫保留舊圖片。
+
+## 速度：冷啟動與頭像
+
+2026-11-06 從台灣用 curl 實測（伺服器在 Vercel `sin1`，資料庫在 Neon `sin1`，專案建立時 Fluid Compute 就已開啟）：
+
+- 暖機中的函式，不論端點（包含不碰資料庫的 `/` 與 `/api/token`），回應時間都約 0.43–0.69 秒；這是 Vercel 邊緣 → 新加坡函式這條路的固定開銷，網站端改不了。
+- 冷啟動 4–5 秒。暖機後同時送 6 個請求：3 個由同一個暖機實例同時服務（0.50–0.57 秒），另外 3 個開新實例、各等 4.3–4.4 秒。也就是 Fluid Compute 的同實例併發有效，但一個實例同時大約只吃 3 個請求，超過就會冷啟動。網站同時送 2 個清單＋2 個留言數時全部 0.66–0.91 秒。
+- 預設頭像來自 `seccdn.libravatar.org`，約 0.7 秒；暱稱是純數字時會改抓 `q1.qlogo.cn`。聊天視窗用 CSS 把頭像藏起來，但瀏覽器還是會下載。設定 `GRAVATAR_STR` 後，清單裡 20 則留言的 `avatar` 全部變成 data URI，用 headless Chrome 開正式站的交流區也不再有任何頭像外連請求。
+
+網站端已經做的事見 [`README.md`](../README.md) 的交流區段落：閒置時用 `GET /api/token`（沒帶 token 時伺服器不讀資料庫，見 `@waline/vercel` 的 `src/logic/base.js`；帶 `Origin` 才會過 `SECURE_DOMAINS`，瀏覽器的跨網域 fetch 一定會帶）喚醒函式、開過交流區的人在閒置時先載好清單、關閉視窗不拆掉已載入的留言、留言數基準等清單畫好才查。
+
+伺服器端 2026-11-06 已做：
+
+1. **`GRAVATAR_STR`** 設成上表的 data URI 並部署。這個變數是 nunjucks 樣板，沒有樣板語法就原樣輸出（已用 nunjucks 3.2.4 驗證），所以所有留言的 `avatar` 都是內嵌的透明圖，前端與管理後台都不再向外抓頭像。
+2. **`NODE_OPTIONS`** 設成專案環境變數，讓 Redeploy 不會再把函式弄崩（見上方「不要只靠 Redeploy 更新」）。
+3. **Fluid Compute** 不用動：`resourceConfig.fluid` 本來就是 `true`（2025-04-23 之後建立的專案預設開）。
+
+不要用排程定時喚醒函式來躲冷啟動：Neon 免費方案每個專案每月 100 CU-hours，超過就停到下個月，定時喚醒會把額度吃光。

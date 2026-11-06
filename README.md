@@ -68,7 +68,7 @@ npm run preview
 
 應援動作動畫使用 WebM 優先、動畫 WebP 次之、GIF 最後回退；圖片只會在目前歌詞需要時載入。公告與 VAWS 圖片則在展開對應卡片後才建立，並使用瀏覽器的 lazy loading，避免首頁第一次開啟就下載大型資源。
 
-首頁與應援指南列表右下角有「VAWS 交流區」聊天泡泡，使用自架的 Waline 留言服務，點開泡泡時才載入留言程式；可以傳圖片，照片會先在瀏覽器縮小並去掉拍攝地點資訊，再存到 Cloudflare R2；聊天視窗開著時每 30 秒檢查一次留言數，有新留言才重新載入。歌曲頁與歌單頁不顯示泡泡，避免遮住播放控制。`src/services/support-board.js` 的 `SUPPORT_BOARD_SERVER_URL` 留空時，視窗只顯示「準備中」；後端部署步驟見 [`docs/support-board.md`](docs/support-board.md)。
+首頁與應援指南列表右下角有「VAWS 交流區」聊天泡泡，使用自架的 Waline 留言服務。頁面載入後閒下來時會先在背景下載留言程式，並送一個不讀資料庫的請求喚醒伺服器（Vercel 函式冷啟動要 4–5 秒，暖機後約 0.5 秒）；開過交流區的訪客（localStorage 的 `horo-support-chat-opened`）會直接把留言清單載好在收起的視窗裡，點開泡泡就看到；沒開過的人要到點開時才抓留言，這樣只看歌詞的人不會喚醒資料庫。關閉視窗只是收起來，留言不會清掉，再打開時只查一次留言數，有新留言才重新載入；視窗開著時每 30 秒檢查一次留言數，同樣有新留言才重新載入。留言數的基準會等清單畫好才查，因為伺服器一個暖機實例同時只服務約 3 個請求，同時送出的請求超過時，多出來的會被排到新實例、各等 4–5 秒冷啟動。可以傳圖片，照片會先在瀏覽器縮小並去掉拍攝地點資訊，再存到 Cloudflare R2。歌曲頁與歌單頁不顯示泡泡，避免遮住播放控制。`src/services/support-board.js` 的 `SUPPORT_BOARD_SERVER_URL` 留空時，視窗只顯示「準備中」；後端部署步驟見 [`docs/support-board.md`](docs/support-board.md)。
 
 頁尾的「意見回饋」連到 Google 表單（網址在 `src/data.js` 的 `FEEDBACK_FORM_URL`），可以許願功能、回報問題或附上截圖；表單含檔案上傳題，所以填寫需要登入 Google 帳號。第一次開啟網站會彈出一則公告（內容在 `src/data.js` 的 `ANNOUNCEMENT`，可選的 `image` 放在 `images/notice/`，建議寬度 880px 以內的 WebP），按「知道了」、✕、Esc、點背景或按下主要連結關閉後，會把公告的 `id` 記在 localStorage 的 `horo-announcement-seen`，之後不再自動出現；要再公告一次就改 `id`（localStorage 寫不進去時，至少這次開啟期間不會重彈）。頁尾的「公告」按鈕可以隨時再打開。歌曲頁不會彈出，避免遮住歌詞；開著時切到歌曲頁會先收起、離開歌曲頁後再補彈。更新日誌或公告圖片開著時也不會疊上去。
 

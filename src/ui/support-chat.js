@@ -1,11 +1,16 @@
 import { CHAT_SVG, CLOSE_SVG } from "./icons.js";
-import { SUPPORT_BOARD_IMAGE_URL, fetchSupportBoardCount, mountSupportBoard, prefetchSupportBoard, unmountSupportBoard } from "../services/support-board.js";
+import { SUPPORT_BOARD_IMAGE_URL, fetchSupportBoardCount, mountSupportBoard, prefetchSupportBoard } from "../services/support-board.js";
+import { store } from "../services/storage.js";
 
 // Floating support-goods chat: a bottom-right launcher that opens the Waline
 // board styled as a chat window. Shown only on the home and guide routes.
 const POLL_MS = 30000;
 const NEAR_BOTTOM_PX = 80;
 const KEYBOARD_MIN_PX = 80;
+// Set once the visitor opened the chat; later visits then load the list at idle.
+const OPENED_KEY = "horo-support-chat-opened";
+// Longest wait for the list before the poll baseline is fetched anyway.
+const LIST_RENDER_TIMEOUT_MS = 15000;
 
 let launcher = null;
 let panel = null;
@@ -17,6 +22,11 @@ let stickToBottom = true;
 let observer = null;
 let refreshPending = false;
 let generation = 0;
+let mounted = false; // the board is rendered in host, whether the panel shows it or not
+let pendingMount = null; // a mount started by refresh() that is still waiting for the chunk
+let listReady = Promise.resolve(); // the current mount's list arrived and the poll baseline is set
+let stopListWatch = null; // ends the wait for the current mount's list early
+let pollQueued = false; // an open() already waits on listReady to poll
 
 function build(){
   launcher = document.createElement("button");
@@ -134,13 +144,55 @@ function isComposing(){
   return !!host.querySelector(".wl-editor")?.value.trim();
 }
 
+// Resolves once Waline has rendered the list or its empty state, or after the
+// timeout (a failed load shows a retry button instead). A newer mount ends the
+// previous wait at once.
+function whenListRendered(){
+  stopListWatch?.();
+  return new Promise((resolve) => {
+    const watcher = new MutationObserver(check);
+    let timer = 0;
+    function done(){
+      watcher.disconnect();
+      clearTimeout(timer);
+      if (stopListWatch === done) stopListWatch = null;
+      resolve();
+    }
+    function check(){ if (host.querySelector(".wl-card-item, .wl-empty")) done(); }
+    stopListWatch = done;
+    watcher.observe(host, { childList: true, subtree: true });
+    timer = setTimeout(done, LIST_RENDER_TIMEOUT_MS);
+    check();
+  });
+}
+
+// The board is mounted but shows neither the list, the empty state nor the
+// loading state: Waline's list request failed, for example while offline.
+function listFailed(){
+  return !host.querySelector(".wl-card-item, .wl-empty, .wl-loading");
+}
+
+// Mount (or re-mount) the board, shown or not. The count that the poll compares
+// against is fetched only after the list arrived: the server handles one
+// request per instance, so a count request racing the list request would send
+// one of them to a cold instance. As before, a message posted between the two
+// requests is folded into the baseline. A later refresh supersedes one still
+// loading.
 function refresh(){
   refreshPending = false;
   const current = ++generation;
-  return mountSupportBoard(host, () => current === generation && !panel.hidden).then((mounted) => {
-    if (!mounted) return;
-    fetchSupportBoardCount().then(count => { if (current === generation) lastCount = count; });
+  const mount = mountSupportBoard(host, () => current === generation).then((ok) => {
+    if (pendingMount === mount) pendingMount = null;
+    if (current !== generation) return false;
+    mounted = ok;
+    if (!ok) return false;
+    listReady = whenListRendered()
+      .then(() => (current === generation ? fetchSupportBoardCount() : null))
+      .then((count) => { if (count != null && current === generation) lastCount = count; });
+    return true;
   });
+  pendingMount = mount;
+  return mount;
 }
 
 function poll(){
@@ -160,10 +212,25 @@ function open(){
   panel.hidden = false;
   launcher.hidden = true;
   launcher.setAttribute("aria-expanded", "true");
+  store(OPENED_KEY, "1");
   fitToViewport();
   watchContent();
   stickToBottom = true;
-  refresh();
+  if (mounted && !pendingMount && !listFailed()){
+    // Loaded at idle or kept from the last open: show it at once and reload
+    // only when the count poll finds new messages.
+    markOwnMessages();
+    disableAutofill();
+    scrollToBottom();
+    if (!pollQueued){
+      pollQueued = true;
+      listReady.then(() => { pollQueued = false; poll(); });
+    }
+  } else if (!pendingMount){
+    // Not loaded yet, or the earlier load failed; a mount still waiting for
+    // the chunk is left to finish and already shows the loading note.
+    refresh();
+  }
   document.addEventListener("keydown", onKeydown);
   clearInterval(pollTimer);
   pollTimer = setInterval(poll, POLL_MS);
@@ -177,21 +244,28 @@ function close({ restoreFocus = false } = {}){
   clearInterval(pollTimer);
   document.removeEventListener("keydown", onKeydown);
   observer?.disconnect();
-  generation++;
   refreshPending = false;
-  unmountSupportBoard();
-  lastCount = null;
+  // The board stays mounted behind the hidden panel, so reopening is instant.
   if (!launcher.dataset.routeHidden) launcher.hidden = false;
   if (restoreFocus && !launcher.hidden) launcher.focus();
 }
 
 // Called on every route change.
-// Prefetch once the page has settled; Safari has no requestIdleCallback.
+// Warm up once the page has settled; Safari has no requestIdleCallback.
+// Visitors who opened the chat before get the list mounted behind the hidden
+// panel, so their next open shows it at once; that list request itself wakes
+// the server. First-time visitors only wake the server, so people who never
+// open the chat do not wake the database.
 let prefetchScheduled = false;
 function schedulePrefetch(){
   if (prefetchScheduled) return;
   prefetchScheduled = true;
-  const run = () => prefetchSupportBoard();
+  const run = () => {
+    const returning = store(OPENED_KEY) === "1";
+    prefetchSupportBoard({ wakeServer: !returning }).then((ready) => {
+      if (ready && returning && !mounted && generation === 0) refresh();
+    });
+  };
   if (window.requestIdleCallback) requestIdleCallback(run, { timeout: 5000 });
   else setTimeout(run, 2000);
 }

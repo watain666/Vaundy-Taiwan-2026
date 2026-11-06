@@ -3248,7 +3248,7 @@ function setTipPicTranslate(card, x, y){
   card.style.translate = x || y ? `${x}px ${y}px` : "";
 }
 
-/* 寬度夾在最小值與畫面可容納的範圍內；0 表示沿用版面預設大小。 */
+/* 寬度夾在最小值與畫面可容納的範圍內；0 表示沿用版面的 CSS 大小（沒有保存寬度時改用最小寬度，見 applyTipPicOffset）。 */
 function setTipPicWidth(card, width){
   if (!width){
     delete card.dataset.width;
@@ -3277,7 +3277,7 @@ function applyTipPicOffset(){
   const card = document.getElementById("tip-pic-card");
   if (!card) return;
   const stored = tipPicStoredLayout();
-  setTipPicWidth(card, stored.w);
+  setTipPicWidth(card, stored.w || TIP_PIC_MIN_WIDTH);   // 預設最小，避免擋住歌詞或影片
   setTipPicTranslate(card, stored.x, stored.y);
   const box = document.getElementById("tip-pic");
   if (!box || !box.classList.contains("show")) return;

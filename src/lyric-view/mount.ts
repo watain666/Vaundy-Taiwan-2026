@@ -68,6 +68,7 @@ export type LyricMount = {
 
 const ACTIVE_GUARD_MS = 300;
 const IN_VIEW_MARGIN = "120px 0px";
+const WAVE_SELECTOR = ".ico-wave svg";
 const ICON_SELECTOR = ".ico-wave svg, .ico-mic svg, .ico-jump svg, .ico-spin .arm, .ico-clap .hand, .ico-clap .spark";
 
 export function createLyricMount(container: HTMLElement, options: LyricMountOptions): LyricMount {
@@ -360,14 +361,19 @@ export function createLyricMount(container: HTMLElement, options: LyricMountOpti
     const bpm = Number(beat && beat.bpm);
     if (!row || !beat || !Number.isFinite(bpm) || bpm <= 0) return;
     const rate = Number(beat.rate);
-    const periodMs = 60000 / bpm / (Number.isFinite(rate) && rate > 0 ? rate : 1);
-    const elapsedMs = Math.max(0, now - beat.startedAt);
-    const delay = Number(-((elapsedMs % periodMs) / 1000).toFixed(3));
+    const beatMs = 60000 / bpm / (Number.isFinite(rate) && rate > 0 ? rate : 1);
     /* beat.startedAt is on this module's performance clock; the icons may live in
        another document (the Document PiP window) whose timeline has its own origin. */
     const perf = view && view.performance;
     const originShift = perf && Number.isFinite(perf.timeOrigin) ? performance.timeOrigin - perf.timeOrigin : 0;
     row.querySelectorAll<HTMLElement | SVGElement>(ICON_SELECTOR).forEach(icon => {
+      /* Most icons run one cycle per beat, the beat at mid-cycle. The wave runs one
+         cycle per two beats (one swing per beat, base.css), its turns at 0% and 50%,
+         so its cycle starts on a beat: half a beat after the beat clock's cycle start. */
+      const wave = icon.matches(WAVE_SELECTOR);
+      const periodMs = wave ? beatMs * 2 : beatMs;
+      const cycleStart = wave ? beat!.startedAt + beatMs / 2 : beat!.startedAt;
+      const delay = Number(-((((now - cycleStart) % periodMs) + periodMs) % periodMs / 1000).toFixed(3));
       icon.style.animationDelay = `${delay}s`;
       if (typeof icon.getAnimations !== "function") return;
       icon.getAnimations().forEach(animation => {
@@ -375,8 +381,8 @@ export function createLyricMount(container: HTMLElement, options: LyricMountOpti
           /* Pin the start time: setting only the delay or currentTime leaves a pending
              play that starts on the next frame, so the icon would trail the beat by a
              frame or two. With delay d, active time = timeline - startTime - d, so a start of
-             startedAt - d puts the cycle start at startedAt. */
-          animation.startTime = beat!.startedAt + originShift - delay * 1000;
+             cycleStart - d puts the cycle start at cycleStart. */
+          animation.startTime = cycleStart + originShift - delay * 1000;
         } else {
           /* A paused animation (held while the video is paused) keeps its old current
              time; restart it at 0 so the negative delay is exactly the phase on resume.

@@ -454,6 +454,10 @@ button{touch-action:manipulation;}
   --ui-raised:#eaeaed;
   --ui-text:#1d1d1f;
   --ui-muted:#64646b;
+  --lyric-text:#1d1d1f;
+  --lyric-reading:rgba(29,29,31,.74);
+  --lyric-pending:rgba(29,29,31,.6);
+  --lyric-chant-reading:rgba(154,64,0,.85);
   --ui-line:#e8e8eb;
   --ui-accent:#755724;
   --chant:#9a4000;
@@ -476,6 +480,10 @@ button{touch-action:manipulation;}
   --ui-raised:#2b2c30;
   --ui-text:#f5f5f7;
   --ui-muted:#a9a9af;
+  --lyric-text:#f5f5f7;
+  --lyric-reading:rgba(245,245,247,.8);
+  --lyric-pending:rgba(245,245,247,.52);
+  --lyric-chant-reading:rgba(245,210,145,.9);
   --ui-line:rgba(255,255,255,.1);
   --ui-accent:#e9d9a3;
   --ui-hover:rgba(255,255,255,.07);
@@ -626,9 +634,22 @@ button{touch-action:manipulation;}
 }
 .song-dock .song-picker-caret{color:var(--ui-muted);}
 
+/* 歌詞是這一頁的主要內容，用與介面文字同樣深（淺色）或同樣亮（深色）的顏色，
+   不用 --ui-muted；行與行的主次由播放中的「其他句變淡」負責。
+   注音假名與逐字卡拉 OK 尚未唱到的字各有自己的 token，淺色與深色分開調，
+   base.css 寫死的暖灰在淺色底上對比不到 2:1。 */
 .song-page .lyric-jp,
 .song-page .lyric-romaji,
-.song-page .lyric-zh{color:var(--ui-muted);}
+.song-page .lyric-zh{color:var(--lyric-text);}
+.song-page .lyric-jp rt{color:var(--lyric-reading);}
+.song-page .lyric-jp .karaoke-unit,
+.song-page .lyric-romaji .karaoke-unit{color:var(--lyric-pending);}
+.song-page .lyric-line.active .lyric-jp .karaoke-unit.karaoke-lit,
+.song-page .lyric-line.active .lyric-romaji .karaoke-unit.karaoke-lit{color:var(--clap);}
+.song-page .lyric-line.active .lyric-jp .karaoke-unit.karaoke-lit rt{color:rgba(126,205,247,.9);}
+.song-page.karaoke-off .lyric-jp .karaoke-unit,
+.song-page.karaoke-off .lyric-romaji .karaoke-unit{color:inherit;}
+.song-page.karaoke-off .lyric-jp .karaoke-unit rt{color:var(--lyric-reading);}
 .song-page .lyric-line.is-chant:not(.chant-partial) .lyric-jp,
 .song-page .lyric-line.is-chant:not(.chant-partial) .lyric-romaji,
 .song-page .lyric-line.is-chant.chant-partial .lyric-body .seg-chant{color:var(--chant);}
@@ -655,14 +676,15 @@ button{touch-action:manipulation;}
   filter:drop-shadow(rgba(245,148,44,.45) 0 0 6px);
 }
 .song-page .lyric-line.is-chant:not(.chant-partial) .lyric-jp rt,
-.song-page .lyric-line.is-chant.chant-partial .lyric-jp .seg-chant rt{color:rgba(245,210,145,.9);}
+.song-page .lyric-line.is-chant.chant-partial .lyric-jp .seg-chant rt,
+.song-page .lyric-bg rt{color:var(--lyric-chant-reading);}
 .song-page .lyric-line.has-chant-segment .lyric-jp .chant-segment,
 .song-page .lyric-line.has-chant-segment .lyric-romaji .chant-segment,
 .song-page .lyric-line.has-chant-segment .lyric-jp .chant-segment .karaoke-unit,
 .song-page .lyric-line.has-chant-segment .lyric-romaji .chant-segment .karaoke-unit{
   color:var(--chant);
 }
-.song-page .lyric-line.has-chant-segment .lyric-jp .chant-segment rt{color:rgba(245,210,145,.9);}
+.song-page .lyric-line.has-chant-segment .lyric-jp .chant-segment rt{color:var(--lyric-chant-reading);}
 .song-page .lyric-line.has-chant-segment .lyric-jp .chant-segment.break-before,
 .song-page .lyric-line.has-chant-segment .lyric-romaji .chant-segment.break-before{display:block;}
 .song-page .lyric-line.active.has-chant-segment .lyric-jp .chant-segment .karaoke-unit.karaoke-lit,

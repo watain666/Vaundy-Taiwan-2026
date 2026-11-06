@@ -50,8 +50,10 @@ export type LyricRenderInput = LyricViewOptions & {
 /** Where playback is: the current line, the playback time and whether karaoke is on. */
 export type Playhead = { activeIdx: number; time: number | null; karaokeEnabled: boolean };
 
-/** The icon animation clock: one beat per BPM, counted from `startedAt` (performance.now()). */
-export type Beat = { bpm: number; startedAt: number };
+/** The icon animation clock: one beat per BPM, counted from `startedAt` (performance.now()).
+    `startedAt` is the cycle start, so a cycle's 50% point is half a period later; `rate` is the
+    playback speed (the CSS beat duration is divided by it too; default 1). */
+export type Beat = { bpm: number; startedAt: number; rate?: number };
 
 export type LyricMount = {
   render(song: Song, input: LyricRenderInput): void;
@@ -238,7 +240,13 @@ export function createLyricMount(container: HTMLElement, options: LyricMountOpti
     const keepLast = options.keepLastActive !== false && playhead.time === null;
     if (target || keepLast) pruneActive(target);
     else container.querySelectorAll(".lyric-line.active").forEach(row => row.classList.remove("active"));
-    if (target && !target.classList.contains("active")) target.classList.add("active");
+    if (target && !target.classList.contains("active")) {
+      target.classList.add("active");
+      /* The song page animates only the current line's icons (theme.css), so the
+         animation restarts when a row becomes current; re-apply the beat phase now
+         instead of the delay written when the row scrolled into view. */
+      syncIconAnimationPhase(target, performance.now());
+    }
     return target;
   }
 
@@ -351,11 +359,31 @@ export function createLyricMount(container: HTMLElement, options: LyricMountOpti
   function syncIconAnimationPhase(row: Element, now: number): void {
     const bpm = Number(beat && beat.bpm);
     if (!row || !beat || !Number.isFinite(bpm) || bpm <= 0) return;
-    const periodMs = 60000 / bpm;
+    const rate = Number(beat.rate);
+    const periodMs = 60000 / bpm / (Number.isFinite(rate) && rate > 0 ? rate : 1);
     const elapsedMs = Math.max(0, now - beat.startedAt);
-    const delay = -((elapsedMs % periodMs) / 1000);
+    const delay = Number(-((elapsedMs % periodMs) / 1000).toFixed(3));
+    /* beat.startedAt is on this module's performance clock; the icons may live in
+       another document (the Document PiP window) whose timeline has its own origin. */
+    const perf = view && view.performance;
+    const originShift = perf && Number.isFinite(perf.timeOrigin) ? performance.timeOrigin - perf.timeOrigin : 0;
     row.querySelectorAll<HTMLElement | SVGElement>(ICON_SELECTOR).forEach(icon => {
-      icon.style.animationDelay = `${delay.toFixed(3)}s`;
+      icon.style.animationDelay = `${delay}s`;
+      if (typeof icon.getAnimations !== "function") return;
+      icon.getAnimations().forEach(animation => {
+        if (animation.playState === "running") {
+          /* Pin the start time: setting only the delay or currentTime leaves a pending
+             play that starts on the next frame, so the icon would trail the beat by a
+             frame or two. With delay d, active time = timeline - startTime - d, so a start of
+             startedAt - d puts the cycle start at startedAt. */
+          animation.startTime = beat!.startedAt + originShift - delay * 1000;
+        } else {
+          /* A paused animation (held while the video is paused) keeps its old current
+             time; restart it at 0 so the negative delay is exactly the phase on resume.
+             Setting startTime here would resume it. */
+          animation.currentTime = 0;
+        }
+      });
     });
   }
 
@@ -382,8 +410,18 @@ export function createLyricMount(container: HTMLElement, options: LyricMountOpti
     rows.forEach(row => observer!.observe(row));
   }
 
+  /* A changed clock re-applies the phase to the rows in view right away (the
+     Document PiP passes the same beat on every update, so an equal one is a no-op). */
   function setBeat(next: Beat | null): void {
-    beat = next ? { bpm: Number(next.bpm), startedAt: Number(next.startedAt) } : null;
+    const rate = next && Number.isFinite(Number(next.rate)) && Number(next.rate) > 0 ? Number(next.rate) : 1;
+    const normalised = next ? { bpm: Number(next.bpm), startedAt: Number(next.startedAt), rate } : null;
+    const same = normalised && beat
+      ? normalised.bpm === beat.bpm && normalised.startedAt === beat.startedAt && normalised.rate === beat.rate
+      : normalised === beat;
+    beat = normalised;
+    if (same || !beat) return;
+    const now = performance.now();
+    rows.forEach(row => { if (row.classList.contains("in-view")) syncIconAnimationPhase(row, now); });
   }
 
   function destroy(): void {

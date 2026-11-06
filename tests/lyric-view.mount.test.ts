@@ -320,6 +320,54 @@ describe("rows, guard, observers and scrolling", () => {
     expect(observer.disconnected).toBe(true);
   });
 
+  test("the beat phase follows the playback rate", () => {
+    const { list, mount } = setup();
+    const startedAt = performance.now() - 100;
+    mount.setBeat({ bpm: 120, startedAt, rate: 2 });   // period 250 ms
+    mount.render(songs[0], { readingMode: "kana", chantVersion: "jp", karaokeTiming: null, karaokeSources: null });
+    const observer = FakeIntersectionObserver.instances[FakeIntersectionObserver.instances.length - 1];
+    const row = [...list.querySelectorAll(".lyric-line")].find(item => item.querySelector(".ico-clap"))!;
+    observer.enter(row);
+    const delay = Number.parseFloat(row.querySelector<HTMLElement>(".ico-clap .hand")!.style.animationDelay);
+    expect(delay).toBeLessThanOrEqual(-0.1);
+    expect(delay).toBeGreaterThan(-0.25);
+    mount.destroy();
+  });
+
+  test("a changed beat re-applies the phase to rows in view, an equal one does not", () => {
+    const { list, mount } = setup();
+    mount.render(songs[0], { readingMode: "kana", chantVersion: "jp", karaokeTiming: null, karaokeSources: null });
+    const observer = FakeIntersectionObserver.instances[FakeIntersectionObserver.instances.length - 1];
+    const row = [...list.querySelectorAll(".lyric-line")].find(item => item.querySelector(".ico-clap"))!;
+    const hand = row.querySelector<HTMLElement>(".ico-clap .hand")!;
+    observer.enter(row);
+    expect(hand.style.animationDelay).toBe("");   // no beat yet
+    const beat = { bpm: 120, startedAt: performance.now() - 120, rate: 1 };
+    mount.setBeat(beat);
+    const first = hand.style.animationDelay;
+    expect(first).toMatch(/^-0\.\d+s$/);
+    hand.style.animationDelay = "-9s";
+    mount.setBeat({ ...beat });
+    expect(hand.style.animationDelay).toBe("-9s");
+    mount.setBeat({ ...beat, startedAt: beat.startedAt - 50 });
+    expect(hand.style.animationDelay).not.toBe("-9s");
+    mount.destroy();
+  });
+
+  test("a row becoming the current line gets the beat phase again", () => {
+    const { list, mount } = setup();
+    mount.setBeat({ bpm: 120, startedAt: performance.now() - 120, rate: 1 });
+    mount.render(songs[0], { readingMode: "kana", chantVersion: "jp", karaokeTiming: null, karaokeSources: null });
+    const all = [...list.querySelectorAll(".lyric-line")];
+    const idx = all.findIndex(item => item.querySelector(".ico-clap"));
+    const hand = all[idx].querySelector<HTMLElement>(".ico-clap .hand")!;
+    hand.style.animationDelay = "-9s";   // stale phase from when the row scrolled into view
+    mount.setPlayhead({ activeIdx: idx, time: null, karaokeEnabled: false }, { force: true });
+    expect(all[idx].classList.contains("active")).toBe(true);
+    expect(hand.style.animationDelay).toMatch(/^-0\.\d+s$/);
+    mount.destroy();
+  });
+
   test("playback back before the first line clears the current line and scrolls to the start", () => {
     document.body.innerHTML = '<div class="lyrics-scroll"><ul id="lyrics-list"></ul></div>';
     const list = document.getElementById("lyrics-list")!;

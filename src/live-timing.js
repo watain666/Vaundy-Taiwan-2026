@@ -10,6 +10,9 @@
  *       times: [0, 12.4, ...],      // seconds in the LIVE video; one start time per lyric row
  *       singAlong: [20, 21, 22],    // optional: lyric row indices (0-based) where Vaundy hands the line
  *                                   // to the crowd in this live video; shown as 大合唱 應援 rows in live mode only
+ *       beatOffset: 0.31,           // optional: seconds in the LIVE video of its first beat; 0 <= value < 60 / the
+ *                                   // song's BPM (SONG_BPM; Spotify 200+ songs use half). Aligns the action icon
+ *                                   // animation to this video's beat; without it the icons run on a free clock
  *     },
  *   ]
  *
@@ -31,6 +34,10 @@
  * are treated as chant rows (the 大合唱 mic cue, chant-only practice), on top of
  * whatever the chant guide already marks; MV mode ignores them. A bad index
  * fails the build (live-timing-sing-along).
+ *
+ * `beatOffset` is the phase of this live video's beat grid (see SONG_BEAT_OFFSET
+ * in src/data.js for the MV). It must be a finite number in [0, 60 / BPM); a bad
+ * value fails the build (beat-offset-range).
  *
  * Choosing the video: this guide serves the ASIA ARENA TOUR 2026 "HORO", so
  * within each chant version use an official full single-song upload from a

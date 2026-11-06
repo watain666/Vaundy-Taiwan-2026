@@ -34,6 +34,8 @@ export type SongSummary = {
   translationLicense?: string;
   translationLicenseUrl?: string;
   bpm: number;
+  /** Seconds of the first beat in the MV (src/data.js SONG_BEAT_OFFSET); present when the beat grid is measured. */
+  beatOffset?: number;
   marks: SongMarks;
   /** Present when the song has official live videos, one per chant version at most (the row times load with the full song). */
   live?: SongLiveVideo[];
@@ -102,7 +104,7 @@ export type SongWordTiming = {
 };
 
 /** An official live video of a song, with its own lyric row start times (src/live-timing.js). It belongs to the chant version whose crowd it shows. */
-export type SongLiveVideo = { chantVersion: "jp" | "kr"; youtubeId: string; label: string };
+export type SongLiveVideo = { chantVersion: "jp" | "kr"; youtubeId: string; label: string; beatOffset?: number };
 
 export type Song = Omit<SongSummary, "live"> & {
   /** Named `lyrics` because the karaoke adapter reads `song.lyrics`. */
@@ -175,6 +177,8 @@ export type LiveTimingEntry = {
   times: readonly number[];
   /** Optional lyric row indices where the audience sings in this live video, strictly increasing. */
   singAlong?: readonly number[];
+  /** Optional seconds of the first beat in this live video, in [0, 60 / BPM). */
+  beatOffset?: number;
 };
 
 /** The two karaoke helpers the alignment invariant needs (karaoke-sources.js). */
@@ -191,6 +195,8 @@ export type CatalogueSources = {
   metadata: readonly MetadataEntry[];
   lyrics: readonly LyricsEntry[];
   bpm: Readonly<Record<string, number>>;
+  /** MV beat grid phase by song id (src/data.js SONG_BEAT_OFFSET); absent or empty when none is measured. */
+  beatOffset?: Readonly<Record<string, number>>;
   chantGuides: Readonly<Record<string, ChantGuide>>;
   chantReferenceUrl: string | null;
   setlist: { items: readonly { songs: readonly { id: string }[] }[] };
@@ -240,6 +246,8 @@ export const RULE_SEVERITY = {
   "live-timing-row-count": "error",
   "live-timing-order": "error",
   "live-timing-sing-along": "error",
+  "beat-offset-range": "error",
+  "beat-offset-unknown-song": "error",
 } as const;
 
 export type RuleName = keyof typeof RULE_SEVERITY;
@@ -546,7 +554,8 @@ function buildSong(
   });
 
   const wordTiming = attachWordTiming(id, lines, sources, log);
-  const live = attachLiveTiming(id, lines, sources, log);
+  const beatOffset = checkBeatOffset(id, sources.beatOffset, bpm, "SONG_BEAT_OFFSET", log);
+  const live = attachLiveTiming(id, lines, sources, bpm, log);
 
   if (guide) {
     (guide.chantTimes || []).forEach((time, timeIndex) => {
@@ -593,6 +602,7 @@ function buildSong(
     bpm,
     marks: deriveMarks(authoredLines, lines, Boolean(guide)),
   };
+  if (beatOffset !== undefined) summary.beatOffset = beatOffset;
   if (meta.translationSourceUrl !== undefined) summary.translationSourceUrl = meta.translationSourceUrl;
   if (meta.translationLicense !== undefined) summary.translationLicense = meta.translationLicense;
   if (meta.translationLicenseUrl !== undefined) summary.translationLicenseUrl = meta.translationLicenseUrl;
@@ -671,7 +681,7 @@ function attachWordTiming(id: string, lines: LyricLine[], sources: CatalogueSour
    The times are the live performance's own, so they are never mixed with the
    studio row times or the studio word timing. A song lists its videos, each
    belonging to one chant version (at most one per version). */
-function attachLiveTiming(id: string, lines: LyricLine[], sources: CatalogueSources, log: IssueLog): Song["live"] | null {
+function attachLiveTiming(id: string, lines: LyricLine[], sources: CatalogueSources, bpm: number, log: IssueLog): Song["live"] | null {
   const entries = Object.prototype.hasOwnProperty.call(sources.liveTiming, id) ? sources.liveTiming[id] : undefined;
   if (entries === undefined) return null;
   if (!Array.isArray(entries)) {
@@ -681,13 +691,13 @@ function attachLiveTiming(id: string, lines: LyricLine[], sources: CatalogueSour
   const videos: NonNullable<Song["live"]> = [];
   const seen = new Set<string>();
   entries.forEach(entry => {
-    const video = attachLiveVideo(id, entry, lines, seen, log);
+    const video = attachLiveVideo(id, entry, lines, seen, bpm, log);
     if (video) videos.push(video);
   });
   return videos.length ? videos : null;
 }
 
-function attachLiveVideo(id: string, entry: LiveTimingEntry, lines: LyricLine[], seen: Set<string>, log: IssueLog): NonNullable<Song["live"]>[number] | null {
+function attachLiveVideo(id: string, entry: LiveTimingEntry, lines: LyricLine[], seen: Set<string>, bpm: number, log: IssueLog): NonNullable<Song["live"]>[number] | null {
   let valid = true;
   if (entry.chantVersion !== "jp" && entry.chantVersion !== "kr") {
     log.add("live-timing-chant-version", `chantVersion ${JSON.stringify(entry.chantVersion)} must be "jp" or "kr"`, id);
@@ -744,7 +754,29 @@ function attachLiveVideo(id: string, entry: LiveTimingEntry, lines: LyricLine[],
       });
     }
   }
-  return valid ? { chantVersion: entry.chantVersion, youtubeId: entry.youtubeId, label: entry.label, times: [...times], singAlong } : null;
+  const beatOffset = entry.beatOffset === undefined ? undefined : checkOffsetValue(id, entry.beatOffset, bpm, "live beatOffset", log);
+  if (entry.beatOffset !== undefined && beatOffset === undefined) valid = false;
+  if (!valid) return null;
+  const video: NonNullable<Song["live"]>[number] = { chantVersion: entry.chantVersion, youtubeId: entry.youtubeId, label: entry.label, times: [...times], singAlong };
+  if (beatOffset !== undefined) video.beatOffset = beatOffset;
+  return video;
+}
+
+/* A beat offset is the phase of a video's beat grid: one beat is 60 / BPM
+   seconds, so the first beat falls in [0, 60 / BPM). Returns the value when
+   valid, otherwise logs beat-offset-range and returns undefined. */
+function checkOffsetValue(id: string, value: unknown, bpm: number, what: string, log: IssueLog): number | undefined {
+  const period = 60 / bpm;
+  if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || !(value < period)) {
+    log.add("beat-offset-range", `${what} ${JSON.stringify(value)} must be a finite number of seconds in [0, ${Number.isFinite(period) ? period.toFixed(3) : "60 / BPM"})`, id);
+    return undefined;
+  }
+  return value;
+}
+
+function checkBeatOffset(id: string, table: CatalogueSources["beatOffset"], bpm: number, what: string, log: IssueLog): number | undefined {
+  if (!table || !Object.prototype.hasOwnProperty.call(table, id)) return undefined;
+  return checkOffsetValue(id, table[id], bpm, what, log);
 }
 
 /* Same counting rule as the song list badges: a Japanese-version chant line
@@ -834,6 +866,9 @@ export function assembleCatalogue(sources: CatalogueSources): AssembledCatalogue
   Object.keys(sources.wordTiming).forEach(id => {
     if (!metadataIds.has(id)) log.add("word-timing-unknown-song", "has bundled word timing but no metadata", id);
   });
+  Object.keys(sources.beatOffset ?? {}).forEach(id => {
+    if (!metadataIds.has(id)) log.add("beat-offset-unknown-song", "has a beat offset but no metadata", id);
+  });
   Object.keys(sources.liveTiming).forEach(id => {
     if (!metadataIds.has(id)) log.add("live-timing-unknown-song", "has live timing but no metadata", id);
   });
@@ -864,7 +899,9 @@ export function assembleCatalogue(sources: CatalogueSources): AssembledCatalogue
   return {
     songs,
     summaries: songs.map(({ lyrics: _lyrics, chant: _chant, wordTiming: _wordTiming, live: _live, ...summary }) => {
-      const live = _live ? _live.map(({ chantVersion, youtubeId, label }) => ({ chantVersion, youtubeId, label })) : undefined;
+      const live = _live
+        ? _live.map(({ chantVersion, youtubeId, label, beatOffset }) => (beatOffset === undefined ? { chantVersion, youtubeId, label } : { chantVersion, youtubeId, label, beatOffset }))
+        : undefined;
       return live ? { ...summary, live } : summary;
     }),
     warnings: log.warnings,

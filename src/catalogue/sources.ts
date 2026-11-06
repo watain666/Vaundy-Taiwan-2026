@@ -56,6 +56,7 @@ export async function loadCatalogueSources(importModule: ModuleImporter): Promis
     metadata: metadata.SONGS,
     lyrics: lyrics.SONG_LYRICS,
     bpm: data.SONG_BPM,
+    beatOffset: data.SONG_BEAT_OFFSET ?? {},
     chantGuides: chantGuide.JP_CHANT_GUIDES,
     chantReferenceUrl: chantGuide.CHANT_REFERENCE_URL ?? null,
     setlist: data.SETLIST_TOKYO,

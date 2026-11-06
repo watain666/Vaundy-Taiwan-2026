@@ -355,7 +355,7 @@ describe("bundled word timing", () => {
 
 describe("live timing", () => {
   /* Alpha has three rows (0, 10, 20.5). */
-  function withLive(entry: Partial<{ chantVersion: "jp" | "kr"; youtubeId: string; label: string; times: number[]; singAlong: number[] }>) {
+  function withLive(entry: Partial<{ chantVersion: "jp" | "kr"; youtubeId: string; label: string; times: number[]; singAlong: number[]; beatOffset: number }>) {
     const sources = makeSources();
     sources.liveTiming = { Alpha: [{ chantVersion: "jp", youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22], ...entry }] };
     return sources;
@@ -447,5 +447,64 @@ describe("live timing", () => {
   test("live-timing-order rejects a negative or non-finite time", () => {
     expectRejected(withLive({ times: [-1, 11, 22] }), "live-timing-order", "Alpha", 0);
     expectRejected(withLive({ times: [1, Number.NaN, 22] }), "live-timing-order", "Alpha", 1);
+  });
+});
+
+describe("beat offset", () => {
+  /* Alpha is 120 BPM (period 0.5 s), Beta is 90 BPM (period 0.667 s). */
+  function withOffsets(table: Record<string, number>) {
+    const sources = makeSources();
+    sources.beatOffset = table;
+    return sources;
+  }
+
+  test("is optional and absent when not measured", () => {
+    const catalogue = assembleCatalogue(makeSources());
+    expect(catalogue.songs[0]).not.toHaveProperty("beatOffset");
+    expect(catalogue.summaries[0]).not.toHaveProperty("beatOffset");
+  });
+
+  test("a song's offset reaches the song and its summary", () => {
+    const catalogue = assembleCatalogue(withOffsets({ Alpha: 0.31 }));
+    expect(catalogue.songs[0].beatOffset).toBe(0.31);
+    expect(catalogue.summaries[0].beatOffset).toBe(0.31);
+    expect(catalogue.summaries[1]).not.toHaveProperty("beatOffset");
+  });
+
+  test("0 is a valid offset", () => {
+    expect(assembleCatalogue(withOffsets({ Alpha: 0 })).songs[0].beatOffset).toBe(0);
+  });
+
+  test.each([-0.01, 0.5, 0.75, Number.NaN, Number.POSITIVE_INFINITY, "0.2" as never])("beat-offset-range rejects %j", value => {
+    expectRejected(withOffsets({ Alpha: value }), "beat-offset-range", "Alpha");
+  });
+
+  test("the range follows each song's own BPM", () => {
+    expect(assembleCatalogue(withOffsets({ Beta: 0.6 })).songs[1].beatOffset).toBe(0.6);
+    expectRejected(withOffsets({ Beta: 0.7 }), "beat-offset-range", "Beta");
+  });
+
+  test("beat-offset-unknown-song", () => {
+    expectRejected(withOffsets({ Ghost: 0.1 }), "beat-offset-unknown-song", "Ghost");
+  });
+
+  test("a live video carries its own offset to the song and its summary video", () => {
+    const sources = makeSources();
+    sources.liveTiming = { Alpha: [{ chantVersion: "jp", youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22], beatOffset: 0.2 }] };
+    const catalogue = assembleCatalogue(sources);
+    expect(catalogue.songs[0].live![0].beatOffset).toBe(0.2);
+    expect(catalogue.summaries[0].live![0].beatOffset).toBe(0.2);
+  });
+
+  test("a live video without an offset has no beatOffset field", () => {
+    const sources = makeSources();
+    sources.liveTiming = { Alpha: [{ chantVersion: "jp", youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22] }] };
+    expect(assembleCatalogue(sources).songs[0].live![0]).not.toHaveProperty("beatOffset");
+  });
+
+  test.each([-1, 0.5, Number.NaN])("a live beatOffset of %j is rejected", value => {
+    const sources = makeSources();
+    sources.liveTiming = { Alpha: [{ chantVersion: "jp", youtubeId: "abcDEF_-123", label: "Dome Tour", times: [1, 11, 22], beatOffset: value }] };
+    expectRejected(sources, "beat-offset-range", "Alpha");
   });
 });

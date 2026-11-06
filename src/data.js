@@ -163,6 +163,16 @@ export const SONG_BPM = Object.freeze({
   Missing: 130,
   Zenzenzense: 187,
 });
+/*
+ * 歌曲拍點相位（秒）：MV（song-metadata.js 的 youtubeId）影片裡「第一個拍點」的時間，
+ * 0 <= 值 < 60 / SONG_BPM。歌詞行上的應援圖示動畫用它對齊影片的實際拍點，
+ * 週期用 SONG_BPM（也就是拍手的速度；Spotify 200 以上的歌這裡記一半的 BPM）。
+ * 沒有列在這裡的歌，圖示動畫維持自由計時。現場影片的相位寫在 live-timing.js 的 beatOffset。
+ * key 必須是存在的歌曲 id（build 規則 beat-offset-*）。
+ */
+export const SONG_BEAT_OFFSET = Object.freeze({
+});
+
 /* ── 台北/東京/首爾歌單 ───────────────────────────────────
    台北 2026.10.31（六）・11.01（日）與東京、首爾場順序相同；粉絲紀錄整理，非官方。
    id 必須對應 src/song-metadata.js 的 SONGS，才能連到歌曲頁。 */

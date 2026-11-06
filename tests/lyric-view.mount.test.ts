@@ -322,15 +322,15 @@ describe("rows, guard, observers and scrolling", () => {
 
   test("the beat phase follows the playback rate", () => {
     const { list, mount } = setup();
-    const startedAt = performance.now() - 100;
-    mount.setBeat({ bpm: 120, startedAt, rate: 2 });   // period 250 ms
+    const now = vi.spyOn(performance, "now").mockReturnValue(10_000);
+    mount.setBeat({ bpm: 120, startedAt: 9_900, rate: 2 });   // period 250 ms, 100 ms into a cycle
     mount.render(songs[0], { readingMode: "kana", chantVersion: "jp", karaokeTiming: null, karaokeSources: null });
     const observer = FakeIntersectionObserver.instances[FakeIntersectionObserver.instances.length - 1];
     const row = [...list.querySelectorAll(".lyric-line")].find(item => item.querySelector(".ico-clap"))!;
     observer.enter(row);
     const delay = Number.parseFloat(row.querySelector<HTMLElement>(".ico-clap .hand")!.style.animationDelay);
-    expect(delay).toBeLessThanOrEqual(-0.1);
-    expect(delay).toBeGreaterThan(-0.25);
+    expect(delay).toBeCloseTo(-0.1, 3);
+    now.mockRestore();
     mount.destroy();
   });
 

@@ -108,6 +108,8 @@ let karaokeLoadSeq = 0;         // 換歌時忽略上一首尚未完成的網路
 let syncTicks = 0;      // 동기화가 몇 번 돌았는지 (진단용)
 let syncErr   = "";     // 재생 위치 읽기 실패 메시지 (진단용)
 let iconClockStartedAt = performance.now();
+let iconClockAligned = false;  // iconClockStartedAt was derived from the video time (not the free clock)
+let iconBeatPaused = false;    // the current video has a beat offset and is not playing: icons hold still
 let iconBeatDuration = "";     // --icon-beat-duration of the current song, also sent to PiP
 let playheadTime = null;       // playback time of the last sync tick, for the PiP mount
 
@@ -2715,11 +2717,63 @@ function applySongTempo(song){
 
   const beatSeconds = 60 / bpm / Math.max(0.01, playbackRate);
   page.style.setProperty("--song-bpm", String(bpm));
-  iconBeatDuration = `${beatSeconds.toFixed(3)}s`;
+  // Six decimals: a 3-decimal duration (0.462s for 130 BPM) drifts ~1 ms per second off the beat.
+  iconBeatDuration = `${beatSeconds.toFixed(6)}s`;
   page.style.setProperty("--icon-beat-duration", iconBeatDuration);
   page.dataset.bpm = String(bpm);
   iconClockStartedAt = performance.now();
-  if (songLyricMount) songLyricMount.setBeat({ bpm, startedAt: iconClockStartedAt });
+  iconClockAligned = false;
+  if (songLyricMount) songLyricMount.setBeat({ bpm, startedAt: iconClockStartedAt, rate: playbackRate });
+  syncBeatClock();
+  updateDocumentPip();
+}
+
+/* Seconds of the first beat in the video that is playing now (the live video's
+   own offset in live mode, otherwise the MV's), or null when it is not measured. */
+function currentBeatOffset(song){
+  if (!song) return null;
+  const video = liveActive(song) ? liveVideoOf(song) : song;
+  const offset = video ? Number(video.beatOffset) : NaN;
+  return video && video.beatOffset !== undefined && Number.isFinite(offset) ? offset : null;
+}
+
+const BEAT_PHASE_TOLERANCE_MS = 25;
+
+/* Align the icon animation clock to the video's beat. The clap hands meet at
+   50% of the animation cycle, so a beat must land half a period after the
+   clock's `startedAt`. Only a phase error above the tolerance moves the clock
+   (a seek, a resume after pause or a buffering stall), so ordinary ticks do not
+   jitter the icons. A video without an offset keeps the free clock. */
+function syncBeatClock(){
+  const page = document.getElementById("song-page");
+  const song = currentSong;
+  const offset = currentBeatOffset(song);
+  const bpm = Number(song && song.bpm);
+  const aligned = offset !== null && Number.isFinite(bpm) && bpm > 0;
+  const paused = aligned && !playerIsPlaying();
+  if (paused) iconClockAligned = false;   // held animations fall behind the clock: re-align on resume
+  if (page) page.classList.toggle("beat-paused", paused);
+  if (paused !== iconBeatPaused){
+    iconBeatPaused = paused;
+    updateDocumentPip();
+  }
+  if (!aligned || paused || !songLyricMount) return;
+  const time = getPlayerTime();
+  if (time === null) return;
+
+  const rate = Math.max(0.01, playbackRate);
+  const beatSec = 60 / bpm;                          // video seconds per beat
+  const periodMs = beatSec / rate * 1000;            // wall-clock ms per beat (what the CSS runs at)
+  const sinceBeatSec = (((time - offset) % beatSec) + beatSec) % beatSec;
+  const beatAt = performance.now() - sinceBeatSec / rate * 1000;
+  const startedAt = beatAt - periodMs / 2;
+
+  let error = (((startedAt - iconClockStartedAt) % periodMs) + periodMs) % periodMs;
+  if (error > periodMs / 2) error -= periodMs;
+  if (iconClockAligned && Math.abs(error) <= BEAT_PHASE_TOLERANCE_MS) return;
+  iconClockStartedAt = startedAt;
+  iconClockAligned = true;
+  songLyricMount.setBeat({ bpm, startedAt, rate });
   updateDocumentPip();
 }
 
@@ -3194,7 +3248,7 @@ function setTipPicTranslate(card, x, y){
   card.style.translate = x || y ? `${x}px ${y}px` : "";
 }
 
-/* 寬度夾在最小值與畫面可容納的範圍內；0 表示沿用版面預設大小。 */
+/* 寬度夾在最小值與畫面可容納的範圍內；0 表示沿用版面的 CSS 大小（沒有保存寬度時改用最小寬度，見 applyTipPicOffset）。 */
 function setTipPicWidth(card, width){
   if (!width){
     delete card.dataset.width;
@@ -3223,7 +3277,7 @@ function applyTipPicOffset(){
   const card = document.getElementById("tip-pic-card");
   if (!card) return;
   const stored = tipPicStoredLayout();
-  setTipPicWidth(card, stored.w);
+  setTipPicWidth(card, stored.w || TIP_PIC_MIN_WIDTH);   // 預設最小，避免擋住歌詞或影片
   setTipPicTranslate(card, stored.x, stored.y);
   const box = document.getElementById("tip-pic");
   if (!box || !box.classList.contains("show")) return;
@@ -3597,7 +3651,8 @@ function buildDocumentPipViewModel(activeIdx = lastActiveIdx){
     },
     playhead: { activeIdx: hasLine ? currentIndex : -1, time: playheadTime, karaokeEnabled },
     container: lyricContainerSettings(),
-    beat: song ? { bpm: Number(song.bpm), startedAt: iconClockStartedAt } : null,
+    beat: song ? { bpm: Number(song.bpm), startedAt: iconClockStartedAt, rate: playbackRate } : null,
+    beatPaused: iconBeatPaused,
     isPlaying: playerIsPlaying(),
     pausedByVisitor: visitorPausedPlayback,
     canPlayPause: Boolean(player && playerReady
@@ -4128,6 +4183,7 @@ function updatePlayButton(){
 
 function onPlayerStateChange(event) {
   updatePlayButton();
+  syncBeatClock();
   updateDocumentPip();
   if (event.data === YT.PlayerState.PLAYING) visitorPausedPlayback = false;
   if (event.data === YT.PlayerState.PAUSED) resumeAfterUnwantedPause();
@@ -4188,6 +4244,7 @@ function stopSyncTimer() {
 
 function updateLyricsSync(force) {
   updatePlaybackProgress();
+  syncBeatClock();
   const list = document.getElementById("lyrics-list");
   if (!list) return;
   const lines = list.querySelectorAll(".lyric-line");

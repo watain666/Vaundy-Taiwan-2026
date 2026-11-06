@@ -153,6 +153,7 @@ export function createDocumentPip({
     if (Number.isFinite(lyricScale) && lyricScale > 0){
       root.style.setProperty("--lyric-scale", String(lyricScale));
     } else root.style.removeProperty("--lyric-scale");
+    root.classList.toggle("beat-paused", model.beatPaused === true);
     if (model.iconBeatDuration){
       root.style.setProperty("--icon-beat-duration", model.iconBeatDuration);
     } else root.style.removeProperty("--icon-beat-duration");

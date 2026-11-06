@@ -1655,7 +1655,8 @@
   .ico-wave svg{
     width:100%;height:100%;
     transform-origin:60% 85%;
-    animation:handWave var(--icon-beat-duration, 1.1s) ease-in-out infinite;
+    /* One swing per beat, like the crowd: left on one beat, right on the next */
+    animation:handWave calc(var(--icon-beat-duration, .55s) * 2) ease-in-out infinite;
   }
   @keyframes handWave{
     0%,100%{ transform:rotate(-16deg); }
@@ -1779,7 +1780,7 @@
   }
 
   /* 目前播放中的歌詞列沿用歌曲 BPM，只增加陰影讓焦點更清楚 */
-  .lyric-line.active .ico-wave svg{ animation-duration:var(--icon-beat-duration); }
+  .lyric-line.active .ico-wave svg{ animation-duration:calc(var(--icon-beat-duration) * 2); }
   .lyric-line.active .ico-clap .hand{ animation-duration:var(--icon-beat-duration); }
   .lyric-line.active .ico-clap .spark{ animation-duration:var(--icon-beat-duration); }
   .lyric-line.active .ico-wave{ filter:drop-shadow(0 0 6px rgba(141,224,95,0.5)); }
@@ -1803,6 +1804,15 @@
   .lyric-line.in-view .ico-spin .arm,
   .lyric-line.in-view .ico-clap .hand,
   .lyric-line.in-view .ico-clap .spark{ animation-play-state:running; }
+
+  /* 影片有拍點資料而暫停時，圖示停在原位；繼續播放時重新對拍。
+     沒有拍點資料的影片不加這個 class，維持自由計時。 */
+  .beat-paused .lyric-line.in-view .ico-wave svg,
+  .beat-paused .lyric-line.in-view .ico-mic svg,
+  .beat-paused .lyric-line.in-view .ico-jump svg,
+  .beat-paused .lyric-line.in-view .ico-spin .arm,
+  .beat-paused .lyric-line.in-view .ico-clap .hand,
+  .beat-paused .lyric-line.in-view .ico-clap .spark{ animation-play-state:paused; }
 
   /* 왼쪽 종류 표시(동그라미)와 범례에도 같은 움직이는 아이콘을 그대로 사용.
      em 기준 크기라서 font-size 만 정해 주면 동그라미 안에 딱 맞게 들어간다. */

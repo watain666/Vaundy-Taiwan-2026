@@ -163,6 +163,75 @@ export const SONG_BPM = Object.freeze({
   Missing: 130,
   Zenzenzense: 187,
 });
+/*
+ * 歌曲拍點相位（秒）：MV（song-metadata.js 的 youtubeId）影片裡「第一個拍點」的時間，
+ * 0 <= 值 < 60 / SONG_BPM。歌詞行上的應援圖示動畫用它對齊影片的實際拍點，
+ * 週期用 SONG_BPM（也就是拍手的速度；Spotify 200 以上的歌這裡記一半的 BPM）。
+ * 沒有列在這裡的歌，圖示動畫維持自由計時。現場影片的相位寫在 live-timing.js 的 beatOffset。
+ * key 必須是存在的歌曲 id（build 規則 beat-offset-*）。
+ */
+export const SONG_BEAT_OFFSET = Object.freeze({
+  Tokimeki: 0.356,
+  KaijuNoHanauta: 0.791,
+  KoikazeniNosete: 0.026,
+  Odoriko: 0.265,
+  HadakaNoYusha: 0.297,
+  Reunion: 0.254,
+  hanaurana: 0.123,
+  Yobigoe: 0.480,
+  Tomoshibi: 0.337,
+  HowdoIknow: 0.225,
+  Shiwaawase: 0.007,
+  Homunculus: 0.165,
+  soramimi: 0.027,
+  TokyoFlash: 0.001,
+  NakiJizo: 0.009,
+  napori: 0.452,
+  Backlight: 0.060,
+  NEOJAPAN: 0.068,
+  ZuttoLoveSong: 0.070,
+  Iseijin: 0.194,
+  ZERO: 0.096,
+  SonnaBitternaHanashi: 0.321,
+  Fujin: 0.195,
+  Jonetsu: 0.012,
+  Kagero: 0.115,
+  flyaway: 0.003,
+  mabuta: 0.370,
+  Hitomibore: 0.537,
+  SekainoHimitsu: 0.096,
+  Wasuremono: 0.065,
+  TodomenoIchigeki: 0.360,
+  Kimagure: 0.198,
+  KokyuNoYouni: 0.019,
+  pained: 0.174,
+  mabataki: 0.226,
+  Tobouyo: 0.317,
+  WasureruMaeni: 0.176,
+  HashireSAKAMOTO: 0.023,
+  SomebodyHelpUs: 0.296,
+  KokoroArigatou: 0.004,
+  Bidenkyu: 0.053,
+  Carnival: 0.108,
+  OneLiter: 0.201,
+  Miyako: 0.000,
+  Hokuro: 0.280,
+  replica: 0.474,
+  YukaiSink: 0.513,
+  benefits: 0.206,
+  Okitegami: 0.169,
+  Futaribanashi: 0.193,
+  HERO: 0.293,
+  Omokage: 0.191,
+  Chikyugi: 0.532,
+  BokuwaKyomo: 0.006,
+  Byebyme: 0.487,
+  KonnaToki: 0.239,
+  pain: 0.388,
+  Missing: 0.055,
+  Zenzenzense: 0.305,
+});
+
 /* ── 台北/東京/首爾歌單 ───────────────────────────────────
    台北 2026.10.31（六）・11.01（日）與東京、首爾場順序相同；粉絲紀錄整理，非官方。
    id 必須對應 src/song-metadata.js 的 SONGS，才能連到歌曲頁。 */
